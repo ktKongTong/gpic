@@ -44,3 +44,9 @@ next-env.d.ts
 .wrangler
 .dev.vars*
 .open-next
+/.idea/.gitignore
+/.idea/compiler.xml
+/.idea/dataSources.xml
+/.idea/gpic.iml
+/.idea/modules.xml
+/.idea/vcs.xml
