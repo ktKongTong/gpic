@@ -1,0 +1,132 @@
+diff --git a/index.esm.js b/index.esm.js
+index 847953f692e6426c7ceba7003ff9e9f2b13ab4f8..e2a4fb2033e964e48175b25df1004f81da29d021 100644
+--- a/index.esm.js
++++ b/index.esm.js
+@@ -1 +1,126 @@
+-import{DurableObject as e}from"cloudflare:workers";class t{constructor(e){this.namespace=e.namespace,this.prefix=e.prefix??"hrl:"}prefixKey(e){return`${this.prefix}${e}`}init(e){this.windowMs=e.windowMs}async get(e){const t=await this.namespace.get(this.prefixKey(e),"json");if(t)return t}async increment(e){let t={totalHits:1,resetTime:new Date(Date.now()+this.windowMs)};const s=await this.get(e);return s&&(t={totalHits:s.totalHits+1,resetTime:s.resetTime?new Date(s.resetTime):t.resetTime}),await this.namespace.put(this.prefixKey(e),JSON.stringify(t),{expiration:t.resetTime.getTime()/1e3}),t}async decrement(e){const t=await this.get(e);t&&t.resetTime&&(t.totalHits-=1,await this.namespace.put(this.prefixKey(e),JSON.stringify(t),{expiration:Math.floor(t.resetTime.getTime()/1e3)}))}async resetKey(e){await this.namespace.delete(this.prefixKey(e))}}class s{constructor(e){this.namespace=e.namespace,this.prefix=e.prefix??"hrl:"}prefixKey(e){return this.namespace.idFromName(`${this.prefix}${e}`)}init(e){this.windowMs=e.windowMs}async get(e){return this.namespace.get(this.prefixKey(e)).value()}async increment(e){return this.namespace.get(this.prefixKey(e)).update(1,this.windowMs)}async decrement(e){await this.namespace.get(this.prefixKey(e)).update(-1,this.windowMs)}async resetKey(e){await this.namespace.get(this.prefixKey(e)).reset()}}const a={totalHits:0};class i extends e{value(){return this.ctx.storage.get("value")}async update(e,t){let s=await this.ctx.storage.get("value")||a;const i=new Date(s.resetTime??Date.now()+t);s={totalHits:s.totalHits+e,resetTime:i};return null==await this.ctx.storage.getAlarm()&&this.ctx.storage.setAlarm(i.getTime()),await this.ctx.storage.put("value",s),s}async reset(){await this.ctx.storage.put("value",a)}async alarm(){await this.reset()}}function r(e){const{message:t="Too many requests, please try again later.",statusCode:s=429,requestPropertyName:a="rateLimit",rateLimitBinding:i,keyGenerator:r,skip:n=(()=>!1),handler:o=(async(e,t,s)=>{e.status(s.statusCode);const a="function"==typeof s.message?await s.message(e):s.message;return"string"==typeof a?e.text(a):e.json(a)})}=e;return async(e,c)=>{let m=i;"function"==typeof m&&(m=m(e));const p={message:t,statusCode:s,requestPropertyName:a,rateLimitBinding:m,keyGenerator:r,skip:n,handler:o};if(await n(e))return void await c();const h=await r(e),{success:u}=await m.limit({key:h});if(e.set(a,u),!u)return o(e,c,p);await c()}}export{i as DurableObjectRateLimiter,s as DurableObjectStore,t as WorkersKVStore,r as cloudflareRateLimiter};
++// import {DurableObject as e} from "cloudflare:workers";
++
++class t {
++    constructor(e) {
++        this.namespace = e.namespace, this.prefix = e.prefix ?? "hrl:"
++    }
++
++    prefixKey(e) {
++        return `${this.prefix}${e}`
++    }
++
++    init(e) {
++        this.windowMs = e.windowMs
++    }
++
++    async get(e) {
++        const t = await this.namespace.get(this.prefixKey(e), "json");
++        if (t) return t
++    }
++
++    async increment(e) {
++        let t = {totalHits: 1, resetTime: new Date(Date.now() + this.windowMs)};
++        const s = await this.get(e);
++        return s && (t = {
++            totalHits: s.totalHits + 1,
++            resetTime: s.resetTime ? new Date(s.resetTime) : t.resetTime
++        }), await this.namespace.put(this.prefixKey(e), JSON.stringify(t), {expiration: t.resetTime.getTime() / 1e3}), t
++    }
++
++    async decrement(e) {
++        const t = await this.get(e);
++        t && t.resetTime && (t.totalHits -= 1, await this.namespace.put(this.prefixKey(e), JSON.stringify(t), {expiration: Math.floor(t.resetTime.getTime() / 1e3)}))
++    }
++
++    async resetKey(e) {
++        await this.namespace.delete(this.prefixKey(e))
++    }
++}
++
++class s {
++    constructor(e) {
++        this.namespace = e.namespace, this.prefix = e.prefix ?? "hrl:"
++    }
++
++    prefixKey(e) {
++        return this.namespace.idFromName(`${this.prefix}${e}`)
++    }
++
++    init(e) {
++        this.windowMs = e.windowMs
++    }
++
++    async get(e) {
++        return this.namespace.get(this.prefixKey(e)).value()
++    }
++
++    async increment(e) {
++        return this.namespace.get(this.prefixKey(e)).update(1, this.windowMs)
++    }
++
++    async decrement(e) {
++        await this.namespace.get(this.prefixKey(e)).update(-1, this.windowMs)
++    }
++
++    async resetKey(e) {
++        await this.namespace.get(this.prefixKey(e)).reset()
++    }
++}
++
++const a = {totalHits: 0};
++
++class i {
++    value() {
++        return this.ctx.storage.get("value")
++    }
++
++    async update(e, t) {
++        let s = await this.ctx.storage.get("value") || a;
++        const i = new Date(s.resetTime ?? Date.now() + t);
++        s = {totalHits: s.totalHits + e, resetTime: i};
++        return null == await this.ctx.storage.getAlarm() && this.ctx.storage.setAlarm(i.getTime()), await this.ctx.storage.put("value", s), s
++    }
++
++    async reset() {
++        await this.ctx.storage.put("value", a)
++    }
++
++    async alarm() {
++        await this.reset()
++    }
++}
++
++function r(e) {
++    const {
++        message: t = "Too many requests, please try again later.",
++        statusCode: s = 429,
++        requestPropertyName: a = "rateLimit",
++        rateLimitBinding: i,
++        keyGenerator: r,
++        skip: n = (() => !1),
++        handler: o = (async (e, t, s) => {
++            e.status(s.statusCode);
++            const a = "function" == typeof s.message ? await s.message(e) : s.message;
++            return "string" == typeof a ? e.text(a) : e.json(a)
++        })
++    } = e;
++    return async (e, c) => {
++        let m = i;
++        "function" == typeof m && (m = m(e));
++        const p = {
++            message: t,
++            statusCode: s,
++            requestPropertyName: a,
++            rateLimitBinding: m,
++            keyGenerator: r,
++            skip: n,
++            handler: o
++        };
++        if (await n(e)) return void await c();
++        const h = await r(e), {success: u} = await m.limit({key: h});
++        if (e.set(a, u), !u) return o(e, c, p);
++        await c()
++    }
++}
++
++export {i as DurableObjectRateLimiter, s as DurableObjectStore, t as WorkersKVStore, r as cloudflareRateLimiter};
