@@ -103,6 +103,7 @@ export const useGenerate = () => {
     // setState(states.DRAWING)
     try {
       await fetchEventSource('/api/ai/image/flavor-style', {
+        openWhenHidden: true,
         method: 'POST',
         body: JSON.stringify(props),
         onmessage(ev) { handleEvent(ev as any) },

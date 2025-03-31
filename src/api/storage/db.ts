@@ -3,6 +3,7 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import * as schema from "./schema";
 import {QuotaDAO} from "@/api/storage/dao/quota";
 import {HistoryDAO} from "@/api/storage/dao/gallery";
+import {TaskDAO} from "@/api/storage/dao/task";
 
 export let db: DrizzleD1Database<typeof schema> | null = null;
 
@@ -23,8 +24,10 @@ export const getDB = () => {
 };
 
 export const getDAO = () => {
+  const db = getDB()
   return {
-    quota: new QuotaDAO(getDB()),
-    history: new HistoryDAO(getDB()),
+    quota: new QuotaDAO(db),
+    history: new HistoryDAO(db),
+    task: new TaskDAO(db)
   }
 }

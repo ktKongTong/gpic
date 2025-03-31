@@ -8,10 +8,8 @@ export class QuotaDAO {
 
   async getQuotaByUserId(userId: string) {
     const [res] = await this.db.select()
-      .from(table.quota)
-      .where(eq(table.quota.userId, userId))
+      .from(table.credit)
+      .where(eq(table.credit.userId, userId))
     return res
   }
-
-
 }

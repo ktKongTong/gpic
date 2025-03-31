@@ -7,6 +7,8 @@ import { AIImageService } from "../services/ai/image";
 import {UserQuotaService} from "@/api/services/quota";
 import {getDAO} from "@/api/storage/db";
 import {HistoryService} from "@/api/services/history";
+import {TaskService} from "@/api/services/task";
+import {MQService} from "@/api/services/mq";
 
 // In the edge runtime you can use Bindings that are available in your application
 // (for more details see:
@@ -28,6 +30,8 @@ declare module 'hono' {
     fileService: FileService
     userQuotaService: UserQuotaService
     historyService: HistoryService
+    taskService: TaskService
+    mqService: MQService
   }
 }
 export const getService = (c:Context) => {
@@ -37,6 +41,8 @@ export const getService = (c:Context) => {
     aiImageService: c.get('aiImageService'),
     userQuotaService: c.get('userQuotaService'),
     historyService: c.get('historyService'),
+    taskService: c.get('taskService'),
+    mqService: c.get('mqService'),
     // env: c.env,
     // ctx: c,
   }
@@ -51,12 +57,17 @@ export const ServiceDIMiddleware = (): MiddlewareHandler => {
     const aiImageService = new AIImageService(fileService)
     const dao = getDAO()
     const quotaService = new UserQuotaService(userService, dao)
+    const mqService = new MQService()
+    const taskService = new TaskService(userService, dao)
     const historyService = new HistoryService(dao)
+
     c.set('userService', userService)
     c.set('fileService', fileService)
     c.set('aiImageService', aiImageService)
     c.set('userQuotaService', quotaService)
     c.set('historyService', historyService)
+    c.set('taskService', taskService)
+    c.set('mqService', mqService)
     await next()
   }
 }

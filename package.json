@@ -5,6 +5,7 @@
   "scripts": {
     "migrate": "drizzle-kit migrate",
     "generate": "drizzle-kit generate",
+    "d1:migrate": "wrangler d1 execute tiny_pic --remote --file=./drizzle/0000_high_korath.sql",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -14,6 +15,7 @@
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
+    "hono-openapi": "^0.4.6",
     "@ai-sdk/google": "^1.2.3",
     "@ai-sdk/openai": "^1.3.3",
     "@ai-sdk/react": "1.2.2",
@@ -78,7 +80,8 @@
     "typeid-js": "^1.2.0",
     "uuid": "^11.1.0",
     "vaul": "^1.1.2",
-    "zod": "3.24.2"
+    "zod": "3.24.2",
+    "@hono/zod-validator": "^0.4.3"
   },
   "devDependencies": {
     "@opennextjs/cloudflare": "^0.6.4",

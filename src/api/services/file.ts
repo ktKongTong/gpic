@@ -40,14 +40,14 @@ export class FileService {
         }
     }
 
-    async uploadFile(file: Uint8Array) {
+    async uploadFile(file: Uint8Array, fileType?: string) {
         const {fileKey, uploadURL} = await this.signUpload({ prefix: 'ai' })
         const res = await fetch(uploadURL, { method: 'PUT', body: file })
         if (!res.ok) {
           throw new Error("failed to upload file")
         }
         // filename, filesize, md5
-        return `${env().S3_UC_ENDPOINT}/${fileKey}`
+        return `${env().S3_UC_ENDPOINT}/${fileKey}.${fileType}`
     }
 
     async directUpload(file: Uint8Array) {
@@ -57,6 +57,7 @@ export class FileService {
 
 
     async getFileByMd5(md5: string) {
+        // m
         // check file exists
         //   return null
         // md5

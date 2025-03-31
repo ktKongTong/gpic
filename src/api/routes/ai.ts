@@ -26,40 +26,51 @@ app.post('/image/flavor-style/mock', async (c) => {
         await wait(delay)
         await stream.writeSSE(event)
     }
-    console.log("close", )
     await stream.close()
   })
 })
+
 export const schema = z.object({
-  // 参考图片
-  files: z.string().array().max(3, "Maximum 3 files"),
+  files: z.string().array().min(3, "Maximum 3 files"),
   style: z.string().optional(),
   prompt: z.string().optional(),
 })
+
+
 app.post('/image/flavor-style', async (c) => {
   const body = await c.req.json()
   const data = schema.parse(body)
-  const  {aiImageService} = getService(c)
+  const  { aiImageService } = getService(c)
   const result = await aiImageService.generateImage(data)
   return streamSSE(c, async (stream) => {
-    let id = 1
-    await stream.writeSSE({event: 'start', id: Date.now().toString(), data: 'drawing'})
-    for await (const event of result.fullStream) {
-      switch (event.type) {
-        case 'error':
-          await stream.writeSSE({event: 'error', id: Date.now().toString(), data: JSON.stringify(event)});break
-        case "finish":
-          await stream.writeSSE({event: 'end', id: Date.now().toString(), data: event.finishReason});break
-        case 'text-delta':
-          const res = await aiImageService.handleTextDelta(event.textDelta)
-          if(res.event == 'success') {
-            // write to history
-          }
-          await stream.writeSSE(res)
+      let id = 1
+      await stream.writeSSE({event: 'start', id: Date.now().toString(), data: 'drawing'})
+      for await (const event of result.fullStream) {
+        switch (event.type) {
+          case 'error':
+            await stream.writeSSE({event: 'error', id: Date.now().toString(), data: JSON.stringify(event)});break
+          case "finish":
+            await stream.writeSSE({event: 'end', id: Date.now().toString(), data: event.finishReason});break
+          case 'text-delta':
+            const res = await aiImageService.handleTextDelta(event.textDelta)
+            if(res.event == 'success') {
+              // write to history
+            }
+            await stream.writeSSE(res)
+        }
       }
-    }
-    await stream.close()
-  })
+      await stream.close()
+    })
+})
+
+
+app.post('/image/flavor-style/task', async (c) => {
+  const body = await c.req.json()
+  const data = schema.parse(body)
+  const  {mqService, taskService } = getService(c)
+  const task = await taskService.createTask({input:data})
+  await mqService.enqueue({type: 'image-gen', payload: task})
+  return c.json(task)
 })
 
 app.get('/image/quota', async (c) => {

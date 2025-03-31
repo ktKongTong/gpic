@@ -86,6 +86,7 @@ export class AIImageService {
         const [,url] = imageRegex.exec(text)
         const res = await fetch(url).then(res=>res.bytes())
         const file = await this.fileService.uploadFile(res)
+
         return {
           data: file,
           event: 'success'
