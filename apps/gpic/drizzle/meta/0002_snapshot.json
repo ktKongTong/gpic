@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "7a86e319-4cac-4c0d-b2ae-5c4b2be429e6",
-  "prevId": "444cc230-1a2b-4947-b4ef-82e477e39cb3",
+  "id": "3fb408f8-8421-470e-8932-190f48faf39d",
+  "prevId": "7a86e319-4cac-4c0d-b2ae-5c4b2be429e6",
   "tables": {
     "account": {
       "name": "account",
@@ -535,6 +535,13 @@
         "credit_usage": {
           "name": "credit_usage",
           "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "input": {
+          "name": "input",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false

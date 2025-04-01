@@ -6,7 +6,7 @@
     "migrate": "drizzle-kit migrate",
     "generate": "drizzle-kit generate",
     "d1:mi": "wrangler d1 execute tiny_pic --file=./drizzle/0000_high_korath.sql",
-    "d1:migrate": "wrangler d1 execute tiny_pic --file=./drizzle/0001_overconfident_alice.sql",
+    "d1:migrate": "wrangler d1 execute tiny_pic --remote --file=./drizzle/0002_cute_glorian.sql",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

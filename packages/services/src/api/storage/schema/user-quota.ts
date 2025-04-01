@@ -49,7 +49,7 @@ export const history = sqliteTable("task_history", {
   taskId: text("task_id").notNull(),
   usage: integer('credit_usage', {mode: 'number'}).notNull(),
   // modified input.
-  input: text('output', {mode: 'json'}).notNull(),
+  input: text('input', {mode: 'json'}).notNull(),
   output: text('output', {mode: 'json'}),
   // start_at:
   // finish_at:

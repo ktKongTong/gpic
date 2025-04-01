@@ -1,0 +1,1 @@
+ALTER TABLE `task_history` ADD `input` text NOT NULL;

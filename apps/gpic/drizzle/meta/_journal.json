@@ -15,6 +15,13 @@
       "when": 1743450189621,
       "tag": "0001_overconfident_alice",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1743491578529,
+      "tag": "0002_cute_glorian",
+      "breakpoints": true
     }
   ]
 }

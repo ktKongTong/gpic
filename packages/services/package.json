@@ -15,6 +15,11 @@
       "types": "./dist/types/index.d.ts",
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js"
+    },
+    "./schema": {
+      "types": "./dist/types/api/storage/schema/index.d.ts",
+      "import": "./dist/esm/api/storage/schema/index.js",
+      "require": "./dist/cjs/api/storage/schema/index.js"
     }
   },
   "dependencies": {
