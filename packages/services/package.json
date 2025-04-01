@@ -1,0 +1,45 @@
+{
+  "name": "@repo/service",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "migrate": "drizzle-kit migrate",
+    "generate": "drizzle-kit generate",
+    "d1:migrate": "wrangler d1 execute tiny_pic --remote --file=./drizzle/0001_overconfident_alice.sql",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "build": "tsup"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
+  "dependencies": {
+    "hono-openapi": "^0.4.6",
+    "@ai-sdk/google": "^1.2.3",
+    "@ai-sdk/openai": "^1.3.3",
+    "@hono-rate-limiter/cloudflare": "^0.2.2",
+    "ai": "^4.2.6",
+    "aws4fetch": "^1.0.20",
+    "better-auth": "^1.2.5",
+    "drizzle-orm": "^0.41.0",
+    "hono": "^4.7.5",
+    "hono-rate-limiter": "^0.4.2",
+    "ofetch": "^1.4.1",
+    "typeid-js": "^1.2.0",
+    "uuid": "^11.1.0",
+    "zod": "3.24.2",
+    "@hono/zod-validator": "^0.4.3",
+    "drizzle-kit": "^0.30.6",
+    "@opennextjs/cloudflare": "^0.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "typescript": "^5",
+    "wrangler": "^4.5.1",
+    "tsup": "^8.4.0"
+  }
+}
