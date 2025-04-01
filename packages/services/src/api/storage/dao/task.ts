@@ -47,7 +47,9 @@ export class TaskDAO {
     const {id, ...rest} = taskUpdateDBO
     const [res] = await this.db.update(table.task).set({
       ...rest
-    }).returning()
+    })
+    .where(eq(table.task.id, id))
+    .returning()
     return res
   }
 

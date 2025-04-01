@@ -30,7 +30,6 @@ const createService = (env: CloudflareEnv) => {
   const taskService = new TaskService(userService, dao);
   const historyService = new HistoryService(dao)
   const aiService = new AIImageService(fileService)
-
   return {
     aiService,
     taskService,
@@ -57,6 +56,11 @@ export class ConsumerService {
       await this.handleSingleImageGenTask(msg.payload);
     }
   }
+
+  async retryImageTask(msg: Message<Task>) {
+
+  }
+
   async handleSingleImageGenTask(task: Task) {
     const execution = await this.services.historyService
       .createExecutionHistory({
@@ -65,7 +69,8 @@ export class ConsumerService {
         usage: 0,
         status: 'processing'
       })
-    await this.services.taskService.updateTask({id: task.id, status: 'processing'})
+
+    await this.services.taskService.updateTask({id: task.id, retry: task.retry+1, status: 'processing'})
     try {
       const res = await this.processAIMessage(task, execution)
       await this.services.historyService.updateExecutionHistory({
