@@ -54,3 +54,4 @@ wrangler.jsonc
 cloudflare-env.d.ts
 dist
 node_modules
+.next
