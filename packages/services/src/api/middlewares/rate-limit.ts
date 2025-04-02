@@ -3,7 +3,8 @@ import { WorkersKVStore } from "@hono-rate-limiter/cloudflare";
 import { rateLimiter } from "hono-rate-limiter";
 import { Context, Next } from "hono";
 import { getService } from "./service-di";
-import {getCloudflareEnv} from "@/api/utils";
+import {getCloudflareEnv} from "../utils";
+import {CloudflareKVStore} from "./worker-kv-store";
 
 
 type Bindings = {
@@ -34,7 +35,7 @@ export const rateLimitFactory = (options?: RateLimitOptions) => {
         standardHeaders: "draft-6",
         keyGenerator: options?.strategy == 'user'? userRateLimit: ipRateLimit,
         // @ts-ignore
-        store: new WorkersKVStore({ namespace: getCloudflareEnv().KV , prefix: options?.prefix?? ""}),
+        store: new CloudflareKVStore({ namespace: getCloudflareEnv().KV , prefix: options?.prefix?? ""}),
       })(c, next)
     }
 }

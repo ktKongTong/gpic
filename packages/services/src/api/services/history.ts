@@ -1,18 +1,5 @@
-import {DAO} from "../storage/type";
+import {DAO, ExecutionCreateDBO, ExecutionUpdateDBO} from "../storage/type";
 
-type ExecutionCreateDBO = {
-  taskId: string,
-  usage: number,
-  input: any,
-  status: string
-}
-
-type ExecutionUpdateDBO = {
-  id: string,
-  output?: any,
-  state?: any,
-  status: string
-}
 
 export class HistoryService {
   constructor(private dao: DAO) {

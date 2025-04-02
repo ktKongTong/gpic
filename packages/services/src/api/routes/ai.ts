@@ -41,6 +41,7 @@ app.post('/image/flavor-style', async (c) => {
   const body = await c.req.json()
   const data = schema.parse(body)
   const  { aiImageService } = getService(c)
+  // 作为task。返回一个task，然后watch
   const result = await aiImageService.generateImage(data)
   return streamSSE(c, async (stream) => {
       let id = 1
@@ -64,14 +65,7 @@ app.post('/image/flavor-style', async (c) => {
 })
 
 
-app.post('/image/flavor-style/task', async (c) => {
-  const body = await c.req.json()
-  const data = schema.parse(body)
-  const  {mqService, taskService } = getService(c)
-  const task = await taskService.createTask({input:data})
-  await mqService.enqueue({type: 'image-gen', payload: task})
-  return c.json(task)
-})
+
 
 app.get('/image/quota', async (c) => {
   const  {userQuotaService} = getService(c)

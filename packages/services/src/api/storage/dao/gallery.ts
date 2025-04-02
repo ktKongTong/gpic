@@ -1,22 +1,9 @@
-import {DB} from "../type";
+import {DB, ExecutionCreateDBO, ExecutionUpdateDBO} from "../type";
 import * as table from '../schema'
 import {uniqueId} from "../../utils";
 import {eq} from "drizzle-orm";
 
-type ExecutionCreateDBO = {
-  taskId: string,
-  usage: number,
-  state?: any,
-  input: any,
-  status: string
-}
 
-type ExecutionUpdateDBO = {
-  id: string,
-  output?: any,
-  state?: any,
-  status: string
-}
 
 export class HistoryDAO {
 

@@ -10,4 +10,4 @@ app.post('/',
     return c.json({ data: history })
   })
 
-export {app as fileRoute}
+export { app as historyRoute }

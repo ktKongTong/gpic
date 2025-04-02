@@ -6,8 +6,9 @@ import { ServiceDIMiddleware } from "./middlewares/service-di";
 import { getAuth } from "./services/auth";
 import { contextStorage } from "hono/context-storage";
 import {ZodError} from "zod";
-import {BizError, ParameterError} from "./errors";
+import {BizError, ParameterError} from "./errors/route";
 import {timing} from "hono/timing";
+import {taskRoute} from "./routes/task";
 
 const app = new Hono().basePath('/api')
 
@@ -23,7 +24,6 @@ aiRoute.use(rateLimitFactory({prefix: 'ai', strategy: 'user', max: 5, windowMs: 
 app.use(
 	'*',
 	timing({
-		// c: Context of the request
 		enabled: (c) => c.req.method === 'POST' || c.req.method === 'PUT',
 	})
 )
@@ -48,5 +48,6 @@ app.on(["POST", "GET"], "/api/auth/*", (c) => {
 
 app.route('/', fileRoute)
 app.route('/', aiRoute)
+app.route('/', taskRoute)
 
 export { app as route }

@@ -1,5 +1,5 @@
 import {z} from "zod";
-import {getCloudflareEnv} from "@/api/utils";
+import {getCloudflareEnv} from "../utils";
 
 export const backedEnvSchema = z.object({
   S3_AK: z.string(),

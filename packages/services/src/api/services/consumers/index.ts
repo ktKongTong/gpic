@@ -1,28 +1,15 @@
 import { getDAO } from "../../storage/db";
-import {Task, TaskService} from "../task";
-import {AIImageService, FileService, HistoryService, UserService} from "../../services";
-import {setCloudflareEnv} from "@/api/utils";
+import { TaskService } from "../task";
+import {AIImageService, FileService, HistoryService, msgType, UserService} from "../../services";
+import {setCloudflareEnv} from "../../utils";
+import {Execution, executionStatus, Task, taskStatus, taskType} from "../../storage/type";
+import {NotImplementedError} from "../../errors/common";
 
 type Message<T> = {
   type: string;
   payload: T
 };
 
-type Execution = {
-  // processing, finished, failed
-  status: string;
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-  taskId: string;
-  usage: number;
-  // progress
-  state?: unknown;
-  // url: string
-  output?: unknown;
-  // prompt and styles
-  input: unknown;
-}
 const createService = (env: CloudflareEnv) => {
   const dao = getDAO(env)
   const fileService = new FileService();
@@ -46,46 +33,47 @@ export class ConsumerService {
     setCloudflareEnv(env)
     this.services = createService(env);
   }
-  // env ctx
 
   private async createCtx() {
+
   }
 
   async handleMsg(msg: Message<Task>) {
-    if(msg.type === 'image-gen') {
-      await this.handleSingleImageGenTask(msg.payload);
+    if(msg.type === msgType.IMAGE_GEN) {
+      await this.handleSingleImageGenTask(msg.payload)
+    }else if (msg.type === msgType.BATCH_IMAGE_GEN) {
+      await this.handleBatchImageGenTask(msg.payload)
     }
   }
-
-  async retryImageTask(msg: Message<Task>) {
-
+  async handleBatchImageGenTask(task: Task) {
+    if(task.type !== taskType.BATCH) {
+      throw new Error("not a batch task")
+    }
+    throw new NotImplementedError()
   }
-
   async handleSingleImageGenTask(task: Task) {
     const execution = await this.services.historyService
       .createExecutionHistory({
         taskId: task.id,
         input: task.input,
         usage: 0,
-        status: 'processing'
+        status: executionStatus.PROCESSING
       })
 
-    await this.services.taskService.updateTask({id: task.id, retry: task.retry+1, status: 'processing'})
+    await this.services.taskService.updateTask({ id: task.id, status: taskStatus.PROCESSING })
+
     try {
       const res = await this.processAIMessage(task, execution)
-      await this.services.historyService.updateExecutionHistory({
-        id: execution.id,
-        ...res,
-      })
-      const status = res.status === 'success' ? 'success' : 'failed'
+      await this.services.historyService.updateExecutionHistory({ id: execution.id, ...res })
+      const status = res.status === 'success' ? taskStatus.SUCCESS : taskStatus.FAILED
       await this.services.taskService.updateTask({id: task.id, status: status })
     }catch (e) {
       await this.services.historyService.updateExecutionHistory({
         id: execution.id,
         output: e,
-        status: 'failed',
+        status: executionStatus.FAILED,
       })
-      await this.services.taskService.updateTask({id: task.id, status: 'failed'})
+      await this.services.taskService.updateTask({ id: task.id, status: taskStatus.FAILED })
     }
   }
 
@@ -102,26 +90,25 @@ export class ConsumerService {
     for await (const event of result.fullStream) {
       switch (event.type) {
         case 'error':
-          console.error("something error", event.error)
           ctx.success = false;
-          ctx.message += String(event.error)
+          ctx.message += "aisdk stream error:"+ String(event.error)
           break
         case "finish":
-          ctx.message += `finish, reason: ${event.finishReason}`
-          // ctx.usage = event.usage
+          ctx.message += `aisdk finish-reason: ${event.finishReason}`
           break
         case 'text-delta':
           ctx.message += event.textDelta
           const res = await this.services.aiService.handleTextDelta(event.textDelta)
           switch (res.event) {
-            // a frequent action
             case 'progress':
               ctx.progress = res.data
               exec.state = { progress: res.data }
-              await this.services.historyService.updateExecutionHistory({id: exec.id, state: { progress: res.data, message: ctx.message }, status: 'processing'})
+              await this.services.historyService.updateExecutionHistory({
+                id: exec.id,
+                state: { progress: res.data, message: ctx.message },
+                status: executionStatus.PROCESSING
+              })
               break
-            case 'unknown':
-              ctx.message += res.data; break
             case 'failed':
               ctx.success = false; break
             case 'success':
@@ -133,17 +120,18 @@ export class ConsumerService {
     }
     if (ctx.success) {
       return {
-        status: 'success',
+        status: 'success' as const,
         state: ctx,
         output: ctx.output,
       }
     }
     return {
-      status: 'failed',
+      status: 'failed' as const,
       state: ctx,
       output: ctx.output ?? {
         error: `failed to get result, execution id: ${execution.id}`
       },
     }
   }
+
 }

@@ -51,7 +51,6 @@ export class AIImageService {
     constructor(private fileService: FileService) {}
 
     async generateImage(option: GenerateOption) {
-        // const imageUrl = await this.fileService.getFileURLById(data.fileKey)
         const model = await createModel()
         const prompt = option?.prompt ?? await createPrompt()
         const inputImages = option.files.slice(0,3).map(it => ({ type: "image" as const, image: it }))
@@ -94,6 +93,8 @@ export class AIImageService {
         return { event: 'progress', data: progress as string}
       }else if(failedRegex.test(text)) {
         return { event: 'failed', data: 'meet rate-limit or content-policy'}
+      }else if(successRegex.test(text)) {
+        return { event: 'success', data: ''}
       }
       return {
         data: text,

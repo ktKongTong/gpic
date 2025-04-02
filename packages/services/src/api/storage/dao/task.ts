@@ -1,28 +1,19 @@
-import {DB} from "../type";
+import {DB, TaskStatus, taskStatus, taskType, TaskUpdateDBO} from "../type";
 import * as table from '../schema'
 import {desc, eq, getTableColumns} from "drizzle-orm";
 import {uniqueId} from "../../utils";
 
 const taskColumns = getTableColumns(table.task)
 const historyColumns = getTableColumns(table.history)
-type taskCo= typeof table.task.$inferInsert
-type TaskColumn = typeof table.task.$inferInsert
+type TaskColumn = typeof table.task.$inferSelect
 type WithHistoryColumn = {
-  history: typeof table.history.$inferInsert;
+  history: typeof table.history.$inferSelect;
 } & TaskColumn
 
 type ReturnTypeTask<withHistory extends boolean = false> = withHistory extends true
   ? WithHistoryColumn : TaskColumn
 
-type TaskUpdateDBO = {
-  id: string,
-  // 最初的input?
-  input?: any,
-  type?: string,
-  retry?: number,
-  status?: string,
-  metadata?: any,
-}
+
 
 export class TaskDAO {
 
@@ -35,9 +26,9 @@ export class TaskDAO {
       id,
       userId,
       input,
-      type: 'image-gen',
+      type: taskType.IMAGE_GEN,
       retry: 0,
-      status: 'Init',
+      status: taskStatus.WAITING,
       metadata: {},
     }).returning()
     return res
@@ -45,9 +36,7 @@ export class TaskDAO {
 
   async updateTask(taskUpdateDBO: TaskUpdateDBO) {
     const {id, ...rest} = taskUpdateDBO
-    const [res] = await this.db.update(table.task).set({
-      ...rest
-    })
+    const [res] = await this.db.update(table.task).set({ ...rest })
     .where(eq(table.task.id, id))
     .returning()
     return res

@@ -1,31 +1,10 @@
 import {UserService} from "../services/user-service";
-import {DAO} from "../storage/type";
+import {DAO, TaskUpdateDBO} from "../storage/type";
 
 type TaskInput = {
   input: any,
 }
 
-export type Task = {
-  metadata: unknown,
-  input: unknown,
-  id: string,
-  createdAt: string,
-  updatedAt: string,
-  userId: string,
-  type: string,
-  status: string,
-  retry: number
-}
-
-type TaskUpdateDBO = {
-  id: string,
-  // initial input
-  input?: any,
-  type?: string,
-  retry?: number,
-  status?: string,
-  metadata?: any,
-}
 
 export class TaskService {
   constructor(private readonly userService: UserService,private readonly dao: DAO) {

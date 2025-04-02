@@ -40,38 +40,33 @@ export const credit = sqliteTable("credit", {
   index('credit_user_id_idx').on(table.userId),
 ]);
 
-// taskId.
-// create taskId.
-// queue a task, stream.
-//
+const executionStatus = ['success', 'failed', 'processing'] as const
+
 export const history = sqliteTable("task_history", {
   id: text("id").primaryKey(),
   taskId: text("task_id").notNull(),
   usage: integer('credit_usage', {mode: 'number'}).notNull(),
-  // modified input.
   input: text('input', {mode: 'json'}).notNull(),
   output: text('output', {mode: 'json'}),
-  // start_at:
-  // finish_at:
-  // failed, success
+  // current state
   state: text('state', {mode: 'json'}),
-  status: text('status', {mode: 'text'}).notNull(),
+  status: text('status', {mode: 'text', enum: executionStatus}).notNull(),
   ...commonTimeFields
 }, (table) => [
   index('task_history_user_id_idx').on(table.taskId),
   index('task_history_status_idx').on(table.status),
 ]);
 
+
+const taskStatus = ['waiting','processing', 'success', 'failed'] as const
+const taskType = ['image-gen', 'batch', ] as const
 export const task = sqliteTable("task", {
   id: text("id").primaryKey(),
   userId: text("user_id").notNull(),
   input: text('input', {mode: 'json'}).notNull(),
-  retry: integer('retry', {mode: 'number'}).notNull(),
-  // gen-image
-  type: text('type').notNull(),
-  // not_start, drawing, failed => drawing, success.
-  status: text('status', {mode: 'text'}).notNull(),
-  // share, public, private, share input. share output.
+  type: text('type', { enum: taskType }).notNull(),
+  retry: integer('retry', {mode: 'number'}).default(0).notNull(),
+  status: text('status', {mode: 'text', enum: taskStatus}).notNull(),
   metadata: text('metadata', {mode: 'json'}).notNull(),
   ...commonTimeFields
 }, (table) => [

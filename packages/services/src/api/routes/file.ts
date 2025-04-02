@@ -5,7 +5,7 @@ import {getCloudflareContext} from "@opennextjs/cloudflare";
 const app = new Hono().basePath('/file')
 
 import { startTime, endTime } from 'hono/timing'
-import {getCloudflareEnv} from "@/api/utils";
+import {getCloudflareEnv} from "../utils";
 const getKey = (buf: ArrayBuffer) => [...new Uint8Array(buf)].map(x => x.toString(16).padStart(2, '0')).join('')
 app.put('/upload',
   bodyLimit({
@@ -22,10 +22,10 @@ app.put('/upload',
     const bytes = await file.bytes()
     endTime(c, 'receive');
     startTime(c, 'digest');
-    // in dev mode
-    const digest = await crypto.subtle.digest({name: 'SHA-1',}, bytes);
     // https://developers.cloudflare.com/workers/runtime-apis/web-crypto/#footnote-3
     // const digest = await crypto.subtle.digest({name: 'MD5',}, bytes);
+    const digest = await crypto.subtle.digest({name: 'SHA-1',}, bytes);
+
     const key = getKey(digest)
     endTime(c, 'digest');
     // @ts-ignore
