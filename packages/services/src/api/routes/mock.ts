@@ -1,5 +1,6 @@
 import {taskStatus, taskType} from "../storage/type";
 import {mockExecution} from "./mock_execution";
+import {getRandomName} from "../utils/random";
 
 export const mockEvent = [
   {event: 'start', data: ''},
@@ -33,6 +34,7 @@ const input = {
 const commonTask = {
   input: input,
   userid: "anonymous",
+  name: getRandomName(),
   metadata: {},
   type: taskType.IMAGE_GEN,
   retry: 0,
@@ -41,7 +43,7 @@ const commonTask = {
   updatedAt: "2021-01-12 23:32:00",
 }
 export const mockTask = [
-  { id: "task_01jqrxepaefk7bxv3smqm07psh", history: mockExecution[0], name: 'random name', ...commonTask},
-  { id: "task_01jqrxepaefk7bxv3smqm032ds", history: mockExecution[1], name: 'random name', ...commonTask},
-  { id: "task_01jqrxepaefk7bxv3smqm032df", history: mockExecution[2], name: 'random name', ...commonTask},
+  { id: "task_01jqrxepaefk7bxv3smqm07psh", history: mockExecution[0], ...commonTask},
+  { id: "task_01jqrxepaefk7bxv3smqm032ds", history: mockExecution[1], ...commonTask},
+  { id: "task_01jqrxepaefk7bxv3smqm032df", history: mockExecution[2], ...commonTask},
 ]

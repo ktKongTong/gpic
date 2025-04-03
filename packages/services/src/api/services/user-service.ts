@@ -11,7 +11,7 @@ declare module 'hono' {
 
 
 
-const userSymbol = Symbol('user_service_user')
+const userSymbol = Symbol.for('user_service_user')
 
 export class UserService {
     async getCurrentUser(c?: Context) {

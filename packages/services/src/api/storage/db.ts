@@ -1,8 +1,8 @@
 import { drizzle, DrizzleD1Database } from 'drizzle-orm/d1';
 import * as schema from "./schema";
-import {QuotaDAO} from "../storage/dao/quota";
-import {HistoryDAO} from "../storage/dao/gallery";
-import {TaskDAO} from "../storage/dao/task";
+import {QuotaDAO} from "./dao/quota";
+import {HistoryDAO} from "./dao/gallery";
+import {TaskDAO} from "./dao/task";
 import {getCloudflareEnv} from "../utils";
 
 export let db: DrizzleD1Database<typeof schema> | null = null;

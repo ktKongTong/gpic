@@ -1,19 +1,38 @@
 import {Hono} from "hono";
 import {getService} from "../middlewares/service-di";
-import {schema} from "../routes/ai";
+
 import {NotFoundError} from "../errors/route";
 import {msgType} from "../services";
-import {mockTask} from "./mock";
+import {taskStatus} from "../storage/type";
+import {z} from "zod";
 
 const app = new Hono().basePath('/task')
+export const schema = z.object({
+  files: z.string().array().min(1).max(10, "Maximum 10 files"),
+  style: z.string().array().min(1).max(5, "Maximum 5 style"),
+  times: z.coerce.number().min(1).max(10, "Maximum 10 times").optional().default(1),
+  batch: z.boolean().optional().default(false),
+}).refine((data) => {
+  const total = data.style.length * data.files.length * data.times
+  return total <= 100
+},{
+  message: "total task count should be less than 100",
+})
 
 app.post('/image/flavor-style', async (c) => {
   const body = await c.req.json()
   const data = schema.parse(body)
   const  {mqService, taskService } = getService(c)
-  const task = await taskService.createTask({input:data})
+  if(data.batch) {
+    const task = await taskService.createBatchTask({input:data})
+    await mqService.enqueue({type: msgType.BATCH_IMAGE_GEN, payload: task})
+    return c.json(task)
+  }
+  const task = await taskService.createImageGenTask({input:{...data, style: data.style[0]}})
   await mqService.enqueue({type: msgType.IMAGE_GEN, payload: task})
   return c.json(task)
+
+
 })
 
 
@@ -21,18 +40,20 @@ app.post('/image/flavor-style', async (c) => {
 app.put('/:taskid/retry', async (c) => {
   const taskId = c.req.param('taskid')
   const  {mqService, taskService } = getService(c)
-  const task = await taskService.getTaskById(taskId)
+  const task = await taskService.getTaskById(taskId, false)
   if(!task) {
     throw new NotFoundError()
   }
-  const newTask = await taskService.updateTask({id: task.id, retry: task.retry + 1, status: 'waiting'})
+  const newTask = await taskService.updateTask({id: task.id, retry: task.retry + 1, status: taskStatus.PENDING},task.status)
   await mqService.enqueue({type: msgType.IMAGE_GEN, payload: newTask})
   return c.json(task)
 })
 
-
 app.get('/', async (c) => {
-  return c.json(mockTask)
+  const  { taskService, userService } = getService(c)
+  const user =await userService.getCurrentUser()
+  const tasks = await taskService.getTaskByUserId(user?.id ?? 'anonymous')
+  return c.json(tasks)
 })
 
 app.get('/:taskid', async (c) => {

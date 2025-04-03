@@ -13,9 +13,9 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": false,
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+//    "paths": {
+//      "@/*": ["./src/*"]
+//    }
   },
   "include": ["next-env.d.ts", "cloudflare-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]

@@ -42,7 +42,7 @@ type SSEvent = {
 
 type GenerateOption = {
   files: string[],
-  style?: string,
+  style: string,
   prompt?: string
 }
 
@@ -52,27 +52,15 @@ export class AIImageService {
 
     async generateImage(option: GenerateOption) {
         const model = await createModel()
-        const prompt = option?.prompt ?? await createPrompt()
-        const inputImages = option.files.slice(0,3).map(it => ({ type: "image" as const, image: it }))
-        console.log('input-images',inputImages)
-        console.log('prompt',prompt)
+        const prompt = await createPrompt(option)
         const result = streamText({
             model: model,
-            messages: [{
-              role: 'user' as const,
-              content: [
-                ...inputImages,
-                { type: "text", text: prompt },
-              ]
-            }],
+            messages: [{ role: 'user' as const, content: prompt }],
             maxRetries: 3,
             maxTokens: 8192,
         })
 
       const res = result
-        // .fullStream
-        // .pipeThrough(aiEventTransform)
-        // .pipeThrough(eventTransform)
       return res
     }
 

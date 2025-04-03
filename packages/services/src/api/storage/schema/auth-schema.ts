@@ -8,7 +8,7 @@ export const user = sqliteTable("user", {
   emailVerified: integer('email_verified', {mode: 'boolean'}).notNull(),
   image: text('image'),
   createdAt: text('created_at').notNull().default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: text('updated_at').notNull().default(sql`CURRENT_TIMESTAMP`)
+  updatedAt: text('updated_at').notNull().default(sql`CURRENT_TIMESTAMP`),
 }, (table) => [
   index('user_email_idx').on(table.email),
 ]);

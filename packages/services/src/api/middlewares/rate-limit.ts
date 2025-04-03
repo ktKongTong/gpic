@@ -1,5 +1,3 @@
-
-import { WorkersKVStore } from "@hono-rate-limiter/cloudflare";
 import { rateLimiter } from "hono-rate-limiter";
 import { Context, Next } from "hono";
 import { getService } from "./service-di";

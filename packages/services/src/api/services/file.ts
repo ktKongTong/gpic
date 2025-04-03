@@ -1,6 +1,5 @@
 import { AwsClient } from "aws4fetch";
 import { backendEnv as env} from "./env";
-import {v7 as uuid} from 'uuid'
 import {z} from "zod";
 import {typeid} from "typeid-js";
 

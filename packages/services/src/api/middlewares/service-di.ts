@@ -1,26 +1,12 @@
-// import { getRequestContext } from '@cloudflare/next-on-pages'
-
 import { Context, MiddlewareHandler } from "hono";
-import { FileService } from "../services/file";
-import { UserService } from "../services/user-service";
-import { AIImageService } from "../services/ai/image";
-import {UserQuotaService} from "../services/quota";
+import { FileService } from "../services";
+import { UserService } from "../services";
+import { AIImageService } from "../services";
+import {UserQuotaService} from "../services";
 import {getDAO} from "../storage/db";
-import {HistoryService} from "../services/history";
-import {TaskService} from "../services/task";
-import {MQService} from "../services/mq";
-
-// In the edge runtime you can use Bindings that are available in your application
-// (for more details see:
-//    - https://developers.cloudflare.com/pages/framework-guides/deploy-a-nextjs-site/#use-bindings-in-your-nextjs-application
-//    - https://developers.cloudflare.com/pages/functions/bindings/
-// )
-//
-// KV Example:
-// const myKv = getRequestContext().env.MY_KV_NAMESPACE
-// await myKv.put('suffix', ' from a KV store!')
-// const suffix = await myKv.get('suffix')
-// return new Response(responseText + suffix)
+import {HistoryService} from "../services";
+import {TaskService} from "../services";
+import {MQService} from "../services";
 
 declare module 'hono' {
   interface ContextVariableMap {
@@ -43,8 +29,6 @@ export const getService = (c:Context) => {
     historyService: c.get('historyService'),
     taskService: c.get('taskService'),
     mqService: c.get('mqService'),
-    // env: c.env,
-    // ctx: c,
   }
 }
 
@@ -58,9 +42,8 @@ export const ServiceDIMiddleware = (): MiddlewareHandler => {
     const dao = getDAO()
     const quotaService = new UserQuotaService(userService, dao)
     const mqService = new MQService()
-    const taskService = new TaskService(userService, dao)
+    const taskService = new TaskService(userService, mqService, dao)
     const historyService = new HistoryService(dao)
-
     c.set('userService', userService)
     c.set('fileService', fileService)
     c.set('aiImageService', aiImageService)

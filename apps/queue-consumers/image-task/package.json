@@ -10,6 +10,7 @@
   "type": "module",
   "scripts": {
     "start": "wrangler dev",
+    "deploy:preview": "wrangler deploy -e preview",
     "deploy": "wrangler deploy"
   },
   "dependencies": {

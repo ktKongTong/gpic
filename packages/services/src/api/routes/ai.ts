@@ -1,8 +1,8 @@
 import {Hono} from "hono";
 import {z} from "zod";
 import { getService } from "../middlewares/service-di";
-import { stream,streamSSE} from 'hono/streaming'
-import {mockEvent} from "../routes/mock";
+import { streamSSE } from 'hono/streaming'
+import {mockEvent} from "./mock";
 
 const app = new Hono().basePath('/ai')
 
@@ -31,9 +31,10 @@ app.post('/image/flavor-style/mock', async (c) => {
 })
 
 export const schema = z.object({
-  files: z.string().array().max(3, "Maximum 3 files"),
-  style: z.string().optional(),
+  files: z.string().array().max(5, "Maximum 5 files"),
+  style: z.string().array().min(1).max(10, "Maximum 10 style"),
   prompt: z.string().optional(),
+  batch: z.boolean().optional().default(false),
 })
 
 
@@ -41,8 +42,10 @@ app.post('/image/flavor-style', async (c) => {
   const body = await c.req.json()
   const data = schema.parse(body)
   const  { aiImageService } = getService(c)
-  // 作为task。返回一个task，然后watch
-  const result = await aiImageService.generateImage(data)
+  const result = await aiImageService.generateImage({
+    ...data,
+    style: data.style[0]
+  })
   return streamSSE(c, async (stream) => {
       let id = 1
       await stream.writeSSE({event: 'start', id: Date.now().toString(), data: 'drawing'})

@@ -1,9 +1,9 @@
 import { getDAO } from "../../storage/db";
 import { TaskService } from "../task";
-import {AIImageService, FileService, HistoryService, msgType, UserService} from "../../services";
-import {setCloudflareEnv} from "../../utils";
-import {Execution, executionStatus, Task, taskStatus, taskType} from "../../storage/type";
-import {NotImplementedError} from "../../errors/common";
+import {AIImageService, FileService, HistoryService, MQService, msgType, UserService} from "../../services";
+import {getCloudflareEnv, setCloudflareEnv} from "../../utils";
+import {Execution, executionStatus, Task, TaskStatus, taskStatus, taskType} from "../../storage/type";
+import {z} from "zod";
 
 type Message<T> = {
   type: string;
@@ -14,11 +14,13 @@ const createService = (env: CloudflareEnv) => {
   const dao = getDAO(env)
   const fileService = new FileService();
   const userService = new UserService();
-  const taskService = new TaskService(userService, dao);
+  const mqService = new MQService()
+  const taskService = new TaskService(userService, mqService, dao);
   const historyService = new HistoryService(dao)
   const aiService = new AIImageService(fileService)
   return {
     aiService,
+    mqService,
     taskService,
     userService,
     fileService,
@@ -26,7 +28,41 @@ const createService = (env: CloudflareEnv) => {
   }
 }
 
+const matrixInputSchema = z.object({
+  files: z.string().array().min(1).max(20),
+  times: z.coerce.number().min(1).max(10).default(1).optional(),
+  style: z.string().array().min(1).max(5),
+})
 
+const matrixToArray = (input: z.infer<typeof matrixInputSchema>) => {
+  const res = []
+  for (const file of input.files) {
+    for (const style of input.style) {
+      const arr = new Array(input.times ?? 1).map(it => ({files: [file], style}))
+      res.push(...arr)
+    }
+  }
+  return res
+}
+
+const batchInputSchema = z.object({
+  files: z.string().array().min(1),
+  style: z.string(),
+})
+type BatchMsg = {
+  taskId: string,
+  parentTaskId?: string,
+  preStatus: TaskStatus,
+  status: TaskStatus
+}
+
+export type BatchState = {
+  pending: number,
+  processing: number,
+  failed: number,
+  completed: number,
+  total: number,
+}
 export class ConsumerService {
   services: ReturnType<typeof createService>
   constructor(private readonly env: CloudflareEnv) {
@@ -34,22 +70,84 @@ export class ConsumerService {
     this.services = createService(env);
   }
 
-  private async createCtx() {
-
-  }
-
   async handleMsg(msg: Message<Task>) {
     if(msg.type === msgType.IMAGE_GEN) {
       await this.handleSingleImageGenTask(msg.payload)
     }else if (msg.type === msgType.BATCH_IMAGE_GEN) {
       await this.handleBatchImageGenTask(msg.payload)
+    }else if (msg.type === msgType.TASK_UPDATE) {
+      await this.handleBatchTaskMsg(msg.payload as any)
+    }
+  }
+
+  async handleBatchTaskMsg(msg: BatchMsg) {
+    // todo: use durable object instead of queue to fix potential concurrency issue
+    if(!msg.parentTaskId) {
+      return
+    }
+    const key = `task:batch:status:${msg.parentTaskId}`
+    // @ts-ignore
+    const _state = await getCloudflareEnv().KV.get<BatchState>(key)
+
+    let state = _state!
+    switch(msg.preStatus) {
+      case taskStatus.PENDING: state.pending--;break
+      case taskStatus.PROCESSING: state.processing--;break
+      case taskStatus.SUCCESS: state.completed--;break
+      case taskStatus.FAILED: state.failed--;break
+    }
+    switch(msg.status) {
+      case taskStatus.PENDING: state.pending++;break
+      case taskStatus.PROCESSING: state.processing++;break
+      case taskStatus.SUCCESS: state.completed++;break
+      case taskStatus.FAILED: state.failed++;break
+    }
+    // @ts-ignore
+    await getCloudflareEnv().KV.put(key, JSON.stringify(state))
+    let status:TaskStatus|undefined = undefined
+    if(state.pending === state.total) {
+      status = taskStatus.PENDING
+    } else if(state.processing === state.pending && state.processing === 0) {
+      if(state.failed == state.total) {
+        status = taskStatus.FAILED
+      }
+      status = taskStatus.SUCCESS
+    }
+    if(status) {
+      await this.services.taskService.updateTask({id: msg.parentTaskId, status: status}, taskStatus.PROCESSING)
     }
   }
   async handleBatchImageGenTask(task: Task) {
     if(task.type !== taskType.BATCH) {
-      throw new Error("not a batch task")
+      await this.services.taskService.updateTask({ id: task.id, status: taskStatus.FAILED, metadata: {
+        error: "wrong task handler; not a batch task"
+      }}, task.status)
+      return
     }
-    throw new NotImplementedError()
+    let status = task.status
+    try {
+      const input = matrixInputSchema.parse(task.input)
+      await this.services.taskService.updateTask({ id: task.id, status: taskStatus.PROCESSING }, status)
+      status = taskStatus.PROCESSING
+      const inputs = matrixToArray(input)
+      const tasks = await this.services.taskService.createBatchImageGenTask({
+        parentId: task.id,
+        userId: task.userId,
+        inputs: inputs,
+      })
+      // @ts-ignore
+      await getCloudflareEnv().KV.put(`task:batch:status:${task.id}`, JSON.stringify({
+        total: tasks.length,
+        pending: tasks.length,
+        processing: 0,
+        completed: 0,
+        failed: 0,
+      }))
+      await this.services.mqService.batch(tasks.map(it => ({type: msgType.IMAGE_GEN, payload: it})))
+
+    }catch (e) {
+      await this.services.taskService.updateTask({ id: task.id, status: taskStatus.FAILED }, status)
+    }
   }
   async handleSingleImageGenTask(task: Task) {
     const execution = await this.services.historyService
@@ -59,21 +157,28 @@ export class ConsumerService {
         usage: 0,
         status: executionStatus.PROCESSING
       })
-
-    await this.services.taskService.updateTask({ id: task.id, status: taskStatus.PROCESSING })
-
+    let status = task.status
     try {
+      // const msg = {
+      //   preStatus: task.status,
+      //   parentTaskId: task.parentId,
+      //   taskId: task.id,
+      //   status: taskStatus.PROCESSING,
+      // }
+      await this.services.taskService.updateTask({ id: task.id, status: taskStatus.PROCESSING }, status)
+      status = taskStatus.PROCESSING
       const res = await this.processAIMessage(task, execution)
       await this.services.historyService.updateExecutionHistory({ id: execution.id, ...res })
-      const status = res.status === 'success' ? taskStatus.SUCCESS : taskStatus.FAILED
-      await this.services.taskService.updateTask({id: task.id, status: status })
+      const newStatus = res.status === 'completed' ? taskStatus.SUCCESS : taskStatus.FAILED
+      await this.services.taskService.updateTask({id: task.id, status: newStatus }, status)
+      status = newStatus
     }catch (e) {
       await this.services.historyService.updateExecutionHistory({
         id: execution.id,
-        output: e,
+        state: e,
         status: executionStatus.FAILED,
       })
-      await this.services.taskService.updateTask({ id: task.id, status: taskStatus.FAILED })
+      await this.services.taskService.updateTask({ id: task.id, status: taskStatus.FAILED }, status)
     }
   }
 
@@ -120,7 +225,7 @@ export class ConsumerService {
     }
     if (ctx.success) {
       return {
-        status: 'success' as const,
+        status: 'completed' as const,
         state: ctx,
         output: ctx.output,
       }

@@ -1,9 +1,8 @@
-import {integer,index, sqliteTable, text} from "drizzle-orm/sqlite-core";
+import {integer,index, sqliteTable, text, } from "drizzle-orm/sqlite-core";
 import {sql} from "drizzle-orm";
-
 const commonTimeFields = {
-  createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`).notNull(),
-  updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`).notNull().$onUpdateFn(() => sql`CURRENT_TIMESTAMP`)
+  createdAt: integer('created_at', {mode: 'timestamp_ms'}).default(sql`(unixepoch() * 1000)`).notNull(),
+  updatedAt: integer('updated_at', {mode: 'timestamp_ms'}).default(sql`(unixepoch() * 1000)`).notNull().$onUpdateFn(() => new Date())
 }
 
 export const styles = sqliteTable("styles", {
@@ -33,47 +32,18 @@ export const examples = sqliteTable("examples", {
 export const credit = sqliteTable("credit", {
   id: text("id").primaryKey(),
   // special one, anonymous
-  userId: text("user_id").notNull(),
+  userId: text("user_id").unique().notNull(),
   balance: text("balance").notNull(),
   ...commonTimeFields
 }, (table) => [
   index('credit_user_id_idx').on(table.userId),
 ]);
 
-const executionStatus = ['success', 'failed', 'processing'] as const
-
-export const history = sqliteTable("task_history", {
+export const usage = sqliteTable("usage", {
   id: text("id").primaryKey(),
   taskId: text("task_id").notNull(),
-  usage: integer('credit_usage', {mode: 'number'}).notNull(),
-  input: text('input', {mode: 'json'}).notNull(),
-  output: text('output', {mode: 'json'}),
-  // current state
-  state: text('state', {mode: 'json'}),
-  status: text('status', {mode: 'text', enum: executionStatus}).notNull(),
+  cost: integer("cost", {mode: 'number'}).notNull(),
   ...commonTimeFields
 }, (table) => [
-  index('task_history_user_id_idx').on(table.taskId),
-  index('task_history_status_idx').on(table.status),
+  index('usage_task_id_idx').on(table.taskId),
 ]);
-
-
-const taskStatus = ['waiting','processing', 'success', 'failed'] as const
-const taskType = ['image-gen', 'batch', ] as const
-export const task = sqliteTable("task", {
-  id: text("id").primaryKey(),
-  userId: text("user_id").notNull(),
-  input: text('input', {mode: 'json'}).notNull(),
-  type: text('type', { enum: taskType }).notNull(),
-  retry: integer('retry', {mode: 'number'}).default(0).notNull(),
-  status: text('status', {mode: 'text', enum: taskStatus}).notNull(),
-  metadata: text('metadata', {mode: 'json'}).notNull(),
-  ...commonTimeFields
-}, (table) => [
-  index('task_user_id_idx').on(table.userId),
-  index('task_status_idx').on(table.status),
-]);
-
-// history
-// gallery
-// source,

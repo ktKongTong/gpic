@@ -3,7 +3,7 @@ import {fileRoute} from "./routes/file";
 import {aiRoute} from "./routes/ai";
 import { rateLimitFactory } from "./middlewares/rate-limit";
 import { ServiceDIMiddleware } from "./middlewares/service-di";
-import { getAuth } from "./services/auth";
+import { getAuth } from "./services";
 import { contextStorage } from "hono/context-storage";
 import {ZodError} from "zod";
 import {BizError, ParameterError} from "./errors/route";
@@ -19,7 +19,6 @@ app.use(rateLimitFactory({max: 60, windowMs: 300 * 1000, strategy: 'ip'}))
 
 fileRoute.use(rateLimitFactory({prefix: 'file', strategy: 'ip'}))
 aiRoute.use(rateLimitFactory({prefix: 'ai', strategy: 'user', max: 5, windowMs: 180 * 1000}))
-
 
 app.use(
 	'*',
