@@ -57,10 +57,11 @@ CREATE TABLE `credit` (
 	`id` text PRIMARY KEY NOT NULL,
 	`user_id` text NOT NULL,
 	`balance` text NOT NULL,
-	`created_at` text DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	`updated_at` text DEFAULT CURRENT_TIMESTAMP NOT NULL
+	`created_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	`updated_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 --> statement-breakpoint
+CREATE UNIQUE INDEX `credit_user_id_unique` ON `credit` (`user_id`);--> statement-breakpoint
 CREATE INDEX `credit_user_id_idx` ON `credit` (`user_id`);--> statement-breakpoint
 CREATE TABLE `examples` (
 	`id` text PRIMARY KEY NOT NULL,
@@ -70,42 +71,57 @@ CREATE TABLE `examples` (
 	`description` text,
 	`url` text NOT NULL,
 	`user_id` text,
-	`created_at` text DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	`updated_at` text DEFAULT CURRENT_TIMESTAMP NOT NULL
+	`created_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	`updated_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 --> statement-breakpoint
 CREATE INDEX `examples_user_id_idx` ON `examples` (`user_id`);--> statement-breakpoint
 CREATE INDEX `examples_style_idx` ON `examples` (`style`);--> statement-breakpoint
-CREATE TABLE `task_history` (
-	`id` text PRIMARY KEY NOT NULL,
-	`task_id` text NOT NULL,
-	`credit_usage` integer NOT NULL,
-	`output` text,
-	`status` text NOT NULL,
-	`created_at` text DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	`updated_at` text DEFAULT CURRENT_TIMESTAMP NOT NULL
-);
---> statement-breakpoint
-CREATE INDEX `task_history_user_id_idx` ON `task_history` (`task_id`);--> statement-breakpoint
-CREATE INDEX `task_history_status_idx` ON `task_history` (`status`);--> statement-breakpoint
 CREATE TABLE `styles` (
 	`id` text PRIMARY KEY NOT NULL,
 	`name` text NOT NULL,
 	`prompt` text NOT NULL,
-	`created_at` text DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	`updated_at` text DEFAULT CURRENT_TIMESTAMP NOT NULL
+	`created_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	`updated_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 --> statement-breakpoint
 CREATE INDEX `styles_user_id_idx` ON `styles` (`name`);--> statement-breakpoint
+CREATE TABLE `usage` (
+	`id` text PRIMARY KEY NOT NULL,
+	`task_id` text NOT NULL,
+	`cost` integer NOT NULL,
+	`created_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	`updated_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+--> statement-breakpoint
+CREATE INDEX `usage_task_id_idx` ON `usage` (`task_id`);--> statement-breakpoint
+CREATE TABLE `task_history` (
+	`id` text PRIMARY KEY NOT NULL,
+	`name` text NOT NULL,
+	`task_id` text NOT NULL,
+	`credit_usage` integer NOT NULL,
+	`input` text NOT NULL,
+	`output` text,
+	`state` text,
+	`status` text NOT NULL,
+	`created_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	`updated_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+--> statement-breakpoint
+CREATE INDEX `task_history_user_id_idx` ON `task_history` (`task_id`);--> statement-breakpoint
+CREATE INDEX `task_history_status_idx` ON `task_history` (`status`);--> statement-breakpoint
 CREATE TABLE `task` (
 	`id` text PRIMARY KEY NOT NULL,
+	`parent_id` text,
+	`name` text NOT NULL,
 	`user_id` text NOT NULL,
 	`input` text NOT NULL,
-	`retry` integer NOT NULL,
+	`type` text NOT NULL,
+	`retry` integer DEFAULT 0 NOT NULL,
 	`status` text NOT NULL,
 	`metadata` text NOT NULL,
-	`created_at` text DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	`updated_at` text DEFAULT CURRENT_TIMESTAMP NOT NULL
+	`created_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	`updated_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 --> statement-breakpoint
 CREATE INDEX `task_user_id_idx` ON `task` (`user_id`);--> statement-breakpoint

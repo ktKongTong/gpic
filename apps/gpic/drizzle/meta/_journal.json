@@ -5,22 +5,15 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1743355280028,
-      "tag": "0000_high_korath",
+      "when": 1743684058163,
+      "tag": "0000_famous_freak",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "6",
-      "when": 1743450189621,
-      "tag": "0001_overconfident_alice",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1743491578529,
-      "tag": "0002_cute_glorian",
+      "when": 1743690757707,
+      "tag": "0001_overrated_lord_hawal",
       "breakpoints": true
     }
   ]
