@@ -9,7 +9,7 @@ type TaskInput = {
 }
 
 type BatchTaskInput = {
-  inputs: any[],
+  inputs: { files: string[], style: string }[],
   parentId?: string,
   userId: string,
 }
@@ -67,41 +67,13 @@ export class TaskService {
     }})
     return updated
   }
-
   async getTaskById(taskId: string, withHistory = true) {
     const res = await this.dao.task.getTaskById(taskId, withHistory)
-    if(!res || res.type !== taskType.BATCH) {
-      return res
-    }
-    const key = `task:batch:state:${res.id}`
-    // @ts-ignore
-    const state = await getCloudflareEnv().KV.get<BatchState>(key)
-    return {
-      ...res,
-      state
-    }
+    return res
   }
 
   async getTaskByUserId(userId: string, withHistory = true) {
-    // limit to 20
     const tasks = await this.dao.task.getTasksByUserId(userId, withHistory)
-    // const tasksId = tasks
-    //   .filter(it => it.type == taskType.BATCH)
-    //   .map(it => it.id)
-    // const getKey = (it:string) => `task:batch:state:${it}`
-    // metadata
-    // @ts-ignore
-    // const states = await getCloudflareEnv().KV.get<BatchState>(tasksId.map(it => getKey(it)))
-    // const result = tasks.map(task => {
-    //   if(task.type !== taskType.BATCH) {
-    //     return task
-    //   }
-    //   const state = states.get(getKey(task.id))
-    //   return {
-    //     ...task,
-    //     state: state
-    //   }
-    // })
     return tasks
   }
 

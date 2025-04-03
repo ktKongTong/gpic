@@ -38,8 +38,9 @@ const matrixToArray = (input: z.infer<typeof matrixInputSchema>) => {
   const res = []
   for (const file of input.files) {
     for (const style of input.style) {
-      const arr = new Array(input.times ?? 1).map(it => ({files: [file], style}))
-      res.push(...arr)
+      for (let j = 0; j < (input.times ?? 1); j++) {
+        res.push({files: [file], style})
+      }
     }
   }
   return res
@@ -82,12 +83,15 @@ export class ConsumerService {
 
   async handleBatchTaskMsg(msg: BatchMsg) {
     // todo: use durable object instead of queue to fix potential concurrency issue
+    //
     if(!msg.parentTaskId) {
       return
     }
     const key = `task:batch:status:${msg.parentTaskId}`
     // @ts-ignore
-    const _state = await getCloudflareEnv().KV.get<BatchState>(key)
+    const _state = await getCloudflareEnv().KV.get<BatchState>(key, {
+      type: 'json'
+    })
 
     let state = _state!
     switch(msg.preStatus) {
@@ -104,7 +108,7 @@ export class ConsumerService {
     }
     // @ts-ignore
     await getCloudflareEnv().KV.put(key, JSON.stringify(state))
-    let status:TaskStatus|undefined = undefined
+    let status:TaskStatus = taskStatus.PROCESSING
     if(state.pending === state.total) {
       status = taskStatus.PENDING
     } else if(state.processing === state.pending && state.processing === 0) {
@@ -113,9 +117,11 @@ export class ConsumerService {
       }
       status = taskStatus.SUCCESS
     }
-    if(status) {
-      await this.services.taskService.updateTask({id: msg.parentTaskId, status: status}, taskStatus.PROCESSING)
-    }
+    await this.services.taskService.updateTask({
+      id: msg.parentTaskId,
+      status: status,
+      metadata: { state }
+    }, taskStatus.PROCESSING)
   }
   async handleBatchImageGenTask(task: Task) {
     if(task.type !== taskType.BATCH) {
@@ -127,25 +133,24 @@ export class ConsumerService {
     let status = task.status
     try {
       const input = matrixInputSchema.parse(task.input)
-      await this.services.taskService.updateTask({ id: task.id, status: taskStatus.PROCESSING }, status)
-      status = taskStatus.PROCESSING
+
       const inputs = matrixToArray(input)
+
+      const state = {total: inputs.length, pending: inputs.length, processing: 0, completed: 0, failed: 0 }
+      // @ts-ignore
+      await getCloudflareEnv().KV.put(`task:batch:status:${task.id}`, JSON.stringify(state))
+      await this.services.taskService.updateTask({ id: task.id, status: taskStatus.PROCESSING, metadata: {state} }, status)
+      status = taskStatus.PROCESSING
       const tasks = await this.services.taskService.createBatchImageGenTask({
         parentId: task.id,
         userId: task.userId,
         inputs: inputs,
       })
-      // @ts-ignore
-      await getCloudflareEnv().KV.put(`task:batch:status:${task.id}`, JSON.stringify({
-        total: tasks.length,
-        pending: tasks.length,
-        processing: 0,
-        completed: 0,
-        failed: 0,
-      }))
+
       await this.services.mqService.batch(tasks.map(it => ({type: msgType.IMAGE_GEN, payload: it})))
 
     }catch (e) {
+      console.error(e)
       await this.services.taskService.updateTask({ id: task.id, status: taskStatus.FAILED }, status)
     }
   }
