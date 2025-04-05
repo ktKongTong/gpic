@@ -1,3 +1,4 @@
+'use client'
 import React from 'react';
 import Link from "next/link";
 
@@ -16,12 +17,9 @@ const Header: React.FC = () => {
       </Link>
 
       <nav className="hidden md:flex space-x-8">
-        <button
-          onClick={() => scrollToSection('tools')}
-          className="text-white/80 hover:text-white transition-colors"
-        >
-          Tool
-        </button>
+        <Link href={'/task'} className={"text-white/80 hover:text-white transition-colors"}>
+          Tasks
+        </Link>
         <button
           onClick={() => scrollToSection('gallery')}
           className="text-white/80 hover:text-white transition-colors"

@@ -114,23 +114,13 @@ const FileUploader: React.FC<FileUploaderProps> = () => {
         )}
 
         <input
-          type="file"
+          type='file'
+          multiple={true}
           className="hidden"
           onChange={handleFileInput}
           accept="image/*"
           ref={fileInputRef}
         />
-      </div>
-
-      <div className="flex justify-center">
-        <Button
-          variant="outline"
-          className="bg-black/30 border-white/20 hover:bg-black/50 hover:border-white/30 text-white"
-          onClick={triggerFileInput}
-        >
-          <Upload className="mr-2 h-4 w-4" />
-          Choose File
-        </Button>
       </div>
     </div>
   );

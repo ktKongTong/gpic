@@ -1,3 +1,4 @@
+'use client'
 import React, { useState, useEffect } from 'react';
 import GalleryItem from "@/components/gallery-item";
 import {useGallery} from "@/hooks/use-gallery";

@@ -5,6 +5,14 @@ initOpenNextCloudflareForDev().then(() => {
 })
 const nextConfig = {
   /* config options here */
+    // async rewrites() {
+    //     return [
+    //         {
+    //             source: '/api/:path*',
+    //             destination: 'https://gpic-preview.ktlab.io/api/:path*',
+    //         },
+    //     ]
+    // },
 };
 
 

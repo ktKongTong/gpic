@@ -99,7 +99,7 @@ export const useGenerate = () => {
   }
   const generate = async (props: GenerateProps) => {
     // console.log(props.files, files)
-    if(state !== states.NOT_START) return
+    if(state != states.NOT_START) {toast('在画了..在画了！');return}
     // setState(states.DRAWING)
     try {
       await fetchEventSource('/api/ai/image/flavor-style', {
