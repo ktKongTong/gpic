@@ -4,7 +4,7 @@ import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import {styles} from "@/app/styles";
 import {Button} from "@/components/ui/button";
-import {Layers, Pencil} from "lucide-react";
+import {Layers, Minus, Pencil, Plus} from "lucide-react";
 import {states, useGenerate} from "@/hooks/use-generate";
 import React, {useState} from "react";
 import {useFiles} from "@/hooks/use-file-upload";
@@ -19,6 +19,7 @@ import {InputArea} from "@/app/input-area";
 const useGenImageForm = () => {
   const [prompt, setPrompt] = useState('');
   const [selectedStyles, setStyle] = useState<string[]>([]);
+  const [times, setTimes] = useState<number>(1);
   const {files} = useFiles()
   const toggleStyles = (id: string) => {
     const selected = selectedStyles.find(style => style === id)
@@ -36,19 +37,24 @@ const useGenImageForm = () => {
     style: selectedStyles,
     prompt: prompt,
     batch: batch,
+    times: times
   }
-
+  const add = (value: number) => {
+    setTimes(times + value);
+  }
   return {
     value: value,
     toggleStyles,
     setPrompt,
-    setBatch
+    setBatch,
+    add,
+    times
   }
 }
 
 
 export const Tool = () => {
-  const {value, setPrompt, toggleStyles, setBatch} = useGenImageForm()
+  const {value, setPrompt, toggleStyles, setBatch, add} = useGenImageForm()
   const {generate, state, progress, url, save} = useGenerate()
   const {generateTask} = useGenerateTasks()
   const genTask = () => generateTask(value)
@@ -93,6 +99,14 @@ export const Tool = () => {
 
 
       <div className="flex items-center justify-end w-full gap-2">
+        {
+          value.batch && <div className="flex items-center gap-2">
+                <Button variant={'ghost'} size={'icon'} disabled={value.times < 2} onClick={() => add(-1)}><Minus/></Button>
+                <span>{value.times}</span>
+                <Button variant={'ghost'} size={'icon'} disabled={value.times > 9} onClick={() => add(1)}><Plus/></Button>
+            </div>
+
+        }
         <Button
           variant={'ghost'}
           className={cn(
