@@ -8,13 +8,11 @@ import {toast} from "sonner";
 
 type ProgressEvent = {
   event: 'progress',
-  // progress
   data: string
 }
 
 type GenerateSSEvent = {
   event: 'success',
-  // url
   data: string
 }
 
@@ -98,9 +96,7 @@ export const useGenerate = () => {
     }
   }
   const generate = async (props: GenerateProps) => {
-    // console.log(props.files, files)
     if(state != states.NOT_START) {toast('在画了..在画了！');return}
-    // setState(states.DRAWING)
     try {
       await fetchEventSource('/api/ai/image/flavor-style', {
         openWhenHidden: true,
@@ -117,10 +113,8 @@ export const useGenerate = () => {
       setState(states.ERROR)
     }
   }
-  // const debounced = useDebounce(generate, {immediate: true, wait: 300})
   const isDrawing = state === states.DRAWING
   const isSuccess = state === states.SUCCESS
-
   const save = () => {
     if(url) downloadURI(url)
   }

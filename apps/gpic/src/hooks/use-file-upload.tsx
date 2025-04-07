@@ -23,9 +23,12 @@ export type UploadFile = {
 }
 
 import {createContext, useContext} from 'react'
+import {toast} from "sonner";
+import {api} from "@/lib/api";
+import {useMutation} from "@tanstack/react-query";
 type FileUploaderContext = {
   files: UploadFile[],
-  uploadFile: (f:File)=>Promise<void>,
+  uploadFile: (f:File)=>Promise<void> | void,
   removeFile: (f:UploadFile) => void
 }
 
@@ -66,41 +69,48 @@ const useFileStore = () => {
   }
 }
 
+
+function readAsDataURL(file: File) {
+  return new Promise((resolve, reject)=>{
+    let fileReader = new FileReader();
+    fileReader.onload = function(){
+      return resolve({data:fileReader.result, name:file.name, size: file.size, type: file.type});
+    }
+    fileReader.readAsDataURL(file);
+  })
+}
 export const useFileUpload = () => {
   // fileKey
-
-  const {files, upsertFile, removeFile, getFileById} = useFileStore()
-  // const upload
-  const uploadFile = async (f: File) => {
-    let file: UploadFile = { id: f.name, file: f, state: "LOCAL" }
-    const uploadedFile = getFileById(file.id)
-    if(uploadedFile && (uploadedFile.state == 'UPLOADED' || uploadedFile.state == 'UPLOADING')) {
-      return
-    }
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      if (e.target && e.target.result) {
-        let tmp = getFileById(file.id) || file
-        tmp.preview = e.target.result as string
-        upsertFile(tmp)
+  const {mutate} = useMutation({
+    mutationKey: ['file-upload'],
+    mutationFn: async (f: File) => {
+      let file: UploadFile = { id: f.name, file: f, state: "LOCAL" }
+      const uploadedFile = getFileById(file.id)
+      if(uploadedFile && (uploadedFile.state == 'UPLOADED' || uploadedFile.state == 'UPLOADING')) {
+        throw new Error('file is already uploading/uploaded')
       }
-    };
-    reader.readAsDataURL(f);
-    try {
+      const fileUrl = await readAsDataURL(file.file)
+      // @ts-ignore
+      file.url = fileUrl.data
       upsertFile(file)
-      const fileKey = await upload(f)
+      const uploadResult = await api.uploadFile(f)
       file.state = 'UPLOADED'
-      file.url = fileKey
-    }catch (e) {
+      file.url = uploadResult.url
+      return file
+    },
+    onError: (e, file) => {
+      toast.error('上传失败，请稍后再试')
       console.error(e)
-      file.state = 'LOCAL'
-    }finally {
-      upsertFile(file)
+    },
+    onSuccess: async (data) => {
+      // uploading, uploaded, upload-failed
+      upsertFile(data)
     }
-  }
+  })
+  const {files, upsertFile, removeFile, getFileById} = useFileStore()
   return {
     files,
-    uploadFile,
+    uploadFile:mutate,
     removeFile
   }
 }
@@ -110,7 +120,6 @@ const FileProvider = fileCtx.Provider
 
 export const FileCtxProvider = ({children}: {children: React.ReactNode}) => {
   const ctx = useFileUpload()
-
   return <FileProvider value={ctx}>
     {children}
   </FileProvider>

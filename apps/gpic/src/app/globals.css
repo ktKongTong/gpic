@@ -143,7 +143,7 @@
 
 
 .glass-container {
-  @apply backdrop-blur-md  border-white/20 bg-white/5 border shadow-[0_8px_32px_rgba(0,0,0,0.2)];
+  @apply backdrop-blur-md  border-white/20 bg-white/5 border;
 }
 
 .bg-ghibli-background {

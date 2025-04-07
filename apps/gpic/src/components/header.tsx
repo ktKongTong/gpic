@@ -2,6 +2,19 @@
 import React from 'react';
 import Link from "next/link";
 
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu"
+import {cn} from "@/lib/utils";
+import {Button} from "@/components/ui/button";
+import UserProfile from "@/components/sign";
+
 const Header: React.FC = () => {
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -15,7 +28,6 @@ const Header: React.FC = () => {
       <Link href="/" className="text-2xl font-bold">
         Gpic
       </Link>
-
       <nav className="hidden md:flex space-x-8">
         <Link href={'/task'} className={"text-white/80 hover:text-white transition-colors"}>
           Tasks
@@ -33,7 +45,7 @@ const Header: React.FC = () => {
           FAQ
         </button>
       </nav>
-
+      <UserProfile/>
       <div>
       </div>
     </header>

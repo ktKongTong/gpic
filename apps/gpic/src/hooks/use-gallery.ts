@@ -29,25 +29,6 @@ export const useGallery = () => {
 
   const [error, setError] = useState(null)
 
-  useEffect(() => {
-
-    const fetchData = async () => {
-      const res = await fetch('/api/gallery')
-      try {
-        const data = await res.json()
-        const images = (data as any)?.data ?? imageExamples
-        setLoading(false)
-        setImages(images)
-      } catch (e) {
-        const images = imageExamples
-        setLoading(false)
-        setImages(images)
-      }
-    }
-    fetchData()
-  },[])
-
-
   return {
     loading,
     error,

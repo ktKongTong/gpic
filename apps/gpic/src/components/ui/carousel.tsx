@@ -32,7 +32,7 @@ type CarouselContextProps = {
 
 const CarouselContext = React.createContext<CarouselContextProps | null>(null)
 
-function useCarousel() {
+export function useCarousel() {
   const context = React.useContext(CarouselContext)
 
   if (!context) {
@@ -60,7 +60,7 @@ function Carousel({
   )
   const [canScrollPrev, setCanScrollPrev] = React.useState(false)
   const [canScrollNext, setCanScrollNext] = React.useState(false)
-
+  const [index, setIndex] = React.useState(0)
   const onSelect = React.useCallback((api: CarouselApi) => {
     if (!api) return
     setCanScrollPrev(api.canScrollPrev())
@@ -69,10 +69,12 @@ function Carousel({
 
   const scrollPrev = React.useCallback(() => {
     api?.scrollPrev()
+    setIndex((prev) => (prev - 1 < 0 ? 0 : prev - 1))
   }, [api])
 
   const scrollNext = React.useCallback(() => {
     api?.scrollNext()
+    setIndex((prev) => (api?.canScrollNext() ? prev : prev + 1))
   }, [api])
 
   const handleKeyDown = React.useCallback(
@@ -131,6 +133,25 @@ function Carousel({
     </CarouselContext.Provider>
   )
 }
+type CarouselIndicatorProps = {
+  currentIndex: number
+  total: number
+} & React.ComponentProps<'div'>
+
+export const CarouselIndicator = ({currentIndex, total, className,...rest}: CarouselIndicatorProps) => {
+  const api = useCarousel()
+
+  return <div className={cn('flex items-center justify-center gap-2', className)} {...rest}>
+    {
+      Array.from({length: total}, (_, i) => {
+        return <div key={i} className={cn(
+          'w-2 h-2 rounded-full bg-white/50 hover:bg-white/80 transition-all',
+          currentIndex === i && 'bg-white'
+        )}/>
+      })
+    }
+  </div>
+}
 
 function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
   const { carouselRef, orientation } = useCarousel()
@@ -155,7 +176,6 @@ function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
 
 function CarouselItem({ className, ...props }: React.ComponentProps<"div">) {
   const { orientation } = useCarousel()
-
   return (
     <div
       role="group"

@@ -1,10 +1,6 @@
 import React from "react";
-import Header from "@/components/header";
 import Gallery from "@/components/gallery";
 import FAQ from "@/components/FAQ";
-import { ListTodo, LucideImage } from "lucide-react";
-import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
-import TaskView from "@/components/task/view";
 import {Tool} from "@/app/tool";
 
 export default function DrawPage() {
@@ -18,7 +14,7 @@ export default function DrawPage() {
               Make Style Image
             </h1>
             <p className="text-lg text-white/90">
-              Upload, enhance, and transform your images with powerful gpt-4o
+              Upload, enhance, and transform your images into various styles with powerful gpt-4o
             </p>
           </div>
           <div className="glass-container p-8 rounded-2xl backdrop-blur-md bg-card/40 shadow-xl ">

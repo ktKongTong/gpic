@@ -105,7 +105,6 @@ export const Tool = () => {
                 <span>{value.times}</span>
                 <Button variant={'ghost'} size={'icon'} disabled={value.times > 9} onClick={() => add(1)}><Plus/></Button>
             </div>
-
         }
         <Button
           variant={'ghost'}
@@ -122,7 +121,7 @@ export const Tool = () => {
           className=" flex items-center justify-center gap-1 rounded-full p-2 px-3 border border-white/50"
           onClick={() => genTask()}
         >
-          <Pencil className="h-4 w-4" /><span className={'hidden md:inline'}>Draw️ it</span>
+          <Pencil className="h-4 w-4" /><span className={'hidden md:inline'}>Draw️</span>
         </Button>
       </div>
       {

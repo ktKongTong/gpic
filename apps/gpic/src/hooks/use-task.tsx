@@ -1,9 +1,8 @@
-
 'use client'
-
 import {useMutation, useQuery} from "@tanstack/react-query";
 import {useState} from "react";
 import {toast} from "sonner";
+import {api} from "@/lib/api";
 declare namespace ImageGenType {
   type Input = { files: string[], style?: string, prompt?: string }
   type Output = { url: string }
@@ -58,6 +57,11 @@ export type BatchImageTask = Task<'batch', BatchExecution, BatchType.Metadata> &
   children?: ImageTask[]
 }
 
+type MultiFile = {
+  files: string[],
+  style: string[],
+}
+
 type TaskStore = {
   tasks: Task[],
   selectedTask?: Task,
@@ -69,6 +73,7 @@ type TaskAction = {
   setSelectedTask: (t?: Task) => void
 }
 
+
 const useTaskStore = () => {
 
   return {
@@ -79,12 +84,9 @@ const useTaskStore = () => {
 export const useTasks = () => {
   const {data, isLoading} = useQuery({
     queryKey: ['tasks'],
-    queryFn: async () => {
-      const res = await fetch(`/api/task`).then(res => res.json())
-      return res as BatchImageTask[]
-    }
+    queryFn: () => api.getTasks(),
   })
-  const tasks = data ?? [] as (BatchImageTask | ImageTask)[]
+  const tasks = (data ?? []) as (BatchImageTask | ImageTask)[]
   const [selectedTask, setSelectedTask] = useState<Task | null>(tasks.length > 0 ? tasks[0] : null);
 
   return {
@@ -94,15 +96,19 @@ export const useTasks = () => {
   }
 }
 
+
 export const useTask = (taskId: string) => {
-  const {tasks, setSelectedTask, selectedTask} = useTasks()
-
-  return tasks.find(task => task.id === taskId)
-}
-
-type MultiFile = {
-  files: string[],
-  style: string[],
+  const {data, isLoading} = useQuery({
+    queryKey: ['task', 'task-item', taskId],
+    queryFn: async () => {
+      const res = await api.getTaskById(taskId)
+      return res as BatchImageTask | ImageTask
+    }
+  })
+  return {
+    task: data,
+    isLoading: false,
+  }
 }
 
 type GenerateProps = MultiFile
@@ -111,15 +117,7 @@ export const useGenerateTasks = () => {
   const {mutate: generateMutation, data } = useMutation({
     mutationKey: ["generateTask"],
     mutationFn: async (props: GenerateProps) => {
-      const res = await fetch('/api/task/image/flavor-style', {
-        method: 'POST',
-        body: JSON.stringify(props),
-      })
-      const data = await res.json()
-      if (!res.ok) {
-        throw new Error(JSON.stringify(data))
-      }
-      return data
+      return await api.createTask(props)
     },
     onSuccess: async (data) => {
       toast.success('任务已创建', { description: (data as any)?.id })
