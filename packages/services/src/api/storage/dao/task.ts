@@ -69,13 +69,14 @@ export class TaskDAO {
   async getTaskById<T extends boolean>(id: string, withHistory: T = true as T): Promise<ReturnTypeTask<T> | undefined> {
     // newest task with history
     if (withHistory) {
-      const rows = await this.db.select({
+      const s = this.db.select({
         task: taskColumns,
         execution: historyColumns,
       }).from(table.task)
         .leftJoin(table.history, eq(table.task.id, table.history.taskId))
         .orderBy(desc(table.history.createdAt))
-        .where(eq(table.task.id, id))
+        .where(or(eq(table.task.id, id), eq(table.task.parentId, id)))
+      const rows = await s
       const result = rows.reduce<Record<string, TaskColumn & { executions: ExecutionColumn[] }>>(
         (acc, row, idx, array) => {
           const {execution, task} = row;
@@ -87,12 +88,12 @@ export class TaskDAO {
           }
           return acc;
         },
-        {}
-      );
+        {});
       const resultArray = Object.values(result)
       const resArr = resultArray
-        .filter(it => !it.parentId)
-        .map(it => ({...it,
+        .filter(it => it.id === id)
+        .map(it => ({
+          ...it,
           children: resultArray.filter(item => item.parentId === it.id)
         }))
       const res = resArr.find(it => it.id === id)

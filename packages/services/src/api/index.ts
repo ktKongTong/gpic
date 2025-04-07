@@ -41,7 +41,7 @@ app.onError((err, c) => {
 	return c.json({error: "Unknown Error"}, 500)
 })
 
-app.on(["POST", "GET"], "/api/auth/*", (c) => {
+app.on(["POST", "GET"], "/auth/*", (c) => {
 	return getAuth().handler(c.req.raw);
 });
 

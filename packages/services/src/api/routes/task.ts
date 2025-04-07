@@ -1,12 +1,15 @@
 import {Hono} from "hono";
 import {getService} from "../middlewares/service-di";
 
-import {NotFoundError} from "../errors/route";
+import {NotFoundError, ParameterError} from "../errors/route";
 import {msgType} from "../services";
 import {taskStatus} from "../storage/type";
 import {z} from "zod";
 
 const app = new Hono().basePath('/task')
+
+type Style = { type: 'preset', value: string } | { type: 'prompt', value: string }
+
 export const schema = z.object({
   files: z.string().array().min(1).max(10, "Maximum 10 files"),
   style: z.string().array().min(1).max(5, "Maximum 5 style"),
@@ -31,18 +34,19 @@ app.post('/image/flavor-style', async (c) => {
   const task = await taskService.createImageGenTask({input:{...data, style: data.style[0]}})
   await mqService.enqueue({type: msgType.IMAGE_GEN, payload: task})
   return c.json(task)
-
-
 })
 
 
 
-app.put('/:taskid/retry', async (c) => {
+app.patch('/:taskid/retry', async (c) => {
   const taskId = c.req.param('taskid')
   const  {mqService, taskService } = getService(c)
   const task = await taskService.getTaskById(taskId, false)
   if(!task) {
     throw new NotFoundError()
+  }
+  if(task.status !== taskStatus.FAILED &&  task.status !== taskStatus.SUCCESS) {
+    throw new ParameterError("task can't retry when status is pending or processing")
   }
   const newTask = await taskService.updateTask({id: task.id, retry: task.retry + 1, status: taskStatus.PENDING},task.status)
   await mqService.enqueue({type: msgType.IMAGE_GEN, payload: newTask})
@@ -60,7 +64,7 @@ app.get('/:taskid', async (c) => {
   const taskId = c.req.param('taskid')
   const  { taskService } = getService(c)
   const task = await taskService.getTaskById(taskId)
-  if (task) {
+  if (!task) {
     throw new NotFoundError()
   }
   return c.json(task)
