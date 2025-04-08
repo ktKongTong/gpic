@@ -1,11 +1,12 @@
 import {getCloudflareEnv} from "../utils";
 
 
-export type MessageType = 'image-gen' | 'batch-image-gen' | 'task-update'
+export type MessageType = 'image-gen' | 'batch-image-gen' | 'task-update' | 'task-retry' | 'batch-task-retry'
 export const msgType = {
   IMAGE_GEN: 'image-gen' as const,
   BATCH_IMAGE_GEN: 'batch-image-gen' as const,
-  TASK_UPDATE: 'task-update' as const
+  BATCH_TASK_RETRY: 'batch-task-retry' as const,
+  TASK_RETRY: 'task-retry' as const
 }
 type Message<T> = {
   type: MessageType;

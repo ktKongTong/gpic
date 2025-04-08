@@ -3,7 +3,7 @@ import {getService} from "../middlewares/service-di";
 
 import {NotFoundError, ParameterError} from "../errors/route";
 import {msgType} from "../services";
-import {taskStatus} from "../storage/type";
+import {taskStatus, taskType} from "../storage/type";
 import {z} from "zod";
 
 const app = new Hono().basePath('/task')
@@ -41,16 +41,39 @@ app.post('/image/flavor-style', async (c) => {
 app.patch('/:taskid/retry', async (c) => {
   const taskId = c.req.param('taskid')
   const  {mqService, taskService } = getService(c)
-  const task = await taskService.getTaskById(taskId, false)
+  let task = await taskService.getTaskById(taskId, false)
   if(!task) {
     throw new NotFoundError()
+  }
+  if(task.parentId) {
+    task = (await taskService.getTaskById(task.parentId, false))!
   }
   if(task.status !== taskStatus.FAILED &&  task.status !== taskStatus.SUCCESS) {
     throw new ParameterError("task can't retry when status is pending or processing")
   }
-  const newTask = await taskService.updateTask({id: task.id, retry: task.retry + 1, status: taskStatus.PENDING})
-  await mqService.enqueue({type: msgType.IMAGE_GEN, payload: newTask})
+  if(task.type === taskType.BATCH) {
+    await mqService.enqueue({type: msgType.BATCH_TASK_RETRY, payload: task})
+  }else {
+    await mqService.enqueue({type: msgType.TASK_RETRY, payload: task})
+  }
   return c.json(task)
+})
+
+// todo change to websocket, realtime status
+app.get('/:taskid/realtime', async (c) => {
+  const taskId = c.req.param('taskid')
+  const  {mqService, taskService } = getService(c)
+  let task = await taskService.getTaskById(taskId, false)
+  if(!task) {
+    throw new NotFoundError()
+  }
+  if(task.parentId) {
+    task = (await taskService.getTaskById(task.parentId, false))!
+  }
+  if(task.status !== taskStatus.PENDING &&  task.status !== taskStatus.PROCESSING) {
+    throw new ParameterError("realtime task status only for pending or processing")
+  }
+  return c.json({})
 })
 
 app.get('/', async (c) => {

@@ -1,6 +1,6 @@
 import {DB, TaskStatus, taskStatus, taskType, TaskUpdateDBO} from "../type";
 import * as table from '../schema'
-import {desc, eq, getTableColumns, or, sql} from "drizzle-orm";
+import {desc, eq, getTableColumns, or, sql, inArray, and} from "drizzle-orm";
 import {uniqueId} from "../../utils";
 
 const taskColumns = getTableColumns(table.task)
@@ -63,6 +63,30 @@ export class TaskDAO {
     const [res] = await this.db.update(table.task).set({ ...rest })
     .where(eq(table.task.id, id))
     .returning()
+    return res
+  }
+
+
+  async retryTasks(taskIds: string[]) {
+    const updatedTasks = await this.db.update(table.task)
+      .set({
+        status: taskStatus.PENDING,
+        retry: sql`${table.task.retry} + 1`,
+      })
+      .where(
+        and(
+          or(eq(table.task.status, taskStatus.FAILED), eq(table.task.status, taskStatus.SUCCESS)),
+          inArray(table.task.id, taskIds),
+        )
+      )
+      .returning()
+    return updatedTasks
+  }
+
+  async getChildrenByTaskId(taskId: string) {
+    const res = await this.db.select()
+      .from(table.task)
+      .where(eq(table.task.parentId, taskId))
     return res
   }
 

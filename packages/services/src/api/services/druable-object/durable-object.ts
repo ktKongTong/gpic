@@ -6,17 +6,13 @@ import {MQService} from "../mq";
 import {TaskService} from "../task";
 import {HistoryService} from "../history";
 import {AIImageService} from "../ai/image";
-// @ts-ignore
 import {DurableObject} from "cloudflare:workers";
 import {
   Execution,
-  ExecutionStatus,
   Task,
   taskStatus,
-  TaskStatus,
   TaskType,
   taskType,
-  TaskUpdateDBO
 } from "../../storage/type";
 
 const createService = (env: CloudflareEnv) => {
@@ -121,7 +117,7 @@ export class BatchTaskStateDO extends DurableObject {
 
   async onTaskEvent(data:Events) {
     await this.ctx.blockConcurrencyWhile(async () => {
-      if(data.event === eventType.BATCH_CREATE || data.event === eventType.BATCH_CHILD_TASK_PROCESSING) {
+      if(data.event === eventType.BATCH_CREATE || data.event === eventType.TASK_PROCESSING) {
         await this.initialize(data.payload)
       }
       const type = await this.getTaskType()
@@ -156,57 +152,66 @@ type ImageTaskState = Task & {
 }
 
 export const eventType = {
-  BATCH_CREATE: 'batch-task-create',
-  BATCH_START: 'batch-task-start',
-  // // child status count
-  // BATCH_CHILD_TASK_QUEUEING: 'batch-child-task-queueing',
+  BATCH_CREATE: 'batch-create',
+  BATCH_START: 'batch-start',
+  BATCH_FAILED: 'batch-failed',
+  BATCH_COMPLETE: 'batch-complete',
+
+  TASK_CREATE: 'task-create',
+  TASK_PROCESSING: 'task-processing',
+
   // child status change
-  BATCH_CHILD_TASK_CREATE: 'batch-child-task-create',
-  BATCH_CHILD_TASK_PROCESSING: 'batch-child-task-processing',
-  // BATCH_CHILD_EXECUTION_CREATE: 'batch-child-execution-create',
-  BATCH_CHILD_EXECUTION_PROCESSING: 'batch-child-execution-processing',
-  BATCH_CHILD_EXECUTION_UPDATE: 'batch-child-execution-update',
-  // BATCH_CHILD_EXECUTION_FAIL: 'batch-child-execution-fail',
-  BATCH_CHILD_EXECUTION_COMPLETE: 'batch-child-execution-complete',
-  // child status change
-  BATCH_CHILD_TASK_FAIL: 'batch-child-task-fail',
-  BATCH_CHILD_TASK_COMPLETE: 'batch-child-task-complete',
-  BATCH_TASK_FAILED: 'batch-task-failed',
-  BATCH_TASK_COMPLETE: 'batch-task-complete',
+  EXECUTION_PROCESSING: 'execution-processing',
+  EXECUTION_UPDATE: 'execution-update',
+  EXECUTION_COMPLETE: 'execution-complete',
+
+  TASK_FAIL: 'task-fail',
+  TASK_COMPLETE: 'task-complete',
+
+  BATCH_RETRY_FAILED: 'batch-retry-failed',
+  RETRY_TASK_FAILED: 'retry-failed',
+
 } as const
 
 type BatchTaskCreateEvent = { taskId: string, event: typeof eventType.BATCH_CREATE, payload: Task }
 type BatchTaskStartEvent = { taskId: string, event: typeof eventType.BATCH_START, payload: Task }
-type BatchChildTaskCreateEvent = { taskId: string, event: typeof eventType.BATCH_CHILD_TASK_CREATE, payload: Task[] }
+type TaskCreateEvent = { taskId: string, event: typeof eventType.TASK_CREATE, payload: Task[] }
 
 // item
-type BatchChildTaskProcessingEvent = { taskId: string, event: typeof eventType.BATCH_CHILD_TASK_PROCESSING, payload: Task }
+type TaskProcessingEvent = { taskId: string, event: typeof eventType.TASK_PROCESSING, payload: Task }
 
-// type BatchChildTaskExecutionCreateEvent = { taskId: string, event: typeof eventType.BATCH_CHILD_EXECUTION_PROCESSING, payload: Execution }
+// type TaskExecutionCreateEvent = { taskId: string, event: typeof eventType.BATCH_CHILD_EXECUTION_PROCESSING, payload: Execution }
 // Execution 从 Processing 开始
-type BatchChildTaskExecutionProcessingEvent = { taskId: string, event: typeof eventType.BATCH_CHILD_EXECUTION_PROCESSING, payload: Execution }
-type BatchChildTaskExecutionUpdateEvent = { taskId: string, event: typeof eventType.BATCH_CHILD_EXECUTION_UPDATE, payload: Execution }
-// type BatchChildTaskExecutionFailEvent = { taskId: string, event: typeof eventType.BATCH_CHILD_EXECUTION_FAIL, payload: Execution }
-type BatchChildTaskExecutionCompletedEvent = { taskId: string, event: typeof eventType.BATCH_CHILD_EXECUTION_COMPLETE, payload: Execution }
-type BatchChildTaskFailEvent = { taskId: string, event: typeof eventType.BATCH_CHILD_TASK_FAIL, payload: Task }
-type BatchChildTaskCompletedEvent = { taskId: string, event: typeof eventType.BATCH_CHILD_TASK_COMPLETE, payload: Task }
+type TaskExecutionProcessingEvent = { taskId: string, event: typeof eventType.EXECUTION_PROCESSING, payload: Execution }
+type TaskExecutionUpdateEvent = { taskId: string, event: typeof eventType.EXECUTION_UPDATE, payload: Execution }
+// type TaskExecutionFailEvent = { taskId: string, event: typeof eventType.BATCH_CHILD_EXECUTION_FAIL, payload: Execution }
+type TaskExecutionCompletedEvent = { taskId: string, event: typeof eventType.EXECUTION_COMPLETE, payload: Execution }
+type TaskFailEvent = { taskId: string, event: typeof eventType.TASK_FAIL, payload: Task }
+type TaskCompletedEvent = { taskId: string, event: typeof eventType.TASK_COMPLETE, payload: Task }
 // 此事件Batch Failed和Completed 一般不会显式触发，而是每个在Failed/Completed时触发
 // 这个事件只在最初开始错误的时候会触发
-type BatchTaskFailedEvent = { taskId: string, event: typeof eventType.BATCH_TASK_FAILED, payload: Task }
-type BatchTaskCompletedEvent = { taskId: string, event: typeof eventType.BATCH_TASK_FAILED, payload: Task }
+type BatchTaskFailedEvent = { taskId: string, event: typeof eventType.BATCH_FAILED, payload: Task }
+type BatchTaskCompletedEvent = { taskId: string, event: typeof eventType.BATCH_FAILED, payload: Task }
+
+// retry task failed
+type TaskRetryEvent =  { taskId: string, event: typeof eventType.RETRY_TASK_FAILED, payload: Task }
+
+// retry task failed
+type BatchTaskRetryEvent =  { taskId: string, event: typeof eventType.BATCH_RETRY_FAILED, payload: Task }
 
 type Events = BatchTaskCreateEvent
   | BatchTaskStartEvent
-  | BatchChildTaskCreateEvent
-  | BatchChildTaskProcessingEvent
-  | BatchChildTaskExecutionProcessingEvent
-  | BatchChildTaskExecutionUpdateEvent
-  // | BatchChildTaskExecutionFailEvent
-  | BatchChildTaskExecutionCompletedEvent
-  | BatchChildTaskFailEvent
-  | BatchChildTaskCompletedEvent
+  | TaskCreateEvent
+  | TaskProcessingEvent
+  | TaskExecutionProcessingEvent
+  | TaskExecutionUpdateEvent
+  | TaskExecutionCompletedEvent
+  | TaskFailEvent
+  | TaskCompletedEvent
   | BatchTaskFailedEvent
   | BatchTaskCompletedEvent
+  | TaskRetryEvent
+  | BatchTaskRetryEvent
 
 
 type TaskState = {
@@ -217,19 +222,20 @@ const handleTaskEvent = (event: Events, state: TaskState) => {
   let res = state
   switch (event.event) {
     case eventType.BATCH_CREATE:
-    case eventType.BATCH_TASK_FAILED:
+    case eventType.BATCH_FAILED:
     case eventType.BATCH_START:
-    case eventType.BATCH_CHILD_TASK_CREATE: break
-    case eventType.BATCH_CHILD_TASK_PROCESSING:
+    case eventType.TASK_CREATE: break
+    case eventType.TASK_PROCESSING:
       res = { ...state, ...event.payload }
       break
-    case eventType.BATCH_CHILD_EXECUTION_PROCESSING:
-    case eventType.BATCH_CHILD_EXECUTION_UPDATE:
-    case eventType.BATCH_CHILD_EXECUTION_COMPLETE:
+    case eventType.EXECUTION_PROCESSING:
+    case eventType.EXECUTION_UPDATE:
+    case eventType.EXECUTION_COMPLETE:
       res = { ...state, execution: event.payload};
       break
-    case eventType.BATCH_CHILD_TASK_FAIL:
-    case eventType.BATCH_CHILD_TASK_COMPLETE:
+    case eventType.TASK_FAIL:
+    case eventType.TASK_COMPLETE:
+    case eventType.RETRY_TASK_FAILED:
       res = { ...state, ...event.payload }
       break
   }
@@ -240,16 +246,16 @@ const handleTaskEvent = (event: Events, state: TaskState) => {
     let res = state
     switch (event.event) {
       case eventType.BATCH_CREATE:
-      case eventType.BATCH_TASK_FAILED:
+      case eventType.BATCH_FAILED:
       case eventType.BATCH_START:
         res =  state ? { ...state, ...event.payload }: {...event.payload, children: {}}; break
-      case eventType.BATCH_CHILD_TASK_CREATE:
+      case eventType.TASK_CREATE:
         const children:Record<string, ImageTaskState> = {}
         event.payload.reduce((acc, it) => {
           acc[it.id] = { ...it, execution: undefined}
           return acc }, {} as Record<string, ImageTaskState>)
         res = { ...state, children }; break
-      case eventType.BATCH_CHILD_TASK_PROCESSING:
+      case eventType.TASK_PROCESSING:
         const metadata = state.metadata as any
         let curs = metadata.state ?? defaultState as BatchState
         curs.processing++
@@ -259,14 +265,14 @@ const handleTaskEvent = (event: Events, state: TaskState) => {
           ...metadata, state: curs
           },
           children: { ...state.children, [event.taskId]: event.payload } }; break
-      case eventType.BATCH_CHILD_EXECUTION_PROCESSING:
+      case eventType.EXECUTION_PROCESSING:
         res = { ...state,
           children: { ...state.children,
             [event.taskId]: { ...state.children[event.taskId], execution: event.payload }
         }
         };
         break
-      case eventType.BATCH_CHILD_EXECUTION_UPDATE:
+      case eventType.EXECUTION_UPDATE:
         const current = state.children[event.taskId]
         res = {
           ...state,
@@ -275,12 +281,12 @@ const handleTaskEvent = (event: Events, state: TaskState) => {
             [event.taskId]: { ...current, execution: event.payload }
           }
         }; break
-      case eventType.BATCH_CHILD_EXECUTION_COMPLETE:
+      case eventType.EXECUTION_COMPLETE:
         res = { ...state, children: {
           ...state.children,
           [event.taskId]: { ...state.children[event.taskId], execution: event.payload }
         }}; break
-      case eventType.BATCH_CHILD_TASK_FAIL:
+      case eventType.TASK_FAIL:
         const m1 = state.metadata as any
         let bs1 = (m1.state ?? defaultState) as BatchState
         bs1.processing--
@@ -299,7 +305,7 @@ const handleTaskEvent = (event: Events, state: TaskState) => {
           }
         };
         break
-      case eventType.BATCH_CHILD_TASK_COMPLETE:
+      case eventType.TASK_COMPLETE:
         const m = state.metadata as any
         let bs = (m.state ?? defaultState) as BatchState
         bs.processing--
@@ -316,6 +322,8 @@ const handleTaskEvent = (event: Events, state: TaskState) => {
           }
         };
         break
+      case eventType.BATCH_RETRY_FAILED:
+        res = { ...state, ...event.payload }; break
     }
     return res
   }

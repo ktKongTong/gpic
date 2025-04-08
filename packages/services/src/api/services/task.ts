@@ -1,5 +1,5 @@
 import {UserService} from "./user-service";
-import {DAO, TaskStatus, taskStatus, taskType, TaskUpdateDBO} from "../storage/type";
+import {DAO, Task, TaskStatus, taskStatus, taskType, TaskUpdateDBO} from "../storage/type";
 import {MQService, msgType} from "./mq";
 
 type TaskInput = {
@@ -41,7 +41,15 @@ export class TaskService {
       retry: 0,
       metadata: {},
       parentId: task.parentId
-  })
+    })
+  }
+
+  async getChildrenByTaskId(taskId: string) {
+    return this.dao.task.getChildrenByTaskId(taskId)
+  }
+
+  async retryTasks(taskIds: string[]) {
+    return this.dao.task.retryTasks(taskIds)
   }
 
   async createBatchTask(task: TaskInput) {
