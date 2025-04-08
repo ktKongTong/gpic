@@ -1,9 +1,10 @@
 import { getDAO } from "../../storage/db";
 import { TaskService } from "../task";
-import {AIImageService, FileService, HistoryService, MQService, msgType, UserService} from "../../services";
+import {AIImageService, eventType, FileService, HistoryService, MQService, msgType, UserService} from "../../services";
 import {getCloudflareEnv, setCloudflareEnv} from "../../utils";
 import {Execution, executionStatus, Task, TaskStatus, taskStatus, taskType} from "../../storage/type";
 import {z} from "zod";
+import {getDO} from "../druable-object";
 
 type Message<T> = {
   type: string;
@@ -76,8 +77,6 @@ export class ConsumerService {
       await this.handleSingleImageGenTask(msg.payload)
     }else if (msg.type === msgType.BATCH_IMAGE_GEN) {
       await this.handleBatchImageGenTask(msg.payload)
-    }else if (msg.type === msgType.TASK_UPDATE) {
-      await this.handleBatchTaskMsg(msg.payload as any)
     }
   }
 
@@ -123,38 +122,43 @@ export class ConsumerService {
       metadata: { state }
     }, taskStatus.PROCESSING)
   }
+
   async handleBatchImageGenTask(task: Task) {
+    const taskDO = getDO(task.id)
     if(task.type !== taskType.BATCH) {
-      await this.services.taskService.updateTask({ id: task.id, status: taskStatus.FAILED, metadata: {
+      const res = await this.services.taskService.updateTask({ id: task.id, status: taskStatus.FAILED, metadata: {
         error: "wrong task handler; not a batch task"
       }}, task.status)
+      await taskDO.onTaskEvent({ taskId: task.id, event: eventType.BATCH_TASK_FAILED, payload: res})
       return
     }
     let status = task.status
     try {
       const input = matrixInputSchema.parse(task.input)
-
       const inputs = matrixToArray(input)
-
       const state = {total: inputs.length, pending: inputs.length, processing: 0, completed: 0, failed: 0 }
-      // @ts-ignore
-      await getCloudflareEnv().KV.put(`task:batch:status:${task.id}`, JSON.stringify(state))
-      await this.services.taskService.updateTask({ id: task.id, status: taskStatus.PROCESSING, metadata: {state} }, status)
+
+      const newTask = await this.services.taskService
+        .updateTask({id: task.id, status: taskStatus.PROCESSING, metadata: {state} }, status)
+      await taskDO.onTaskEvent({ taskId: task.id, event: eventType.BATCH_START, payload: newTask })
       status = taskStatus.PROCESSING
-      const tasks = await this.services.taskService.createBatchImageGenTask({
-        parentId: task.id,
-        userId: task.userId,
-        inputs: inputs,
-      })
-
+      const tasks = await this.services.taskService
+        .createBatchImageGenTask({ parentId: task.id, userId: task.userId, inputs: inputs })
+      await taskDO.onTaskEvent({ taskId: task.id, event: eventType.BATCH_CHILD_TASK_CREATE, payload: tasks })
       await this.services.mqService.batch(tasks.map(it => ({type: msgType.IMAGE_GEN, payload: it})))
-
     }catch (e) {
       console.error(e)
-      await this.services.taskService.updateTask({ id: task.id, status: taskStatus.FAILED }, status)
+      const res = await this.services.taskService.updateTask({ id: task.id, status: taskStatus.FAILED }, status)
+      await taskDO.onTaskEvent({ taskId: task.id, event: eventType.BATCH_TASK_FAILED, payload: res })
     }
   }
   async handleSingleImageGenTask(task: Task) {
+    const taskDO = getDO(task.parentId ?? task.id)
+
+    let status = task.status
+    const newTask = await this.services.taskService.updateTask({ id: task.id, status: taskStatus.PROCESSING }, status)
+    status = taskStatus.PROCESSING
+    await taskDO.onTaskEvent({ taskId: task.id, event: eventType.BATCH_CHILD_TASK_PROCESSING, payload: newTask})
     const execution = await this.services.historyService
       .createExecutionHistory({
         taskId: task.id,
@@ -162,33 +166,31 @@ export class ConsumerService {
         usage: 0,
         status: executionStatus.PROCESSING
       })
-    let status = task.status
+    await taskDO.onTaskEvent({ taskId: task.id, event:eventType.BATCH_CHILD_EXECUTION_PROCESSING, payload: execution })
     try {
-      // const msg = {
-      //   preStatus: task.status,
-      //   parentTaskId: task.parentId,
-      //   taskId: task.id,
-      //   status: taskStatus.PROCESSING,
-      // }
-      await this.services.taskService.updateTask({ id: task.id, status: taskStatus.PROCESSING }, status)
-      status = taskStatus.PROCESSING
       const res = await this.processAIMessage(task, execution)
-      await this.services.historyService.updateExecutionHistory({ id: execution.id, ...res })
+      const updatedExecution = await this.services.historyService.updateExecutionHistory({ id: execution.id, ...res })
+      await taskDO.onTaskEvent({ taskId: task.id, event: eventType.BATCH_CHILD_EXECUTION_COMPLETE, payload: updatedExecution })
       const newStatus = res.status === 'completed' ? taskStatus.SUCCESS : taskStatus.FAILED
-      await this.services.taskService.updateTask({id: task.id, status: newStatus }, status)
+      const updatedTask = await this.services.taskService.updateTask({id: task.id, status: newStatus }, status)
+      await taskDO.onTaskEvent({ taskId: task.id, event: eventType.BATCH_CHILD_TASK_COMPLETE, payload: updatedTask })
       status = newStatus
     }catch (e) {
-      await this.services.historyService.updateExecutionHistory({
+      const updated = await this.services.historyService.updateExecutionHistory({
         id: execution.id,
         state: e,
         status: executionStatus.FAILED,
       })
-      await this.services.taskService.updateTask({ id: task.id, status: taskStatus.FAILED }, status)
+      await taskDO.onTaskEvent({ taskId: task.id, event: eventType.BATCH_CHILD_EXECUTION_COMPLETE, payload: updated })
+      const updatedTask = await this.services.taskService.updateTask({ id: task.id, status: taskStatus.FAILED }, status)
+      await taskDO.onTaskEvent({ taskId: task.id, event: eventType.BATCH_CHILD_TASK_COMPLETE, payload: updatedTask})
     }
   }
 
   async processAIMessage(task: Task, execution: Execution) {
     let exec = execution
+    const taskStateDO = getDO(task.parentId ?? task.id)
+    // event
     const result = await this.services.aiService.generateImage(task.input as any)
     let ctx = {
       success: false,
@@ -205,19 +207,22 @@ export class ConsumerService {
           break
         case "finish":
           ctx.message += `aisdk finish-reason: ${event.finishReason}`
+
           break
         case 'text-delta':
+
           ctx.message += event.textDelta
           const res = await this.services.aiService.handleTextDelta(event.textDelta)
           switch (res.event) {
             case 'progress':
               ctx.progress = res.data
               exec.state = { progress: res.data }
-              await this.services.historyService.updateExecutionHistory({
+              const updatedExec = await this.services.historyService.updateExecutionHistory({
                 id: exec.id,
                 state: { progress: res.data, message: ctx.message },
                 status: executionStatus.PROCESSING
               })
+              await taskStateDO.onTaskEvent({taskId: task.id, event: eventType.BATCH_CHILD_EXECUTION_UPDATE, payload: updatedExec })
               break
             case 'failed':
               ctx.success = false; break
@@ -228,6 +233,7 @@ export class ConsumerService {
           }
       }
     }
+    await taskStateDO.onTaskEvent({taskId: task.id, event: eventType.BATCH_CHILD_EXECUTION_UPDATE, payload: execution })
     if (ctx.success) {
       return {
         status: 'completed' as const,

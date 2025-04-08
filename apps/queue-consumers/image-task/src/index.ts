@@ -1,4 +1,5 @@
 import { Task, ConsumerService } from "@repo/service";
+export { DOTaskStatus } from './do'
 import Env = Cloudflare.Env;
 type Message<T> = {
   type: string;

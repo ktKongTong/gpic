@@ -1,0 +1,19 @@
+{
+  "name": "@repo/do-task-status",
+  "version": "0.0.0",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250327.0",
+    "typescript": "^5.8",
+    "wrangler": "4.5.1"
+  },
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "wrangler dev",
+    "deploy:preview": "wrangler deploy -e preview",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "@repo/service": "workspace:*"
+  }
+}

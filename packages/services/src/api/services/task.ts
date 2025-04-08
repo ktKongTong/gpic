@@ -1,8 +1,7 @@
 import {UserService} from "./user-service";
 import {DAO, TaskStatus, taskStatus, taskType, TaskUpdateDBO} from "../storage/type";
 import {MQService, msgType} from "./mq";
-import {getCloudflareEnv} from "../utils";
-import { BatchState } from "./consumers";
+import {eventType, getDO} from "./druable-object";
 
 type TaskInput = {
   input: any, parentId?: string
@@ -48,13 +47,19 @@ export class TaskService {
 
   async createBatchTask(task: TaskInput) {
     const user = await this.userService.getCurrentUser()
-    return this.dao.task.createTask({
+    const result = await this.dao.task.createTask({
       userId: user?.id ?? 'anonymous',
       input: task.input,
       type: taskType.BATCH,
       retry: 0,
       metadata: {},
     })
+    await getDO(result.id)
+      .onTaskEvent({
+        taskId: result.id,
+        event: eventType.BATCH_CREATE,
+        payload: result })
+    return result
   }
 
   async updateTask(task: TaskUpdateDBO, preStatus: TaskStatus) {
