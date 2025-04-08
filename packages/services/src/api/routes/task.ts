@@ -40,6 +40,7 @@ app.post('/image/flavor-style', async (c) => {
 
 app.patch('/:taskid/retry', async (c) => {
   const taskId = c.req.param('taskid')
+  const failOnly = Boolean(c.req.query('failOnly'))
   const  {mqService, taskService } = getService(c)
   let task = await taskService.getTaskById(taskId, false)
   if(!task) {
@@ -52,7 +53,7 @@ app.patch('/:taskid/retry', async (c) => {
     throw new ParameterError("task can't retry when status is pending or processing")
   }
   if(task.type === taskType.BATCH) {
-    await mqService.enqueue({type: msgType.BATCH_TASK_RETRY, payload: task})
+    await mqService.enqueue({type: msgType.BATCH_TASK_RETRY, payload: { task, failOnly }})
   }else {
     await mqService.enqueue({type: msgType.TASK_RETRY, payload: task})
   }

@@ -1,15 +1,10 @@
 import { getDAO } from "../../storage/db";
 import { TaskService } from "../task";
-import {AIImageService, eventType, FileService, HistoryService, MQService, msgType, UserService} from "../../services";
+import {AIImageService, eventType, FileService, HistoryService, MQService, msgType, UserService, Message} from "../../services";
 import {getCloudflareEnv, setCloudflareEnv} from "../../utils";
 import {Execution, executionStatus, Task, TaskStatus, taskStatus, taskType} from "../../storage/type";
 import {z} from "zod";
 import {getDO} from "../druable-object";
-
-type Message<T> = {
-  type: string;
-  payload: T
-};
 
 const createService = (env: CloudflareEnv) => {
   const dao = getDAO(env)
@@ -72,64 +67,19 @@ export class ConsumerService {
     this.services = createService(env);
   }
 
-  async handleMsg(msg: Message<Task>) {
+  async handleMsg(msg: Message) {
     if(msg.type === msgType.IMAGE_GEN) {
       await this.handleSingleImageGenTask(msg.payload)
     }else if (msg.type === msgType.BATCH_IMAGE_GEN) {
       await this.handleBatchImageGenTask(msg.payload)
     }else if (msg.type === msgType.BATCH_TASK_RETRY) {
-      await this.handleBatchTaskRetry(msg.payload)
+      await this.handleBatchTaskRetry(msg.payload.task, msg.payload.failOnly)
     }else if (msg.type === msgType.TASK_RETRY) {
       await this.handleTaskRetry(msg.payload)
     }
   }
 
-  async handleBatchTaskMsg(msg: BatchMsg) {
-    // todo: use durable object instead of queue to fix potential concurrency issue
-    //
-    if(!msg.parentTaskId) {
-      return
-    }
-    const key = `task:batch:status:${msg.parentTaskId}`
-    // @ts-ignore
-    const _state = await getCloudflareEnv().KV.get<BatchState>(key, {
-      type: 'json'
-    })
-
-    let state = _state!
-    switch(msg.preStatus) {
-      case taskStatus.PENDING: state.pending--;break
-      case taskStatus.PROCESSING: state.processing--;break
-      case taskStatus.SUCCESS: state.completed--;break
-      case taskStatus.FAILED: state.failed--;break
-    }
-    switch(msg.status) {
-      case taskStatus.PENDING: state.pending++;break
-      case taskStatus.PROCESSING: state.processing++;break
-      case taskStatus.SUCCESS: state.completed++;break
-      case taskStatus.FAILED: state.failed++;break
-    }
-    // @ts-ignore
-    await getCloudflareEnv().KV.put(key, JSON.stringify(state))
-    let status:TaskStatus = taskStatus.PROCESSING
-    if(state.pending === state.total) {
-      status = taskStatus.PENDING
-    } else if(state.processing === state.pending && state.processing === 0) {
-      if(state.failed == state.total) {
-        status = taskStatus.FAILED
-      }
-      status = taskStatus.SUCCESS
-    }
-    await this.services.taskService.updateTask({
-      id: msg.parentTaskId,
-      status: status,
-      metadata: { state }
-    })
-  }
-
-  async handleBatchTaskRetry(task: Task) {
-    // must task.completed / task.failed
-    //   not changed =>
+  async handleBatchTaskRetry(task: Task, failOnly: boolean) {
     const taskDO = getDO(task.id)
     const state = (task.metadata as any).state as BatchState
     state.pending = state.failed
@@ -138,10 +88,11 @@ export class ConsumerService {
     .updateTask({id: task.id, status: taskStatus.PROCESSING, metadata: { state }})
     await taskDO.onTaskEvent({ taskId: task.id, event: eventType.BATCH_RETRY_FAILED, payload: res})
     const tasks = await this.services.taskService.getChildrenByTaskId(task.parentId!)
-    const failedTasks = tasks.filter(it => it.status === taskStatus.FAILED)
+    const failedTasks = tasks.filter(it =>
+      it.status === taskStatus.FAILED || (failOnly && it.status === taskStatus.SUCCESS)
+    )
     const taskIds = failedTasks.map(it => it.id)
     const updated = await this.services.taskService.retryTasks(taskIds)
-
     await this.services.mqService.batch(updated.map(it => ({type: msgType.IMAGE_GEN, payload: it})))
   }
 
