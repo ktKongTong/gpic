@@ -48,7 +48,7 @@ app.patch('/:taskid/retry', async (c) => {
   if(task.status !== taskStatus.FAILED &&  task.status !== taskStatus.SUCCESS) {
     throw new ParameterError("task can't retry when status is pending or processing")
   }
-  const newTask = await taskService.updateTask({id: task.id, retry: task.retry + 1, status: taskStatus.PENDING},task.status)
+  const newTask = await taskService.updateTask({id: task.id, retry: task.retry + 1, status: taskStatus.PENDING})
   await mqService.enqueue({type: msgType.IMAGE_GEN, payload: newTask})
   return c.json(task)
 })

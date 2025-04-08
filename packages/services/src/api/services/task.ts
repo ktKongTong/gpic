@@ -1,7 +1,6 @@
 import {UserService} from "./user-service";
 import {DAO, TaskStatus, taskStatus, taskType, TaskUpdateDBO} from "../storage/type";
 import {MQService, msgType} from "./mq";
-import {eventType, getDO} from "./druable-object";
 
 type TaskInput = {
   input: any, parentId?: string
@@ -54,22 +53,11 @@ export class TaskService {
       retry: 0,
       metadata: {},
     })
-    await getDO(result.id)
-      .onTaskEvent({
-        taskId: result.id,
-        event: eventType.BATCH_CREATE,
-        payload: result })
     return result
   }
 
-  async updateTask(task: TaskUpdateDBO, preStatus: TaskStatus) {
+  async updateTask(task: TaskUpdateDBO) {
     const updated = await this.dao.task.updateTask(task)
-    await this.mqService.enqueue({type: msgType.TASK_UPDATE, payload: {
-      preStatus: preStatus,
-      status: updated.status,
-      taskId: updated.id,
-      parentTaskId: updated.parentId
-    }})
     return updated
   }
   async getTaskById(taskId: string, withHistory = true) {
