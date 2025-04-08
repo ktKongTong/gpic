@@ -14,6 +14,7 @@ import {
   TaskType,
   taskType,
 } from "../../storage/type";
+import { eventType } from "./type";
 
 const createService = (env: CloudflareEnv) => {
   const dao = getDAO(env)
@@ -151,28 +152,6 @@ type ImageTaskState = Task & {
   execution?: Execution
 }
 
-export const eventType = {
-  BATCH_CREATE: 'batch-create',
-  BATCH_START: 'batch-start',
-  BATCH_FAILED: 'batch-failed',
-  BATCH_COMPLETE: 'batch-complete',
-
-  TASK_CREATE: 'task-create',
-  TASK_PROCESSING: 'task-processing',
-
-  // child status change
-  EXECUTION_PROCESSING: 'execution-processing',
-  EXECUTION_UPDATE: 'execution-update',
-  EXECUTION_COMPLETE: 'execution-complete',
-
-  TASK_FAIL: 'task-fail',
-  TASK_COMPLETE: 'task-complete',
-
-  BATCH_RETRY_FAILED: 'batch-retry-failed',
-  RETRY_TASK_FAILED: 'retry-failed',
-
-} as const
-
 type BatchTaskCreateEvent = { taskId: string, event: typeof eventType.BATCH_CREATE, payload: Task }
 type BatchTaskStartEvent = { taskId: string, event: typeof eventType.BATCH_START, payload: Task }
 type TaskCreateEvent = { taskId: string, event: typeof eventType.TASK_CREATE, payload: Task[] }
@@ -181,15 +160,12 @@ type TaskCreateEvent = { taskId: string, event: typeof eventType.TASK_CREATE, pa
 type TaskProcessingEvent = { taskId: string, event: typeof eventType.TASK_PROCESSING, payload: Task }
 
 // type TaskExecutionCreateEvent = { taskId: string, event: typeof eventType.BATCH_CHILD_EXECUTION_PROCESSING, payload: Execution }
-// Execution 从 Processing 开始
 type TaskExecutionProcessingEvent = { taskId: string, event: typeof eventType.EXECUTION_PROCESSING, payload: Execution }
 type TaskExecutionUpdateEvent = { taskId: string, event: typeof eventType.EXECUTION_UPDATE, payload: Execution }
 // type TaskExecutionFailEvent = { taskId: string, event: typeof eventType.BATCH_CHILD_EXECUTION_FAIL, payload: Execution }
 type TaskExecutionCompletedEvent = { taskId: string, event: typeof eventType.EXECUTION_COMPLETE, payload: Execution }
 type TaskFailEvent = { taskId: string, event: typeof eventType.TASK_FAIL, payload: Task }
 type TaskCompletedEvent = { taskId: string, event: typeof eventType.TASK_COMPLETE, payload: Task }
-// 此事件Batch Failed和Completed 一般不会显式触发，而是每个在Failed/Completed时触发
-// 这个事件只在最初开始错误的时候会触发
 type BatchTaskFailedEvent = { taskId: string, event: typeof eventType.BATCH_FAILED, payload: Task }
 type BatchTaskCompletedEvent = { taskId: string, event: typeof eventType.BATCH_FAILED, payload: Task }
 

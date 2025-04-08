@@ -1,10 +1,11 @@
 import { getDAO } from "../../storage/db";
 import { TaskService } from "../task";
-import {AIImageService, eventType, FileService, HistoryService, MQService, msgType, UserService, Message} from "../../services";
+import {AIImageService, FileService, HistoryService, MQService, msgType, UserService, Message} from "../../services";
 import {getCloudflareEnv, setCloudflareEnv} from "../../utils";
 import {Execution, executionStatus, Task, TaskStatus, taskStatus, taskType} from "../../storage/type";
 import {z} from "zod";
 import {getDO} from "../druable-object";
+import {eventType} from "../druable-object/type";
 
 const createService = (env: CloudflareEnv) => {
   const dao = getDAO(env)

@@ -1,5 +1,5 @@
 import {getCloudflareEnv} from "../../utils";
-import {BatchTaskStateDO} from "./durable-object";
+// import {BatchTaskStateDO} from "./durable-object";
 
 
 export const getDO = (taskId: string) => {
@@ -7,7 +7,5 @@ export const getDO = (taskId: string) => {
   const id = getCloudflareEnv().DO_TASK_STATUS.idFromName(taskId)
   // @ts-ignore
   const stub = getCloudflareEnv().DO_TASK_STATUS.get(id)
-  return stub as unknown as BatchTaskStateDO
+  return stub as unknown as any
 }
-
-export * from './durable-object'
