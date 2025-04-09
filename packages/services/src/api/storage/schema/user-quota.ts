@@ -4,9 +4,9 @@ const commonTimeFields = {
   createdAt: integer('created_at', {mode: 'timestamp_ms'}).default(sql`(unixepoch() * 1000)`).notNull(),
   updatedAt: integer('updated_at', {mode: 'timestamp_ms'}).default(sql`(unixepoch() * 1000)`).notNull().$onUpdateFn(() => new Date())
 }
-
 export const i18nCode = { ZH: 'zh-CN', EN: 'en-US', JP: 'ja-JP', KR: 'ko-KR' } as const
 
+export type i18nCode = typeof i18nCode[keyof typeof i18nCode]
 const i18nCodeArr = ['zh-CN', 'en-US', 'ja-JP', 'ko-KR'] as const
 
 export const style = sqliteTable("style", {
@@ -26,7 +26,6 @@ export const styleI18n = sqliteTable("style_i18n", {
   styleId: text("style_friendly_id").notNull(),
   i18n: text("i18n", {enum: i18nCodeArr }).notNull(),
   name: text('name').notNull(),
-  type: text('type', { enum: ['system', 'user'] }).notNull(),
   aliases: text('aliases', {mode: 'json'}).notNull().$defaultFn(() => []),
   description: text('description'),
   ...commonTimeFields

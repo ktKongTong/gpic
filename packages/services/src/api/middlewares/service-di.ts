@@ -6,7 +6,7 @@ import {UserQuotaService} from "../services";
 import {getDAO} from "../storage/db";
 import {HistoryService} from "../services";
 import {TaskService} from "../services";
-import {MQService} from "../services";
+import {MQService, StyleService} from "../services";
 
 declare module 'hono' {
   interface ContextVariableMap {
@@ -18,6 +18,7 @@ declare module 'hono' {
     historyService: HistoryService
     taskService: TaskService
     mqService: MQService
+    styleService: StyleService
   }
 }
 export const getService = (c:Context) => {
@@ -29,6 +30,7 @@ export const getService = (c:Context) => {
     historyService: c.get('historyService'),
     taskService: c.get('taskService'),
     mqService: c.get('mqService'),
+    styleService: c.get('styleService'),
   }
 }
 
@@ -44,6 +46,7 @@ export const ServiceDIMiddleware = (): MiddlewareHandler => {
     const mqService = new MQService()
     const taskService = new TaskService(userService, mqService, dao)
     const historyService = new HistoryService(dao)
+    const styleService = new StyleService(dao)
     c.set('userService', userService)
     c.set('fileService', fileService)
     c.set('aiImageService', aiImageService)
@@ -51,6 +54,7 @@ export const ServiceDIMiddleware = (): MiddlewareHandler => {
     c.set('historyService', historyService)
     c.set('taskService', taskService)
     c.set('mqService', mqService)
+    c.set('styleService', styleService)
     await next()
   }
 }

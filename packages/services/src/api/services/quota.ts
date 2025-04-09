@@ -1,4 +1,4 @@
-import {UserService} from "../services/user-service";
+import {UserService} from "./user-service";
 import {DAO} from "../storage/type";
 
 export class UserQuotaService {

@@ -1,5 +1,4 @@
 import {taskStatus, taskType} from "../storage/type";
-import {mockExecution} from "./mock_execution";
 import {getRandomName} from "../utils/random";
 
 export const mockEvent = [
@@ -42,8 +41,3 @@ const commonTask = {
   createdAt: "2021-01-12 23:32:00",
   updatedAt: "2021-01-12 23:32:00",
 }
-export const mockTask = [
-  { id: "task_01jqrxepaefk7bxv3smqm07psh", history: mockExecution[0], ...commonTask},
-  { id: "task_01jqrxepaefk7bxv3smqm032ds", history: mockExecution[1], ...commonTask},
-  { id: "task_01jqrxepaefk7bxv3smqm032df", history: mockExecution[2], ...commonTask},
-]

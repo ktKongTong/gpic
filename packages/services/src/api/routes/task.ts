@@ -8,8 +8,6 @@ import {z} from "zod";
 
 const app = new Hono().basePath('/task')
 
-type Style = { type: 'preset', value: string } | { type: 'prompt', value: string }
-
 export const schema = z.object({
   files: z.string().array().min(1).max(10, "Maximum 10 files"),
   style: z.string().array().min(1).max(5, "Maximum 5 style"),

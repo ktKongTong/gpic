@@ -3,6 +3,7 @@ import * as schema from "./schema";
 import {QuotaDAO} from "./dao/quota";
 import {HistoryDAO} from "./dao/gallery";
 import {TaskDAO} from "./dao/task";
+import {StyleDAO} from './dao/style'
 import {getCloudflareEnv} from "../utils";
 
 export let db: DrizzleD1Database<typeof schema> | null = null;
@@ -29,6 +30,7 @@ export const getDAO = (env?: CloudflareEnv) => {
   const db = getDB(env)
   return {
     quota: new QuotaDAO(db),
+    style: new StyleDAO(db),
     history: new HistoryDAO(db),
     task: new TaskDAO(db)
   }

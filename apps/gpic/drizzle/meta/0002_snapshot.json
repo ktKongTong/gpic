@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "1aa4a4f2-788c-4802-bc64-49392cd40741",
+  "id": "018410b6-05dd-4c47-a270-2be118d2764b",
   "prevId": "0378509c-2072-4604-9584-6e8b78c564b1",
   "tables": {
     "account": {
@@ -467,7 +467,7 @@
           "name": "reference",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "prompt": {
@@ -539,18 +539,11 @@
           "notNull": true,
           "autoincrement": false
         },
-        "type": {
-          "name": "type",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
         "aliases": {
           "name": "aliases",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "description": {

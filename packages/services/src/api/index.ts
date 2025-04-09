@@ -9,6 +9,7 @@ import {ZodError} from "zod";
 import {BizError, ParameterError} from "./errors/route";
 import {timing} from "hono/timing";
 import {taskRoute} from "./routes/task";
+import {styleRoute} from "./routes/styles";
 
 const app = new Hono().basePath('/api')
 
@@ -48,5 +49,6 @@ app.on(["POST", "GET"], "/auth/*", (c) => {
 app.route('/', fileRoute)
 app.route('/', aiRoute)
 app.route('/', taskRoute)
+app.route('/', styleRoute)
 
 export { app as route }
