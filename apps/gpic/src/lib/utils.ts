@@ -15,14 +15,7 @@ export const formatDate = (dateString: string) => {
   return date.toLocaleString();
 };
 
-// export const formatDuration = (dateString: string) => {
-//   const date = new Date(dateString);
-//   return date.toLocaleString();
-// };
-
-// seconds
 export const formatDuration = (duration: number) => {
-//   484 -> 8m4s
   const minutes = Math.floor(duration / 60);
   const seconds = duration % 60;
   return `${minutes}m${seconds}s`;

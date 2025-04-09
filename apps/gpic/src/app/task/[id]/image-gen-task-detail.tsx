@@ -1,10 +1,6 @@
 import {ImageTask} from "@/lib/type";
 import {formatDate, formatDuration, relativeDate} from "@/lib/utils";
 import {StatusBadge, TypeBadge} from "@/components/task/badge";
-import {AttemptMenu} from "@/app/task/[id]/attempt-menu";
-import {RetryButton} from "@/app/task/[id]/retry-button";
-import Executions from "@/components/task/execution";
-import TaskItem from "@/app/task/task-item";
 import React from "react";
 import {taskStatus, taskType} from "@repo/service/shared";
 import {Calendar, Clock7, Ellipsis, LucideMenu} from "lucide-react";

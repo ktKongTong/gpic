@@ -79,8 +79,8 @@ function readAsDataURL(file: File) {
     fileReader.readAsDataURL(file);
   })
 }
+
 export const useFileUpload = () => {
-  // fileKey
   const {mutate} = useMutation({
     mutationKey: ['file-upload'],
     mutationFn: async (f: File) => {
@@ -103,7 +103,6 @@ export const useFileUpload = () => {
       console.error(e)
     },
     onSuccess: async (data) => {
-      // uploading, uploaded, upload-failed
       upsertFile(data)
     }
   })

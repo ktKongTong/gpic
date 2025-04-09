@@ -2,14 +2,13 @@
 import React, { useState, useRef } from 'react';
 import {Upload, UploadCloud, Image as ImageIcon, Delete, X, LoaderCircle} from 'lucide-react';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
 import {UploadFile, useFiles} from "@/hooks/use-file-upload";
+import { useTrans } from "@/i18n";
 
 interface FileUploaderProps {
 }
 
 const ImagePreview = ({file}: {file: UploadFile}) => {
-
   const { uploadFile, removeFile } = useFiles()
   return <div className={'h-24 w-24 rounded-lg relative'} onClick={(e) => {e.stopPropagation()}}>
     {
@@ -31,6 +30,8 @@ const ImagePreview = ({file}: {file: UploadFile}) => {
 }
 
 const FileUploader: React.FC<FileUploaderProps> = () => {
+
+  const {t, locale} = useTrans()
   const {files, uploadFile, removeFile} = useFiles()
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -108,6 +109,7 @@ const FileUploader: React.FC<FileUploaderProps> = () => {
               <UploadCloud className="h-8 w-8 text-white/70" />
             </div>
             <p className="text-white/70 text-center px-4">
+              {t('title')}
               Click to upload or drag & drop image here
             </p>
           </>

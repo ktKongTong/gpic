@@ -14,6 +14,7 @@ export default function UserProfile() {
 
   const loggedIn = !!session
   const showModal = () => {
+
     // signIn.social('google')
   }
   return (
@@ -33,14 +34,14 @@ export default function UserProfile() {
             {
               !loggedIn && <>
                     <div className={'flex items-center gap-2'}>
-                        <Button onClick={() => showModal()} variant={'outline'} className={'bg-transparent hover:bg-transparent'}>
+                        <Button onClick={() => showModal()} variant={'outline'} className={'bg-transparent hover:bg-transparent border-none'}>
                             Signin
                         </Button>
                     </div>
                 </>
             }
           </DialogTrigger>
-          <DialogContent className={'text-white'}>
+          <DialogContent className={'text-white dark'}>
             <SignIn/>
           </DialogContent>
         </Dialog>

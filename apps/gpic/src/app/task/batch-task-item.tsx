@@ -7,7 +7,6 @@ import {Button} from "@/components/ui/button";
 import Link from "next/link";
 import {Carousel, CarouselContent, CarouselItem, useCarousel} from "@/components/ui/carousel";
 import React, {useState} from "react";
-import useEmblaCarousel from "embla-carousel-react";
 
 type BatchTaskItemProps = {
   task: BatchImageTask

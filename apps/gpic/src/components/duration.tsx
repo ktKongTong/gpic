@@ -1,6 +1,6 @@
 import { Timer } from "lucide-react";
 import React from "react";
-import {cn} from "@/lib/utils";
+import {cn, formatDuration} from "@/lib/utils";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 
@@ -10,10 +10,8 @@ type Props = React.HTMLProps<HTMLDivElement> & {
   duration: number
 }
 
-
-
 export default function Duration({duration, className, ...rest}: Props) {
   return <div className={cn(className,'flex justify-center')} {...rest}>
-    <Timer />{duration}
+    <Timer />{formatDuration(duration)}
   </div>
 }

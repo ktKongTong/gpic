@@ -9,11 +9,7 @@ import {states, useGenerate} from "@/hooks/use-generate";
 import React, {useState} from "react";
 import {useFiles} from "@/hooks/use-file-upload";
 import {useGenerateTasks} from "@/hooks/use-task";
-import {toast} from "sonner";
-import {Checkbox} from "@/components/ui/checkbox";
 import {cn} from "@/lib/utils";
-import {Textarea} from "@/components/ui/textarea";
-import {InputArea} from "@/app/input-area";
 
 
 const useGenImageForm = () => {
@@ -77,27 +73,6 @@ export const Tool = () => {
           }
         </ul>
       </div>
-      {/*风格选择*/}
-      {/*<Label*/}
-      {/*  onClick={() => {setAdvanced(s => !s)}}*/}
-      {/*  className="text-white underline underline-offset-2"*/}
-      {/*>高级选项</Label>*/}
-      {/*{*/}
-      {/*  advanced && <div>*/}
-      {/*    /!*高级设置*!/*/}
-      {/*        <Label htmlFor="prompt" className=" w-fit text-white mb-2 block">Enter your instructions</Label>*/}
-      {/*    <InputArea/>*/}
-      {/*        <Textarea*/}
-      {/*            id="prompt"*/}
-      {/*            placeholder="Make this ghibili style..."*/}
-      {/*            value={value.prompt}*/}
-      {/*            onChange={(e) => setPrompt(e.target.value)}*/}
-      {/*            className="bg-white/10 border-white/20 text-white focus:ring-0"*/}
-      {/*        />*/}
-      {/*    </div>*/}
-      {/*}*/}
-
-
       <div className="flex items-center justify-end w-full gap-2">
         {
           value.batch && <div className="flex items-center gap-2">

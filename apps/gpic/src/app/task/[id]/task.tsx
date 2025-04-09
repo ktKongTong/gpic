@@ -1,15 +1,9 @@
 'use client'
-import {BatchImageTask, ImageTask, Task, useTask} from "@/hooks/use-task"
-import { formatDate } from "@/lib/utils";
-import Executions from "@/components/task/execution";
+import { BatchImageTask, ImageTask, useTask } from "@/hooks/use-task"
 import React from "react";
-import {StatusBadge, TypeBadge} from "@/components/task/badge";
-import TaskItem from "@/app/task/task-item";
 import {taskType, taskStatus} from "@repo/service/shared";
 
 import { ProgressBar } from "./progressbar";
-import { RetryButton} from "./retry-button";
-import {AttemptMenu} from "@/app/task/[id]/attempt-menu";
 import {ImageGenTaskDetail} from "@/app/task/[id]/image-gen-task-detail";
 import BatchTaskImageDetail from "@/app/task/[id]/batch-task-detail";
 

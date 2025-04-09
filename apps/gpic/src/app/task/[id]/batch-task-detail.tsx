@@ -1,17 +1,12 @@
-import {formatDate, formatDuration, relativeDate} from "@/lib/utils";
+import { formatDuration, relativeDate } from "@/lib/utils";
 import {StatusBadge, TypeBadge} from "@/components/task/badge";
-import {AttemptMenu} from "@/app/task/[id]/attempt-menu";
-import {RetryButton} from "@/app/task/[id]/retry-button";
 import React from "react";
-import {BatchImageTask, ImageTask} from "@/lib/type";
+import { BatchImageTask } from "@/lib/type";
 import {taskStatus} from "@repo/service/shared";
-import TaskItem from "@/app/task/task-item";
-import {taskType} from "@repo/service/shared";
 import {Calendar, Clock7, Ellipsis} from "lucide-react";
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
-import {DropdownMenuArrow} from "@radix-ui/react-dropdown-menu";
-import {Button} from "@/components/ui/button";
-import {TaskItemV2} from "@/app/task/task-item-v2";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { TaskItemV2 } from "@/app/task/task-item-v2";
 
 
 type BatchImageTaskDetailProps = {

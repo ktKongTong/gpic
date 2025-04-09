@@ -2,7 +2,6 @@
 import {useEffect, useRef, useState} from "react";
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 import {useFiles} from "@/hooks/use-file-upload";
-import {useDebounce} from "@/hooks/use-debounce";
 import {toast} from "sonner";
 
 
@@ -64,7 +63,6 @@ function downloadURI(uri: string) {
 }
 
 export const useGenerate = () => {
-  const {files} = useFiles()
   const [state, setState] = useState<State>(states.NOT_START)
   const [progress, setProgress] = useState(0)
   const [url, setUrl] = useState('')

@@ -44,12 +44,14 @@ export type Task<
   updatedAt: string,
   executions: E[]
 }
+
 declare namespace BatchType {
   type Input = { files: string[], style: string[], times: number }
   type Output = { url: string }
   type State = any
   type Metadata = {state: { total: number, completed: number, failed: number, processing: number, pending: number }}
 }
+
 export type ImageExecution = Execution<ImageGenType.Input, ImageGenType.Output, ImageGenType.State>
 export type BatchExecution = Execution<BatchType.Input, BatchType.Output, BatchType.State>
 export type ImageTask = Task<'image-gen',ImageExecution>
@@ -60,25 +62,6 @@ export type BatchImageTask = Task<'batch', BatchExecution, BatchType.Metadata> &
 type MultiFile = {
   files: string[],
   style: string[],
-}
-
-type TaskStore = {
-  tasks: Task[],
-  selectedTask?: Task,
-  currentTask?: Task,
-}
-
-type TaskAction = {
-  setCurrentTask: (t?: Task) => void
-  setSelectedTask: (t?: Task) => void
-}
-
-
-const useTaskStore = () => {
-
-  return {
-
-  }
 }
 
 export const useTasks = () => {

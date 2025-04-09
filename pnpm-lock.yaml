@@ -36,6 +36,9 @@ importers:
       '@hookform/resolvers':
         specifier: ^4.1.3
         version: 4.1.3(react-hook-form@7.54.2(react@19.0.0))
+      '@ktfun/sts-i18n-react':
+        specifier: ^0.2.2
+        version: 0.2.2(@types/react@19.0.12)(react@19.0.0)
       '@microsoft/fetch-event-source':
         specifier: ^2.0.1
         version: 2.0.1
@@ -1732,6 +1735,18 @@ packages:
 
   '@jsdevtools/ono@7.1.3':
     resolution: {integrity: sha512-4JQNk+3mVzK3xh2rqd6RB4J46qUR19azEHBneZyTZM+c456qOrbbM/5xcR8huNCCcbVt7+UmizG6GuUvPvKUYg==}
+
+  '@ktfun/sts-i18n-react@0.2.2':
+    resolution: {integrity: sha512-QWnS5TtIUw0q5LJz0FhxdEiU4D1PYBa1wRCMG06Cb+h9rhQbNWBt7ynLut+0Nz4p/hpT+8GnRDUG8JZ8GC0Ofw==}
+    peerDependencies:
+      '@types/react': '*'
+      react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+
+  '@ktfun/sts-i18n@0.2.2':
+    resolution: {integrity: sha512-ceR9cnT9OtJXU7cuMslUO81jjF4baS0Ge6lh4+adXXO1N8QMo98gZmBAP1L+6706CSCh7k7WBugiGtMQFYcMEQ==}
 
   '@levischuck/tiny-cbor@0.2.11':
     resolution: {integrity: sha512-llBRm4dT4Z89aRsm6u2oEZ8tfwL/2l6BwpZ7JcyieouniDECM5AqNgr/y08zalEIvW3RSK4upYyybDcmjXqAow==}
@@ -6747,6 +6762,15 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.5.0
 
   '@jsdevtools/ono@7.1.3': {}
+
+  '@ktfun/sts-i18n-react@0.2.2(@types/react@19.0.12)(react@19.0.0)':
+    dependencies:
+      '@ktfun/sts-i18n': 0.2.2
+      react: 19.0.0
+    optionalDependencies:
+      '@types/react': 19.0.12
+
+  '@ktfun/sts-i18n@0.2.2': {}
 
   '@levischuck/tiny-cbor@0.2.11': {}
 
