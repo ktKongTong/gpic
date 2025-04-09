@@ -91,7 +91,6 @@ export class TaskDAO {
   }
 
   async getTaskById<T extends boolean>(id: string, withHistory: T = true as T): Promise<ReturnTypeTask<T> | undefined> {
-    // newest task with history
     if (withHistory) {
       const s = this.db.select({
         task: taskColumns,

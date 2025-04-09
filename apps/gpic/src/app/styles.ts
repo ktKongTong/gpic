@@ -1,26 +1,40 @@
 export type Style = {
-  name: string,
   id: string,
+  styleId: string,
+  i18n: i18nCode,
+  name: string,
   aliases?: string[],
-  examples?: string[],
+  description?: string,
+  examples: string[],
+  reference: string[],
+  prompt?: string,
+  type: 'system' | 'user'
 }
+
+type i18nCode = 'zh-CN' | 'en-US' | 'ja-JP' | 'ko-KR'
+
+// default lang 'en-US'
+// getStyleByUserId, setLangToStyle
+
 export const styles: Style[] = [
-  {
-    name:'吉卜力',
-    id: 'ghibli',
-    aliases: ['宫崎骏'],
-    examples: []
-  },
-  {
-    name:'瑞克和莫蒂',
-    id: 'rick-and-morty',
-    aliases: ['Rick and Morty', 'Rick & Morty', 'R&M'],
-    examples: []
-  },
-  {
-    name:'皮克斯3D',
-    id: 'pixel',
-    aliases: [''],
-    examples: []
-  }
+  // {
+  //   id: 'ghibli',
+  //   name: '吉卜力',
+  //   aliases: ['宫崎骏'],
+  //   description: "",
+  //   reference: [],
+  //   examples: []
+  // },
+  // {
+  //   id: 'rick-and-morty',
+  //   name:'瑞克和莫蒂',
+  //   aliases: ['Rick and Morty', 'Rick & Morty', 'R&M'],
+  //   examples: []
+  // },
+  // {
+  //   name:'皮克斯3D',
+  //   id: 'pixel',
+  //   aliases: [''],
+  //   examples: []
+  // }
 ]

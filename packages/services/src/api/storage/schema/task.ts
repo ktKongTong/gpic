@@ -10,6 +10,7 @@ const commonTimeFields = {
 const executionStatus = ['completed', 'failed', 'processing'] as const
 const taskStatus = ['pending','processing', 'completed', 'failed'] as const
 const taskType = ['image-gen', 'batch', ] as const
+
 export const history = sqliteTable("task_history", {
   id: text("id").primaryKey(),
   name: text('name').notNull().$defaultFn(() => getRandomName()),

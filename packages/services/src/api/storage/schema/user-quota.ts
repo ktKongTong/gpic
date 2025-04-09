@@ -1,37 +1,41 @@
-import {integer,index, sqliteTable, text, } from "drizzle-orm/sqlite-core";
+import {integer, index, sqliteTable, text, uniqueIndex,} from "drizzle-orm/sqlite-core";
 import {sql} from "drizzle-orm";
 const commonTimeFields = {
   createdAt: integer('created_at', {mode: 'timestamp_ms'}).default(sql`(unixepoch() * 1000)`).notNull(),
   updatedAt: integer('updated_at', {mode: 'timestamp_ms'}).default(sql`(unixepoch() * 1000)`).notNull().$onUpdateFn(() => new Date())
 }
 
-export const styles = sqliteTable("styles", {
+export const i18nCode = { ZH: 'zh-CN', EN: 'en-US', JP: 'ja-JP', KR: 'ko-KR' } as const
+
+const i18nCodeArr = ['zh-CN', 'en-US', 'ja-JP', 'ko-KR'] as const
+
+export const style = sqliteTable("style", {
   id: text("id").primaryKey(),
-  name: text('name').notNull(),
+  styleId: text("style_friendly_id").notNull(),
+  version: integer("prompt_version").notNull().$defaultFn(() => 1),
+  type: text('type', { enum: ['system', 'user'] }).notNull(),
+  reference: text('reference', {mode: 'json'}).notNull().$defaultFn(() => []),
   prompt: text('prompt').notNull(),
   ...commonTimeFields
 }, (table) => [
-  index('styles_user_id_idx').on(table.name),
+  index('style_friendly_id_idx').on(table.styleId),
 ]);
 
-
-export const examples = sqliteTable("examples", {
+export const styleI18n = sqliteTable("style_i18n", {
   id: text("id").primaryKey(),
-  inputUrls: text("input_urls"),
-  style: text("style"),
-  prompt: text("prompt"),
-  description: text("description"),
-  url: text('url').notNull(),
-  userId: text("user_id"),
+  styleId: text("style_friendly_id").notNull(),
+  i18n: text("i18n", {enum: i18nCodeArr }).notNull(),
+  name: text('name').notNull(),
+  type: text('type', { enum: ['system', 'user'] }).notNull(),
+  aliases: text('aliases', {mode: 'json'}).notNull().$defaultFn(() => []),
+  description: text('description'),
   ...commonTimeFields
 }, (table) => [
-  index('examples_user_id_idx').on(table.userId),
-  index('examples_style_idx').on(table.style),
+  uniqueIndex('style_i18n_idx').on(table.styleId, table.i18n),
 ]);
 
 export const credit = sqliteTable("credit", {
   id: text("id").primaryKey(),
-  // special one, anonymous
   userId: text("user_id").unique().notNull(),
   balance: text("balance").notNull(),
   ...commonTimeFields

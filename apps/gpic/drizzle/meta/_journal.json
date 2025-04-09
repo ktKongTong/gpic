@@ -15,6 +15,13 @@
       "when": 1743690757707,
       "tag": "0001_overrated_lord_hawal",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1744191586447,
+      "tag": "0002_small_starbolt",
+      "breakpoints": true
     }
   ]
 }
