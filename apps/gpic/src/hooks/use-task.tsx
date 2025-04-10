@@ -113,3 +113,36 @@ export const useGenerateTasks = () => {
     generateTask: generateMutation,
   }
 }
+
+type StyleInput = {
+  styleId: string,
+} | {
+  reference: string[],
+  prompt: string
+}
+
+type TaskCreateV2 = {
+  files: string[],
+  styles: StyleInput[]
+  count?: number,
+  size?: 'auto' |'1x1'| '3x2' | '2x3',
+  batch?: boolean
+}
+
+export const useGenerateTasksV2 = () => {
+  const {mutate: generateMutation, data } = useMutation({
+    mutationKey: ["generateTaskV2"],
+    mutationFn: async (props: TaskCreateV2) => {
+      return await api.createTaskV2(props)
+    },
+    onSuccess: async (data) => {
+      toast.success('任务已创建', { description: (data as any)?.id })
+    },
+    onError: async (err) => {
+      toast.error('任务创建失败', { description: err.message })
+    }
+  })
+  return {
+    generateTask: generateMutation,
+  }
+}

@@ -4,7 +4,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import {Toaster} from "sonner";
 import Providers from "@/components/providers";
-import Header from "@/components/header";
 import React from "react";
 
 const geistSans = Geist({
@@ -35,9 +34,8 @@ export default function RootLayout(
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
     <Providers>
-      <div className={'min-h-screen mx-auto bg-ghibli-background'}>
-        <Header />
-        <div className="h-full flex flex-col bg-cover bg-fixed w-full max-w-4xl mx-auto">
+      <div className={'mx-auto bg-ghibli-background'}>
+        <div className="h-full min-h-screen flex flex-col w-full max-w-4xl mx-auto grow">
           {children}
         </div>
       </div>

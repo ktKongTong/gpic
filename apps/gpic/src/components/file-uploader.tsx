@@ -114,7 +114,6 @@ const FileUploader: React.FC<FileUploaderProps> = () => {
             </p>
           </>
         )}
-
         <input
           type='file'
           multiple={true}

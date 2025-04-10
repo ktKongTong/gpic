@@ -19,12 +19,10 @@ export default function UserProfile() {
   }
   return (
     <>
-      <div className={'bg-transparent'}>
         {
          loggedIn && <>
                 <div className={'flex items-center gap-2'}>
                     <img src={session.user.image!} className={'w-10 h-10 rounded-full'}/>
-                    <div>{session.user.name}</div>
                 </div>
             </>
         }
@@ -33,10 +31,8 @@ export default function UserProfile() {
           <DialogTrigger>
             {
               !loggedIn && <>
-                    <div className={'flex items-center gap-2'}>
-                        <Button onClick={() => showModal()} variant={'outline'} className={'bg-transparent hover:bg-transparent border-none'}>
-                            Signin
-                        </Button>
+                    <div className={'flex items-center gap-2 w-10 h-10 bg-teal-100 rounded-full'}>
+
                     </div>
                 </>
             }
@@ -45,7 +41,6 @@ export default function UserProfile() {
             <SignIn/>
           </DialogContent>
         </Dialog>
-      </div>
     </>
   )
 

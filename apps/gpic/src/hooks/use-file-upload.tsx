@@ -29,13 +29,15 @@ import {useMutation} from "@tanstack/react-query";
 type FileUploaderContext = {
   files: UploadFile[],
   uploadFile: (f:File)=>Promise<void> | void,
-  removeFile: (f:UploadFile) => void
+  removeFile: (f:UploadFile) => void,
+  removeAll: () => void
 }
 
 const fileCtx = createContext<FileUploaderContext>({
   files: [],
   uploadFile: async (f) => {},
-  removeFile: f => {}
+  removeFile: f => {},
+  removeAll: () => {},
 })
 
 const useFileStore = () => {
@@ -60,11 +62,14 @@ const useFileStore = () => {
   const getFileById = (id: string) => {
     return files.find((f) => f.id === id)
   }
-
+  const removeAll = () => {
+    setFiles([])
+  }
   return {
     upsertFile,
     removeFile,
     getFileById,
+    removeAll,
     files
   }
 }
@@ -84,7 +89,8 @@ export const useFileUpload = () => {
   const {mutate} = useMutation({
     mutationKey: ['file-upload'],
     mutationFn: async (f: File) => {
-      let file: UploadFile = { id: f.name, file: f, state: "LOCAL" }
+      let file: UploadFile = { id: f.name, file: f, state: "UPLOADING" }
+      upsertFile(file)
       const uploadedFile = getFileById(file.id)
       if(uploadedFile && (uploadedFile.state == 'UPLOADED' || uploadedFile.state == 'UPLOADING')) {
         throw new Error('file is already uploading/uploaded')
@@ -99,18 +105,19 @@ export const useFileUpload = () => {
       return file
     },
     onError: (e, file) => {
-      toast.error('上传失败，请稍后再试')
+      toast.error('上传失败，请稍后再试', {description: e.message})
       console.error(e)
     },
     onSuccess: async (data) => {
       upsertFile(data)
     }
   })
-  const {files, upsertFile, removeFile, getFileById} = useFileStore()
+  const {files, upsertFile, removeFile, getFileById, removeAll} = useFileStore()
   return {
     files,
     uploadFile:mutate,
-    removeFile
+    removeFile,
+    removeAll,
   }
 }
 

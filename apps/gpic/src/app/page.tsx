@@ -6,7 +6,6 @@ import {Tool} from "@/app/tool";
 export default function DrawPage() {
 
   return (
-
       <main className="flex-1 flex flex-col items-center p-4 md:p-8">
         <section id="tools" className="w-full max-w-4xl mx-auto mb-20 scroll-mt-24">
           <div className="text-center mb-12 animate-fade-in">

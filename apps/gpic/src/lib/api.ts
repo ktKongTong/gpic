@@ -11,15 +11,50 @@ const fetchIns = ofetch.create({
 
 type TaskCreate = {
   files: string[],
-  style: string[],
-  prompt?: string,
   times?: number,
   batch?: boolean
 }
 
+type StyleInput = {
+  styleId: string,
+} | {
+  reference: string[],
+  prompt: string
+}
+
+type TaskCreateV2 = {
+  files: string[],
+  styles: StyleInput[]
+  count?: number,
+  size?: 'auto' |'1x1'| '3x2' | '2x3',
+  batch?: boolean
+}
+
+type PresetStyle = {
+  id: string,
+  friendlyStyleId: string,
+  version: number,
+  i18n: string,
+  name: string,
+  aliases: string[],
+  examples: string[],
+  prompt: string,
+  reference: string[],
+}
+type Style = {
+  prompt: string
+  reference: string
+} | { styleId: string }
+
+// preset style, or custom style
+
 class API {
 
   constructor() {}
+
+  getStyles() {
+    return fetchIns<PresetStyle[]>('/api/style')
+  }
 
   getTasks() {
     return fetchIns<Task[]>('/api/task')
@@ -31,6 +66,12 @@ class API {
 
   createTask(input: TaskCreate) {
     return fetchIns<Task>(`/api/task/image/flavor-image`, {
+      method: 'POST',
+      body: input
+    })
+  }
+  createTaskV2(input: TaskCreateV2) {
+    return fetchIns<Task>(`/api/v2/task/image/flavor-image`, {
       method: 'POST',
       body: input
     })

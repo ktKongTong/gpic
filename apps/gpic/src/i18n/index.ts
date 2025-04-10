@@ -1,24 +1,80 @@
 import {createTrans} from "@ktfun/sts-i18n-react";
 
-const tranMap = {
-  "zh": {
-    "app": {
-      "title": "生成图片",
-      "desc": "使用 gpt-4o 生成图片",
-      "gallery": "样例",
-      "faq": "常见问题",
-      "tools": "工具"
+const en = {
+  'components': {
+    'uploader': {
+      'tip': 'Click to upload or drag & drop image here'
     }
   },
-  "en": {
-    "app": {
-      "title": "Generate Image",
-      "desc": "Generate image with gpt-4o",
-      "gallery": "Gallery",
-      "faq": "FAQ",
-      "tools": "Tools"
+  'pages': {
+    'home': {
+      'label': {
+        'upload': "Upload Images",
+        "flavor": "Styles",
+        'size': "Size",
+      }
+    }
+  }
+} as const
+
+const zh = {
+  'components': {
+    'uploader': {
+      'tip': '点击上传或拖拽图片到这里'
+    }
+  },
+  'pages': {
+    'home': {
+      'label': {
+        'upload': "上传图片",
+        "style": "风格",
+        'size': "尺寸",
+      }
     }
   }
 }
+
+const tranMap = {
+  "zh": {
+    'components': {
+      'uploader': {
+        'tip': 'Click to upload or drag & drop image here'
+      }
+    },
+    'pages': {
+      'home': {
+        'label': {
+          'upload': "Upload Images",
+          "style": "Styles",
+          'size': "Size",
+        },
+        'button': {
+          'batch': 'Batch',
+          'draw': 'Draw'
+        }
+      }
+    }
+  },
+  "en": {
+    'components': {
+      'uploader': {
+        'tip': 'Click to upload or drag & drop image here'
+      }
+    },
+    'pages': {
+      'home': {
+        'label': {
+          'upload': "Upload Images",
+          "style": "Style",
+          'size': "Size",
+        },
+        'button': {
+          'batch': 'Batch',
+          'draw': 'Draw'
+        }
+      }
+    }
+  }
+} as const
 
 export const {localeCtx, LocaleProvider, useLocale, useTrans} = createTrans(tranMap)
