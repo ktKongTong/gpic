@@ -25,6 +25,11 @@
       "types": "./dist/types/shared.d.ts",
       "import": "./dist/esm/shared.js",
       "require": "./dist/cjs/shared.js"
+    },
+    "./do": {
+      "types": "./dist/types/do.d.ts",
+      "import": "./dist/esm/do.js",
+      "require": "./dist/cjs/do.js"
     }
   },
   "dependencies": {
@@ -49,7 +54,7 @@
   "devDependencies": {
     "@types/node": "^20",
     "typescript": "^5",
-    "wrangler": "^4.5.1",
+    "wrangler": "catalog:",
     "tsup": "^8.4.0"
   }
 }

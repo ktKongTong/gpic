@@ -25,7 +25,6 @@ const defaultState = {
   failed: 0
 }
 
-//@ts-ignore
 export class BatchTaskStateDO extends DurableObject {
   taskType: TaskType | undefined
   private services: ReturnType<typeof createService>

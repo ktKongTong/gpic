@@ -101,6 +101,6 @@
     "drizzle-kit": "^0.30.6",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "wrangler": "^4.5.1"
+    "wrangler": "catalog:"
   }
 }

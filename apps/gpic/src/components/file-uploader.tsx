@@ -109,7 +109,6 @@ const FileUploader: React.FC<FileUploaderProps> = () => {
               <UploadCloud className="h-8 w-8 text-white/70" />
             </div>
             <p className="text-white/70 text-center px-4">
-              {t('title')}
               Click to upload or drag & drop image here
             </p>
           </>

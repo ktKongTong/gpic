@@ -2,9 +2,9 @@
   "name": "@repo/mq-consumer-image-task",
   "version": "0.0.0",
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20250327.0",
+    "@cloudflare/workers-types": "catalog:",
     "typescript": "^5.8",
-    "wrangler": "4.5.1"
+    "wrangler": "catalog:"
   },
   "private": true,
   "type": "module",

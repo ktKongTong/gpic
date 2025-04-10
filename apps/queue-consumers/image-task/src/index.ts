@@ -1,10 +1,6 @@
 import { Task, ConsumerService } from "@repo/service";
 export { DOTaskStatus } from './do'
 import Env = Cloudflare.Env;
-type Message<T> = {
-  type: string;
-  payload: T
-};
 type ImageTask = Task
 
 export default {
@@ -14,6 +10,7 @@ export default {
       console.log("receive message", msg.id, msg.attempts, msg.timestamp, msg.body)
       msg.ack()
       try {
+        // @ts-ignore
         await consumerService.handleMsg(msg.body)
       }catch (e) {
         console.error(e)
