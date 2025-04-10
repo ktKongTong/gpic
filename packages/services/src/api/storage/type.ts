@@ -34,6 +34,8 @@ export type TaskUpdateDBO = {
   type?: TaskType,
   retry?: number,
   status: TaskStatus,
+  startedAt?: Date,
+  endedAt?: Date,
   metadata?: any,
 }
 
@@ -42,6 +44,7 @@ export type ExecutionCreateDBO = {
   usage: number,
   state?: any,
   input: any,
+  startedAt: Date,
   status: ExecutionStatus
 }
 
@@ -49,5 +52,7 @@ export type ExecutionUpdateDBO = {
   id: string,
   output?: any,
   state?: any,
-  status: ExecutionStatus
+  endedAt?: Date,
+  status: ExecutionStatus,
+
 }

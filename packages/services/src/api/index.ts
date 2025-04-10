@@ -49,10 +49,8 @@ app.on(["POST", "GET"], "/auth/*", (c) => {
 
 app.route('/', fileRoute)
 app.route('/', aiRoute)
-app.route('/', taskRoute)
 app.route('/', styleRoute)
+app.route('/', taskRoute)
 app.route('/v2', taskV2Route)
-
-console.log('api', app.routes)
 
 export { app as route }

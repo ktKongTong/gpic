@@ -1,7 +1,7 @@
 import {DAO, ExecutionCreateDBO, ExecutionUpdateDBO} from "../storage/type";
 
 
-export class HistoryService {
+export class ExecutionService {
   constructor(private dao: DAO) {
 
   }

@@ -6,7 +6,7 @@
     "migrate": "drizzle-kit migrate",
     "generate": "drizzle-kit generate",
     "studio": "drizzle-kit studio",
-    "d1:mi": "wrangler d1 execute tiny_pic_preview --remote --file=./drizzle/0002_certain_kat_farrell.sql",
+    "d1:mi": "wrangler d1 execute tiny_pic_preview --remote --file=./drizzle/0005_lumpy_frank_castle.sql",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

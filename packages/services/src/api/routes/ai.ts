@@ -2,7 +2,6 @@ import {Hono} from "hono";
 import {z} from "zod";
 import { getService } from "../middlewares/service-di";
 import { streamSSE } from 'hono/streaming'
-import {mockEvent} from "./mock";
 
 const app = new Hono().basePath('/ai')
 
@@ -17,18 +16,6 @@ function getRandomDelay(minSeconds = 1, maxSeconds = 10) {
 function wait(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
-
-app.post('/image/flavor-style/mock', async (c) => {
-  return streamSSE(c, async (stream) => {
-    await stream.writeSSE({event: 'start', id: Date.now().toString(), data: 'drawing'})
-    for(const event of mockEvent) {
-        const delay = getRandomDelay(1, 10);
-        await wait(delay)
-        await stream.writeSSE(event)
-    }
-    await stream.close()
-  })
-})
 
 export const schema = z.object({
   files: z.string().array().max(5, "Maximum 5 files"),

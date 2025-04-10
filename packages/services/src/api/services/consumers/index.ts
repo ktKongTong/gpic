@@ -7,7 +7,7 @@ import { setCloudflareEnv } from "../../utils";
 import {Execution, executionStatus, Task, TaskStatus, taskStatus, taskType} from "../../storage/type";
 import {z} from "zod";
 import {getDO} from "../druable-object";
-import {Events, eventType} from "../druable-object/type";
+import { eventType } from "../druable-object/type";
 import {createService} from "../factory";
 
 const styleSchema = z.union([z.object({ styleId: z.string() }), z.object({
@@ -95,7 +95,7 @@ export class ConsumerService {
     state.pending = state.failed
     state.failed = 0
     const res = await this.services.taskService
-    .updateTask({id: task.id, status: taskStatus.PROCESSING, metadata: { state }})
+    .updateTask({id: task.id, status: taskStatus.PROCESSING, startedAt: new Date(), metadata: { state }})
     await taskDO.onTaskEvent({ taskId: task.id, event: eventType.BATCH_RETRY_FAILED, payload: res})
     const tasks = await this.services.taskService.getChildrenByTaskId(task.parentId!)
     const failedTasks = tasks.filter(it =>
@@ -130,7 +130,7 @@ export class ConsumerService {
       const inputs = matrixToArray(input)
       const state = {total: inputs.length, pending: inputs.length, processing: 0, completed: 0, failed: 0 }
       const newTask = await this.services.taskService
-        .updateTask({id: task.id, status: taskStatus.PROCESSING, metadata: {state} })
+        .updateTask({id: task.id, startedAt: new Date(), status: taskStatus.PROCESSING, metadata: {state} })
       await taskDO.onTaskEvent({ taskId: task.id, event: eventType.BATCH_START, payload: newTask })
       const tasks = await this.services.taskService
         .createBatchImageGenTask({ parentId: task.id, userId: task.userId, inputs: inputs })
@@ -138,7 +138,7 @@ export class ConsumerService {
       await this.services.mqService.batch(tasks.map(it => ({type: msgType.IMAGE_GEN, payload: it})))
     }catch (e) {
       console.error(e)
-      const res = await this.services.taskService.updateTask({ id: task.id, status: taskStatus.FAILED })
+      const res = await this.services.taskService.updateTask({ id: task.id, endedAt: new Date(), status: taskStatus.FAILED })
       await taskDO.onTaskEvent({ taskId: task.id, event: eventType.BATCH_FAILED, payload: res })
     }
   }
@@ -147,28 +147,32 @@ export class ConsumerService {
     const taskDO = getDO(task.parentId ?? task.id)
 
     const newTask = await this.services.taskService
-      .updateTask({ id: task.id, status: taskStatus.PROCESSING })
+      .updateTask({ id: task.id,startedAt: new Date(), status: taskStatus.PROCESSING })
     await taskDO.onTaskEvent({ taskId: task.id, event: eventType.TASK_PROCESSING, payload: newTask})
     const execution = await this.services.historyService
-      .createExecutionHistory({ taskId: task.id, input: task.input, usage: 0, status: executionStatus.PROCESSING })
+      .createExecutionHistory({ taskId: task.id, input: task.input, usage: 0, startedAt: new Date(),status: executionStatus.PROCESSING })
     try {
       await taskDO.onTaskEvent({ taskId: task.id, event:eventType.EXECUTION_PROCESSING, payload: execution })
-
       const res = await this.processAIMessage(task, execution)
       const updatedExecution = await this.services.historyService
-        .updateExecutionHistory({ id: execution.id, ...res })
+        .updateExecutionHistory({ id: execution.id, ...res, endedAt: new Date() })
       await taskDO.onTaskEvent({ taskId: task.id, event: eventType.EXECUTION_COMPLETE, payload: updatedExecution })
       const newStatus = res.status === 'completed' ? taskStatus.SUCCESS : taskStatus.FAILED
-      const updatedTask = await this.services.taskService.updateTask({id: task.id, status: newStatus })
+      const updatedTask = await this.services.taskService.updateTask({
+        id: task.id,
+        endedAt: new Date(),
+        status: newStatus,
+      })
       await taskDO.onTaskEvent({ taskId: task.id, event: eventType.TASK_COMPLETE, payload: updatedTask })
     }catch (e) {
       const updated = await this.services.historyService.updateExecutionHistory({
         id: execution.id,
         state: e,
         status: executionStatus.FAILED,
+        endedAt: new Date()
       })
       await taskDO.onTaskEvent({ taskId: task.id, event: eventType.EXECUTION_COMPLETE, payload: updated })
-      const updatedTask = await this.services.taskService.updateTask({ id: task.id, status: taskStatus.FAILED })
+      const updatedTask = await this.services.taskService.updateTask({ id: task.id, endedAt: new Date(), status: taskStatus.FAILED })
       await taskDO.onTaskEvent({ taskId: task.id, event: eventType.TASK_COMPLETE, payload: updatedTask})
     }
   }

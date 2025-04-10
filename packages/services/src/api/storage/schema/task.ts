@@ -20,6 +20,8 @@ export const history = sqliteTable("task_history", {
   output: text('output', {mode: 'json'}),
   state: text('state', {mode: 'json'}),
   status: text('status', {mode: 'text', enum: executionStatus}).notNull(),
+  startedAt: integer('started_at', {mode: 'timestamp_ms'}),
+  endedAt: integer('ended_at', {mode: 'timestamp_ms'}),
   ...commonTimeFields
 }, (table) => [
   index('task_history_user_id_idx').on(table.taskId),
@@ -36,6 +38,8 @@ export const task = sqliteTable("task", {
   type: text('type', { enum: taskType }).notNull(),
   retry: integer('retry', {mode: 'number'}).default(0).notNull(),
   status: text('status', {mode: 'text', enum: taskStatus}).notNull(),
+  startedAt: integer('started_at', {mode: 'timestamp_ms'}),
+  endedAt: integer('ended_at', {mode: 'timestamp_ms'}),
   metadata: text('metadata', {mode: 'json'}).notNull(),
   ...commonTimeFields
 }, (table) => [

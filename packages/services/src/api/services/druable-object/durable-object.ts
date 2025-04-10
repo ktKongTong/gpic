@@ -117,11 +117,9 @@ export class BatchTaskStateDO extends DurableObject {
         await this.services.taskService.updateTask({id: newState.id, metadata: newState.metadata, status: newState.status })
         await this.broadcast(newState)
       }else {
-        console.log("Handling", data)
         const currentState = await this.getState()
         // @ts-ignore
         const newState = handleTaskEvent(data, currentState)
-        console.log("new State", newState)
         // @ts-ignore
         await this.setState(newState)
         await this.services.taskService.updateTask({id: newState.id, metadata: newState.metadata, status: newState.status })

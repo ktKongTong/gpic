@@ -22,6 +22,27 @@
       "when": 1744214955970,
       "tag": "0002_certain_kat_farrell",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1744303034462,
+      "tag": "0003_nifty_mole_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1744303178642,
+      "tag": "0004_nifty_valeria_richards",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1744304348394,
+      "tag": "0005_lumpy_frank_castle",
+      "breakpoints": true
     }
   ]
 }

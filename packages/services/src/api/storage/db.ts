@@ -1,7 +1,7 @@
 import { drizzle, DrizzleD1Database } from 'drizzle-orm/d1';
 import * as schema from "./schema";
 import {QuotaDAO} from "./dao/quota";
-import {HistoryDAO} from "./dao/gallery";
+import {HistoryDAO} from "./dao/execution";
 import {TaskDAO} from "./dao/task";
 import {StyleDAO} from './dao/style'
 import {getCloudflareEnv} from "../utils";

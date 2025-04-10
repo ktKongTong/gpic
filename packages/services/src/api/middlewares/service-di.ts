@@ -1,7 +1,7 @@
 import { Context, MiddlewareHandler } from "hono";
 import {
   FileService,
-  HistoryService,
+  ExecutionService,
   UserService,
   AIImageService,
   UserQuotaService,
@@ -18,7 +18,7 @@ declare module 'hono' {
     aiImageService: AIImageService
     fileService: FileService
     userQuotaService: UserQuotaService
-    historyService: HistoryService
+    historyService: ExecutionService
     taskService: TaskService
     mqService: MQService
     styleService: StyleService
@@ -49,7 +49,7 @@ export const ServiceDIMiddleware = (): MiddlewareHandler => {
     const quotaService = new UserQuotaService(userService, dao)
     const mqService = new MQService()
     const taskService = new TaskService(userService, mqService, dao)
-    const historyService = new HistoryService(dao)
+    const historyService = new ExecutionService(dao)
     c.set('userService', userService)
     c.set('fileService', fileService)
     c.set('aiImageService', aiImageService)
