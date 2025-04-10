@@ -34,4 +34,9 @@ export class StyleDAO {
       ...it.latest_style,
     }))
   }
+
+  async getStyleById(styleId: string) {
+    const [res] = await this.db.select().from(table.style).where(eq(table.style.id, styleId))
+    return res
+  }
 }

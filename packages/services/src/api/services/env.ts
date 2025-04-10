@@ -20,8 +20,6 @@ let env: Env | undefined = undefined
 export const backendEnv = (_env?: CloudflareEnv) => {
   if (!env) {
     env = backedEnvSchema.parse(_env ?? getCloudflareEnv())
-    console.log("loading env", env)
   }
-  console.log("env", env)
   return env as Env
 }

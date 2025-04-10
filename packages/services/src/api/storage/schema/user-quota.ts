@@ -14,7 +14,7 @@ export const style = sqliteTable("style", {
   styleId: text("style_friendly_id").notNull(),
   version: integer("prompt_version").notNull().$defaultFn(() => 1),
   type: text('type', { enum: ['system', 'user'] }).notNull(),
-  reference: text('reference', {mode: 'json'}).notNull().$defaultFn(() => []),
+  reference: text('reference', {mode: 'json'}).$type<string[]>().notNull().$defaultFn(() => []),
   prompt: text('prompt').notNull(),
   ...commonTimeFields
 }, (table) => [

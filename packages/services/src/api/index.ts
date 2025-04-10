@@ -6,10 +6,11 @@ import { ServiceDIMiddleware } from "./middlewares/service-di";
 import { getAuth } from "./services";
 import { contextStorage } from "hono/context-storage";
 import {ZodError} from "zod";
-import {BizError, ParameterError} from "./errors/route";
+import {BizError, ParameterError} from "./errors";
 import {timing} from "hono/timing";
 import {taskRoute} from "./routes/task";
 import {styleRoute} from "./routes/styles";
+import {taskV2Route} from "./routes/v2/task";
 
 const app = new Hono().basePath('/api')
 
@@ -34,10 +35,10 @@ app.onError((err, c) => {
 		return c.json({error: err.message}, err.code as any)
 	}
 	if(err instanceof ZodError) {
-		return c.json({error: 'schema validate failed'}, 400)
+		return c.json({error: err.message}, 400)
 	}
 	if(err instanceof ParameterError) {
-		return c.json({error: 'schema validate failed'}, 400)
+		return c.json({error: err.message}, 400)
 	}
 	return c.json({error: "Unknown Error"}, 500)
 })
@@ -50,5 +51,6 @@ app.route('/', fileRoute)
 app.route('/', aiRoute)
 app.route('/', taskRoute)
 app.route('/', styleRoute)
+app.route('/v2', taskV2Route)
 
 export { app as route }

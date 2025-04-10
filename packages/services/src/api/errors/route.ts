@@ -12,8 +12,8 @@ export class UnauthorizedError extends BizError {
 }
 
 export class NotFoundError extends BizError {
-  constructor() {
-    super('Not Found', 404)
+  constructor(message?: string) {
+    super(message ?? 'Not Found', 404)
   }
 }
 

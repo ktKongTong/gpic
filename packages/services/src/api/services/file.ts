@@ -40,36 +40,12 @@ export class FileService {
         }
     }
 
-    async uploadFile(file: Uint8Array, fileType?: string) {
-        const {fileKey, uploadURL} = await this.signUpload({ prefix: 'ai' })
+    async uploadFile(file: Uint8Array, prefix?: string) {
+        const {fileKey, uploadURL} = await this.signUpload({ prefix })
         const res = await fetch(uploadURL, { method: 'PUT', body: file })
         if (!res.ok) {
           throw new Error("failed to upload file")
         }
-        // filename, filesize, md5
         return `${env().S3_UC_ENDPOINT}/${fileKey}`
-    }
-
-    async directUpload(file: Uint8Array) {
-        // kv service get key
-        // const res = await fetch(uploadURL, { method: 'PUT', body: file })
-    }
-
-
-    async getFileByMd5(md5: string) {
-        // m
-        // check file exists
-        //   return null
-        // md5
-    }
-
-    async getFileURLById(key: string) {
-        const res = await fetch(`${env().S3_UC_ENDPOINT}/${key}`, {
-            method: 'HEAD'
-        })
-        if(!res.ok) {
-            throw new Error(`Could not find file ${key}`)
-        }
-        return `${env().S3_UC_ENDPOINT}/${key}`
     }
 }

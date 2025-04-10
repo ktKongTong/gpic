@@ -1,5 +1,4 @@
 import {getCloudflareEnv} from "../../utils";
-// import {BatchTaskStateDO} from "./durable-object";
 
 
 export const getDO = (taskId: string) => {

@@ -1,11 +1,4 @@
 
-import {getDAO} from "../../storage/db";
-import {FileService} from "../file";
-import {UserService} from "../user-service";
-import {MQService} from "../mq";
-import {TaskService} from "../task";
-import {HistoryService} from "../history";
-import {AIImageService} from "../ai/image";
 import {DurableObject} from "cloudflare:workers";
 import {
   Execution,
@@ -15,24 +8,7 @@ import {
   taskType,
 } from "../../storage/type";
 import { eventType } from "./type";
-
-const createService = (env: CloudflareEnv) => {
-  const dao = getDAO(env)
-  const fileService = new FileService();
-  const userService = new UserService();
-  const mqService = new MQService()
-  const taskService = new TaskService(userService, mqService, dao);
-  const historyService = new HistoryService(dao)
-  const aiService = new AIImageService(fileService)
-  return {
-    aiService,
-    mqService,
-    taskService,
-    userService,
-    fileService,
-    historyService
-  }
-}
+import {createService} from "../factory";
 
 type BatchState = {
   total: number;

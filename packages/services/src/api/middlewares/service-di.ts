@@ -1,17 +1,20 @@
 import { Context, MiddlewareHandler } from "hono";
-import { FileService } from "../services";
-import { UserService } from "../services";
-import { AIImageService } from "../services";
-import {UserQuotaService} from "../services";
+import {
+  FileService,
+  HistoryService,
+  UserService,
+  AIImageService,
+  UserQuotaService,
+  MQService,
+  StyleService,
+  TaskService
+} from "../services";
+
 import {getDAO} from "../storage/db";
-import {HistoryService} from "../services";
-import {TaskService} from "../services";
-import {MQService, StyleService} from "../services";
 
 declare module 'hono' {
   interface ContextVariableMap {
     userService: UserService
-    // eventService: EventService
     aiImageService: AIImageService
     fileService: FileService
     userQuotaService: UserQuotaService
@@ -40,13 +43,13 @@ export const ServiceDIMiddleware = (): MiddlewareHandler => {
   return async (c, next) => {
     const userService = new UserService()
     const fileService = new FileService()
-    const aiImageService = new AIImageService(fileService)
     const dao = getDAO()
+    const styleService = new StyleService(dao)
+    const aiImageService = new AIImageService(fileService, styleService)
     const quotaService = new UserQuotaService(userService, dao)
     const mqService = new MQService()
     const taskService = new TaskService(userService, mqService, dao)
     const historyService = new HistoryService(dao)
-    const styleService = new StyleService(dao)
     c.set('userService', userService)
     c.set('fileService', fileService)
     c.set('aiImageService', aiImageService)

@@ -1,42 +1,51 @@
-import { getDAO } from "../../storage/db";
-import { TaskService } from "../task";
-import {AIImageService, FileService, HistoryService, MQService, msgType, UserService, Message} from "../../services";
-import {getCloudflareEnv, setCloudflareEnv} from "../../utils";
+
+import {
+  msgType,
+  Message,
+} from "../mq";
+import { setCloudflareEnv } from "../../utils";
 import {Execution, executionStatus, Task, TaskStatus, taskStatus, taskType} from "../../storage/type";
 import {z} from "zod";
 import {getDO} from "../druable-object";
 import {eventType} from "../druable-object/type";
+import {createService} from "../factory";
 
-const createService = (env: CloudflareEnv) => {
-  const dao = getDAO(env)
-  const fileService = new FileService();
-  const userService = new UserService();
-  const mqService = new MQService()
-  const taskService = new TaskService(userService, mqService, dao);
-  const historyService = new HistoryService(dao)
-  const aiService = new AIImageService(fileService)
-  return {
-    aiService,
-    mqService,
-    taskService,
-    userService,
-    fileService,
-    historyService
-  }
-}
+const styleSchema = z.union([z.object({ styleId: z.string() }), z.object({
+    prompt: z.string(),
+    reference: z.string().array(),
+})])
 
+const schema = z.object({
+  files: z.string().array().min(1),
+  style: styleSchema,
+  size: z.coerce.string().optional(),
+})
+
+export const v2matrixInputSchema = z.object({
+  files: z.string().array().min(1).max(10, "Maximum 10 files"),
+  styles: styleSchema.array().min(1).max(5, "Maximum 5 style"),
+  count: z.coerce.number().min(1).max(100, "Maximum 100 count").optional().default(1),
+  size: z.coerce.string().optional(),
+  batch: z.coerce.boolean().optional().default(false),
+}).refine((data) => {
+  const total = data.styles.length * data.files.length * data.count
+  return total <= 100
+},{
+  message: "total task count should be less than 100",
+})
 const matrixInputSchema = z.object({
   files: z.string().array().min(1).max(20),
   times: z.coerce.number().min(1).max(10).default(1).optional(),
   style: z.string().array().min(1).max(5),
 })
 
-const matrixToArray = (input: z.infer<typeof matrixInputSchema>) => {
+
+const matrixToArray = (input: z.infer<typeof v2matrixInputSchema>) => {
   const res = []
   for (const file of input.files) {
-    for (const style of input.style) {
-      for (let j = 0; j < (input.times ?? 1); j++) {
-        res.push({files: [file], style})
+    for (const style of input.styles) {
+      for (let j = 0; j < (input.count ?? 1); j++) {
+        res.push({files: [file], style, size: input.size})
       }
     }
   }
@@ -116,7 +125,7 @@ export class ConsumerService {
       return
     }
     try {
-      const input = matrixInputSchema.parse(task.input)
+      const input = v2matrixInputSchema.parse(task.input)
       const inputs = matrixToArray(input)
       const state = {total: inputs.length, pending: inputs.length, processing: 0, completed: 0, failed: 0 }
       const newTask = await this.services.taskService
@@ -164,7 +173,7 @@ export class ConsumerService {
   async processAIMessage(task: Task, execution: Execution) {
     let exec = execution
     const taskStateDO = getDO(task.parentId ?? task.id)
-    const result = await this.services.aiService.generateImage(task.input as any)
+    const result = await this.services.aiService.generateImageV2(task.input as any)
     let ctx = { success: false, output: undefined as any, usage: 0, message: '', progress: '0' }
     for await (const event of result.fullStream) {
       switch (event.type) {

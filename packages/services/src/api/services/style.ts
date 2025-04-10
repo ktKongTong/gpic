@@ -12,4 +12,8 @@ export class StyleService {
     const styles = await this.dao.style.getStyles(preferI18n)
     return styles;
   }
+  async getStyleById(id: string) {
+    const styles = await this.dao.style.getStyleById(id)
+    return styles;
+  }
 }

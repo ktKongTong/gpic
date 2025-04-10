@@ -7,7 +7,7 @@ type TaskInput = {
 }
 
 type BatchTaskInput = {
-  inputs: { files: string[], style: string }[],
+  inputs: any[],
   parentId?: string,
   userId: string,
 }
@@ -18,9 +18,8 @@ export class TaskService {
     private readonly userService: UserService,
     private readonly mqService: MQService,
     private readonly dao: DAO
-  ) {
+  ) {}
 
-  }
   async createBatchImageGenTask(task: BatchTaskInput) {
     const tasks = task.inputs.map(it => ({
       userId: task.userId,

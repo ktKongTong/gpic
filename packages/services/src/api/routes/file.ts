@@ -35,7 +35,7 @@ app.put('/upload',
       return c.json({ url: url })
     }
     startTime(c, 'upload');
-    url = await fileService.uploadFile(bytes)
+    url = await fileService.uploadFile(bytes, 'user')
     endTime(c, 'upload');
     getCloudflareContext().ctx.waitUntil(kv.put(`file_${key}`, url))
     return c.json({ url: url })
