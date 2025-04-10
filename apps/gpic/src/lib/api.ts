@@ -92,6 +92,12 @@ class API {
     })
   }
 
+  getBalance() {
+    return fetchIns<{balance: number}>('/api/balance', {
+      method: 'GET',
+    })
+  }
+
   batchUpload(files: File[]) {
     const formData = new FormData()
     files.forEach((file) => {

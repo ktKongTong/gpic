@@ -12,7 +12,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full py-4 px-4 md:px-8 lg:px-12 flex justify-between items-center animate-fade-in">
+    <header className="sticky  top-0 z-50 w-full py-4 px-4 md:px-8 lg:px-12 flex justify-between items-center animate-fade-in">
       <Link href="/" className="text-2xl font-black">
         GPIC
       </Link>
@@ -22,10 +22,7 @@ const Header: React.FC = () => {
             Home
           </Link>
           <Link href={'/task'} className={"text-white/80 hover:text-white transition-colors"}>
-            Home
-          </Link>
-          <Link href={'/gallery'} className={"text-white/80 hover:text-white transition-colors"}>
-            Gallery
+            Task
           </Link>
           <Link href={'/about'} className={"text-white/80 hover:text-white transition-colors"}>
             About

@@ -7,12 +7,11 @@ import {cn} from "@/lib/utils";
 import {Label} from "@/components/ui/label";
 import React, {useState} from "react";
 import {useStyles} from "@/hooks/use-styles";
-import Style, {StyleForm} from "@/app/v2/style";
+import Style, {StyleForm} from "./style";
 import {useFiles} from "@/hooks/use-file-upload";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
-import FileUploader from "@/app/v2/upload";
-import {friendlyWords} from "friendlier-words";
+import FileUploader from "./upload";
 import {useGenerateTasksV2} from "@/hooks/use-task";
 import {zodResolver} from "@hookform/resolvers/zod";
 
@@ -191,8 +190,9 @@ export default function Form() {
         <Button
           variant={'ghost'}
           className={cn(
-            'inline-flex items-center justify-center gap-1 rounded-full p-2 px-3 border backdrop-blur-2xl',
-          )}
+            'inline-flex items-center justify-center gap-1 rounded-full p-2 px-3 border border-white/30',
+            'data-[selected=true]:bg-accent'
+            )}
 
           data-selected={value.batch}
           onClick={() => toggleBatch()}
@@ -202,7 +202,7 @@ export default function Form() {
         </Button>
         <Button
           variant="ghost"
-          className=" inline-flex items-center justify-center backdrop-blur-2xl gap-1 rounded-full p-2 border"
+          className=" inline-flex border border-white/30 backdrop-blur-xl items-center justify-center gap-1 rounded-full p-2"
           onClick={() => onSubmit()}
         >
           <Pencil className="h-4 w-4" /><span className={'hidden md:inline'}>{t('pages.home.button.draw')}</span>

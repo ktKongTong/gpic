@@ -6,7 +6,7 @@ import {taskStatus} from "@repo/service/shared";
 import {Calendar, Clock7, Ellipsis} from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { TaskItemV2 } from "@/app/task/task-item-v2";
+import TaskItem from "@/app/task/task-item";
 
 
 type BatchImageTaskDetailProps = {
@@ -116,10 +116,10 @@ export default function BatchTaskImageDetail({task}: BatchImageTaskDetailProps) 
               show logs
             </div>
         }
-        <div className={'grid md:grid-cols-2 gap-2'}>
+        <div className={'grid md:grid-cols-3 sm:grid-cols-2 justify-center justify-items-center gap-2'}>
           {
             task.children?.map((item, index) => (
-              <TaskItemV2 task={item} key={index} className={'max-w-auto'}/>
+              <TaskItem task={item} key={index} className={''}/>
             ))
           }
         </div>

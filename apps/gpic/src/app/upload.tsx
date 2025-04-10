@@ -154,7 +154,7 @@ const FileUploader: React.FC<FileUploaderProps> = () => {
       <div
         className={
         cn(`drop-zone ${isDragging ? 'border-primary bg-white/5' : ''} flex flex-col justify-center items-center cursor-pointer`,
-          'w-full bg-white/30 backdrop-blur-2xl max-h-96 overflow-y-auto bg-blend-soft-light min-h-60 h-auto rounded-lg border-dashed border-white border'
+          'w-full backdrop-blur-md bg-card/40 max-h-96 overflow-y-auto bg-blend-soft-light min-h-60 h-auto rounded-lg border-dashed border-white border'
           )
       }
         onDragOver={handleDragOver}

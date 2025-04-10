@@ -5,6 +5,7 @@ import "./globals.css";
 import {Toaster} from "sonner";
 import Providers from "@/components/providers";
 import React from "react";
+import Header from "./header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,7 +36,9 @@ export default function RootLayout(
     >
     <Providers>
       <div className={'mx-auto bg-ghibli-background'}>
-        <div className="h-full min-h-screen flex flex-col w-full max-w-4xl mx-auto grow">
+        <div className="h-full min-h-screen flex flex-col w-full max-w-4xl  mx-auto grow">
+          <Header/>
+          {/*py-4 px-4 md:px-8 lg:px-12*/}
           {children}
         </div>
       </div>

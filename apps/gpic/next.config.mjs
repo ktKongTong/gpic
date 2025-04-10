@@ -4,6 +4,17 @@ initOpenNextCloudflareForDev().then(() => {
     console.log("Cloudflare loaded");
 })
 const nextConfig = {
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'picit-usercontent.ktlab.io',
+                port: '',
+                pathname: '/**',
+                search: '',
+            },
+        ],
+    },
   /* config options here */
     // async rewrites() {
     //     return [
