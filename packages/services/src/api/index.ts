@@ -53,4 +53,6 @@ app.route('/', taskRoute)
 app.route('/', styleRoute)
 app.route('/v2', taskV2Route)
 
+console.log('api', app.routes)
+
 export { app as route }

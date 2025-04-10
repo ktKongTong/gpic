@@ -7,7 +7,7 @@ import { setCloudflareEnv } from "../../utils";
 import {Execution, executionStatus, Task, TaskStatus, taskStatus, taskType} from "../../storage/type";
 import {z} from "zod";
 import {getDO} from "../druable-object";
-import {eventType} from "../druable-object/type";
+import {Events, eventType} from "../druable-object/type";
 import {createService} from "../factory";
 
 const styleSchema = z.union([z.object({ styleId: z.string() }), z.object({
@@ -108,8 +108,9 @@ export class ConsumerService {
 
   async handleTaskRetry(task: Task) {
     const taskDO = getDO(task.parentId ?? task.id)
+
     const [updated] = await this.services.taskService.retryTasks([task.id])
-    await taskDO.onTaskEvent({ taskId: task.id, event: eventType.RETRY_TASK_FAILED, payload: updated })
+
     await this.handleSingleImageGenTask(updated)
   }
 
@@ -144,13 +145,15 @@ export class ConsumerService {
 
   async handleSingleImageGenTask(task: Task) {
     const taskDO = getDO(task.parentId ?? task.id)
+
     const newTask = await this.services.taskService
       .updateTask({ id: task.id, status: taskStatus.PROCESSING })
     await taskDO.onTaskEvent({ taskId: task.id, event: eventType.TASK_PROCESSING, payload: newTask})
     const execution = await this.services.historyService
       .createExecutionHistory({ taskId: task.id, input: task.input, usage: 0, status: executionStatus.PROCESSING })
-    await taskDO.onTaskEvent({ taskId: task.id, event:eventType.EXECUTION_PROCESSING, payload: execution })
     try {
+      await taskDO.onTaskEvent({ taskId: task.id, event:eventType.EXECUTION_PROCESSING, payload: execution })
+
       const res = await this.processAIMessage(task, execution)
       const updatedExecution = await this.services.historyService
         .updateExecutionHistory({ id: execution.id, ...res })

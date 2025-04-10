@@ -26,7 +26,7 @@ export const schema = z.object({
   message: "total task count should be less than 100",
 })
 
-app.post('/image/flavor-style', async (c) => {
+app.post('/image/flavor-image', async (c) => {
   const body = await c.req.json()
   const data = schema.parse(body)
   const  {mqService, taskService } = getService(c)
@@ -35,7 +35,7 @@ app.post('/image/flavor-style', async (c) => {
     await mqService.enqueue({type: msgType.BATCH_IMAGE_GEN, payload: task})
     return c.json(task)
   }
-  const task = await taskService.createImageGenTask({input:{...data, style: data.styles[0]}})
+  const task = await taskService.createImageGenTask({input:{files: data.files, size: data.size, style: data.styles[0]}})
   await mqService.enqueue({type: msgType.IMAGE_GEN, payload: task})
   return c.json(task)
 })

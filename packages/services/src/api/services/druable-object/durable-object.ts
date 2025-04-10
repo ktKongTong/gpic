@@ -7,7 +7,7 @@ import {
   TaskType,
   taskType,
 } from "../../storage/type";
-import { eventType } from "./type";
+import {Events, eventType} from "./type";
 import {createService} from "../factory";
 
 type BatchState = {
@@ -41,26 +41,32 @@ export class BatchTaskStateDO extends DurableObject {
   }
 
   // https://developers.cloudflare.com/durable-objects/observability/troubleshooting/#durable-object-reset-because-its-code-was-updated
-  async setState(state: BatchTaskState) {
+  async setState(state: BatchTaskState, retried: boolean = false) {
     try {
       this.state = state
       await this.ctx.storage.put('state', state)
     } catch (e) {
-      await this.setState(state)
+      if(!retried) {
+        await this.setState(state, true)
+      }
     }
   }
 
-  async getState(): Promise<BatchTaskState> {
+  async getState(retried: boolean = false): Promise<BatchTaskState> {
     try {
       if(this.state) return this.state
       this.state = (await this.ctx.storage.get('state')) as BatchTaskState
       return this.state
     }catch (e) {
-      return await this.getState()
+      if(!retried) {
+        return await this.getState(true)
+      }
+      this.state = (await this.ctx.storage.get('state')) as BatchTaskState
+      return this.state
     }
   }
 
-  async initialize(task: Task): Promise<boolean> {
+  async initialize(task: Task, retried: boolean = false): Promise<boolean> {
     return this.ctx.blockConcurrencyWhile(async () => {
       try {
         if (this.initialized) return true
@@ -70,7 +76,10 @@ export class BatchTaskStateDO extends DurableObject {
         await this.ctx.storage.put('initialized', true)
         return true
       }catch (e) {
-        return await this.initialize(task)
+        if(!retried) {
+          return await this.initialize(task, true)
+        }
+        throw e
       }
     })
   }
@@ -81,13 +90,16 @@ export class BatchTaskStateDO extends DurableObject {
     })
   }
 
-  async getTaskType(): Promise<TaskType> {
+  async getTaskType(retried: boolean = false): Promise<TaskType> {
     try {
       if(this.taskType) return this.taskType
       this.taskType = (await this.ctx.storage.get('task-type')) as TaskType
       return this.taskType
     }catch (e) {
-      return await this.getTaskType()
+      if(!retried) {
+        return await this.getTaskType(true)
+      }
+      throw e
     }
   }
 
@@ -99,13 +111,17 @@ export class BatchTaskStateDO extends DurableObject {
       const type = await this.getTaskType()
       if(type === taskType.BATCH) {
         // @ts-ignore
-        const newState = handleBatchTaskEvent(data, this.getState())
+        const currentState = await this.getState()
+        const newState = handleBatchTaskEvent(data, currentState)
         await this.setState(newState)
         await this.services.taskService.updateTask({id: newState.id, metadata: newState.metadata, status: newState.status })
         await this.broadcast(newState)
       }else {
+        console.log("Handling", data)
+        const currentState = await this.getState()
         // @ts-ignore
-        const newState = handleTaskEvent(data, this.getState())
+        const newState = handleTaskEvent(data, currentState)
+        console.log("new State", newState)
         // @ts-ignore
         await this.setState(newState)
         await this.services.taskService.updateTask({id: newState.id, metadata: newState.metadata, status: newState.status })
@@ -127,42 +143,7 @@ type ImageTaskState = Task & {
   execution?: Execution
 }
 
-type BatchTaskCreateEvent = { taskId: string, event: typeof eventType.BATCH_CREATE, payload: Task }
-type BatchTaskStartEvent = { taskId: string, event: typeof eventType.BATCH_START, payload: Task }
-type TaskCreateEvent = { taskId: string, event: typeof eventType.TASK_CREATE, payload: Task[] }
 
-// item
-type TaskProcessingEvent = { taskId: string, event: typeof eventType.TASK_PROCESSING, payload: Task }
-
-// type TaskExecutionCreateEvent = { taskId: string, event: typeof eventType.BATCH_CHILD_EXECUTION_PROCESSING, payload: Execution }
-type TaskExecutionProcessingEvent = { taskId: string, event: typeof eventType.EXECUTION_PROCESSING, payload: Execution }
-type TaskExecutionUpdateEvent = { taskId: string, event: typeof eventType.EXECUTION_UPDATE, payload: Execution }
-// type TaskExecutionFailEvent = { taskId: string, event: typeof eventType.BATCH_CHILD_EXECUTION_FAIL, payload: Execution }
-type TaskExecutionCompletedEvent = { taskId: string, event: typeof eventType.EXECUTION_COMPLETE, payload: Execution }
-type TaskFailEvent = { taskId: string, event: typeof eventType.TASK_FAIL, payload: Task }
-type TaskCompletedEvent = { taskId: string, event: typeof eventType.TASK_COMPLETE, payload: Task }
-type BatchTaskFailedEvent = { taskId: string, event: typeof eventType.BATCH_FAILED, payload: Task }
-type BatchTaskCompletedEvent = { taskId: string, event: typeof eventType.BATCH_FAILED, payload: Task }
-
-// retry task failed
-type TaskRetryEvent =  { taskId: string, event: typeof eventType.RETRY_TASK_FAILED, payload: Task }
-
-// retry task failed
-type BatchTaskRetryEvent =  { taskId: string, event: typeof eventType.BATCH_RETRY_FAILED, payload: Task }
-
-type Events = BatchTaskCreateEvent
-  | BatchTaskStartEvent
-  | TaskCreateEvent
-  | TaskProcessingEvent
-  | TaskExecutionProcessingEvent
-  | TaskExecutionUpdateEvent
-  | TaskExecutionCompletedEvent
-  | TaskFailEvent
-  | TaskCompletedEvent
-  | BatchTaskFailedEvent
-  | BatchTaskCompletedEvent
-  | TaskRetryEvent
-  | BatchTaskRetryEvent
 
 
 type TaskState = {
