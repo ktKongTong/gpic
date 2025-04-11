@@ -43,6 +43,13 @@
       "when": 1744304348394,
       "tag": "0005_lumpy_frank_castle",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1744367658362,
+      "tag": "0006_open_sersi",
+      "breakpoints": true
     }
   ]
 }
