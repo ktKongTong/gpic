@@ -9,16 +9,20 @@ import {cn} from "@/lib/utils";
 interface FileUploaderProps {
 }
 
-export const ImagePreview = ({file}: {file: UploadFile}) => {
+export const ImagePreview = ({
+  file
+}: {
+  file: UploadFile
+}) => {
   const { uploadFile, removeFile } = useFiles()
   return <div className={'h-20 w-20 rounded-lg relative'} onClick={(e) => {e.stopPropagation()}}>
     {
       (file.preview || file.url) ? <img
         src={file.preview || file.url}
         alt="Preview"
-        className="h-20 w-20 object-contain bg-white/80 rounded-lg"
+        className="h-20 w-20 object-contain rounded-lg  bg-card/40"
       /> : (
-        <div className={'max-h-full max-w-full object-contain rounded-lg bg-black/70'}></div>
+        <div className={'max-h-full max-w-full object-contain rounded-lg bg-card/40'}></div>
       )
     }
     {
@@ -150,11 +154,13 @@ const FileUploader: React.FC<FileUploaderProps> = () => {
     }
   };
 
+  const moreThanNine = files.length > 9
+  const restSize = files.length - 9
   return (
       <div
         className={
         cn(`drop-zone ${isDragging ? 'border-primary bg-white/5' : ''} flex flex-col justify-center items-center cursor-pointer`,
-          'w-full backdrop-blur-md bg-card/40 max-h-96 overflow-y-auto bg-blend-soft-light min-h-60 h-auto rounded-lg border-dashed border-white border'
+          'w-full bg-card/30 backdrop-blur-xl max-h-96 overflow-y-auto bg-blend-soft-light min-h-60 h-auto rounded-lg border-dashed border-white border'
           )
       }
         onDragOver={handleDragOver}
@@ -166,19 +172,37 @@ const FileUploader: React.FC<FileUploaderProps> = () => {
           files.length > 0 ? (
           <div className={'flex flex-wrap gap-2 justify-center items-center p-2'}>
             {
-              files.map((file) => (
+              !moreThanNine && files.map((file) => (
                 <div className=" overflow-hidden" key={file.id}>
                   <ImagePreview file={file}/>
                 </div>
               ))
             }
+            {
+              moreThanNine && <>
+                {
+                  files.slice(0,8).map((file) => (
+                    <div className=" overflow-hidden" key={file.id}>
+                      <ImagePreview file={file}/>
+                    </div>
+                  ))
+                }
+                <div className="relative overflow-hidden" key={files[8].id}>
+                    <div
+                        onClick={(e) => { e.stopPropagation()}}
+                      className={'absolute inset-0 bg-black/40 flex items-center justify-center rounded-lg z-10'}
+                    > + {restSize}</div>
+                    <ImagePreview file={files[8]}/>
+                </div>
+                </>
+            }
           </div>
         ) : (
           <>
             <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center mb-4">
-              <UploadCloud className="h-8 w-8 text-white/70" />
+              <UploadCloud className="h-8 w-8 text-white" />
             </div>
-            <p className="text-white/70 text-center px-4">
+            <p className="text-white text-center px-4">
               {t('components.uploader.tip')}
             </p>
           </>

@@ -1,6 +1,6 @@
 import {BatchImageTask, Task} from "@/hooks/use-task";
 import {cn, relativeDate} from "@/lib/utils";
-import {StatusBadge} from "@/components/task/badge";
+import {StatusBadge} from "./badge";
 import {taskType} from "@repo/service/shared";
 import {Layers} from "lucide-react";
 import {Button} from "@/components/ui/button";
@@ -44,12 +44,12 @@ const TaskItem: React.FC<BatchTaskItemProps> = ({ task, onClick, className,child
   const inputImage = combineImagesImage(task)
   const [idx, setIndex] = useState(0)
   const inputImages = inputImage.map(i => i.file)
-  const outputs= inputImage.map(i => i.output?.[0] ?? i.file)
+  const outputs= inputImage.map(i => i.output?.[idx] ?? i.file)
 
   return (
     <div
       className={cn(
-        " border rounded-lg relative aspect-square overflow-hidden",
+        " rounded-lg relative aspect-square overflow-hidden",
         "z-auto",
         className
       )}
@@ -57,7 +57,7 @@ const TaskItem: React.FC<BatchTaskItemProps> = ({ task, onClick, className,child
     >
       <Carousel className={
         cn(
-          "w-full inset-0 aspect-square inset-0 absolute  bg-black/40  backdrop-blur-sm",
+          "w-full aspect-square inset-0 absolute  bg-black/40  backdrop-blur-sm",
           task.status !== taskStatus.SUCCESS && 'blur-sm'
         )
       }
@@ -88,7 +88,11 @@ const TaskItem: React.FC<BatchTaskItemProps> = ({ task, onClick, className,child
         <div className={'flex gap-2 w-full items-center justify-start overflow-x-auto'}>
           {
             inputImages.map((img, i) =>
-              <Image alt={'input image'} className={'rounded-md aspect-square'} src={img} width={40} height={40} />
+              <Image
+                alt={'input image'}
+                onClick={() => {setIndex(i)}}
+                className={'rounded-md object-cover aspect-square'} src={img} width={40} height={40}
+              />
             )
           }
         </div>

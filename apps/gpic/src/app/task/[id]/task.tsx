@@ -21,7 +21,7 @@ export default function TaskDetail({id}:{id: string}) {
     </div>
   }
   if (task.type === taskType.IMAGE_GEN) {
-    return <ImageGenTaskDetail task={task}/>
+    return <ImageGenTaskDetail task={task} />
   }
   return <BatchTaskImageDetail task={task}/>
 }

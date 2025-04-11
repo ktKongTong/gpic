@@ -23,7 +23,7 @@ export default function Balance() {
 
   return <>
     <div className={'text-2xl font-semibold'}>Balance</div>
-    <div className={' rounded-lg bg-white/30 backdrop-blur-2xl p-4 border border-white/30'}>
+    <div className={' rounded-lg  backdrop-blur-2xl p-4 border'}>
 
       <div>累计消费：123 积分</div>
       <div>余额：123 积分</div>

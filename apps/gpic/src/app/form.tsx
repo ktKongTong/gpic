@@ -15,49 +15,9 @@ import FileUploader from "./upload";
 import {useGenerateTasksV2} from "@/hooks/use-task";
 import {zodResolver} from "@hookform/resolvers/zod";
 
-
-const useGenImageForm = () => {
-  const [prompt, setPrompt] = useState('');
-  const [selectedStyles, setStyle] = useState<string[]>([]);
-  const [times, setTimes] = useState<number>(1);
-  const {files} = useFiles()
-  const toggleStyles = (id: string) => {
-    const selected = selectedStyles.find(style => style === id)
-    if(selected) {
-      setStyle(s => s.filter(style => style !== id))
-
-    }else {
-      setStyle(s => [...s, id])
-    }
-  }
-  const [batch, setBatch] = useState(false);
-
-  const value = {
-    files: files.filter(it => it.state === 'UPLOADED').map(it => it.url) as string[],
-    style: selectedStyles,
-    prompt: prompt,
-    batch: batch,
-    times: times
-  }
-  const add = (value: number) => {
-    setTimes(times + value);
-  }
-  return {
-    value: value,
-    toggleStyles,
-    setPrompt,
-    setBatch,
-    add,
-    times
-  }
-}
 type Size = 'auto' | '1x1' | '3x2' | '2x3'
 // local style id
 const formSchema = z.object({
-  // files: z.string().array(),
-  // styles: z.object({
-  //   styleId: z.string().array(),
-  // }).array(),
   size: z.enum(['1x1', '3x2', '2x3', 'auto']).optional().default('auto'),
   count: z.coerce.number().min(1).optional().default(1),
   batch: z.boolean().default(false),
@@ -68,8 +28,6 @@ const useTaskForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      // files: [],
-      // styles: [],
       size: 'auto',
       count: 1,
       batch: false,
@@ -99,7 +57,10 @@ const useTaskForm = () => {
     }
   }
   const {files} = useFiles()
+  const [submitting, setSubmitting] = useState(false)
   const onSubmit = () => {
+    if(submitting) return
+    setSubmitting(true)
     const {count, batch, size} = form.getValues()
     const inputFiles = files.filter(it => it.state === 'UPLOADED')
       .map(it => it.url) as string[]
@@ -116,8 +77,12 @@ const useTaskForm = () => {
       size,
       batch,
     })
+    setSubmitting(false)
   }
+
+
   return {
+    submitting,
     value,
     toggleBatch,
     addCount,
@@ -135,6 +100,7 @@ const useTaskForm = () => {
 export default function Form() {
 
   const {
+    submitting,
     value,
     toggleBatch,
     addCount,
@@ -149,16 +115,16 @@ export default function Form() {
   const {t} = useTrans()
 
   return (<div className={'h-full flex flex-col gap-4'}>
-    <div className={'text-white font-semibold text-2xl'}>
+    <div className={' font-semibold text-2xl'}>
       {t('pages.home.label.upload')}
     </div>
     <FileUploader/>
-    <div className={'text-white font-semibold text-2xl'}>
+    <div className={'font-semibold text-2xl'}>
       {t('pages.home.label.style')}
     </div>
     <ul className={'flex flex-wrap justify-start items-center gap-3'}>
       {
-        isStyleLoading && Array.from({length: 12}).map((item, i) => <StyleSkeleton key={i}/>)
+        isStyleLoading && Array.from({length: 3}).map((item, i) => <StyleSkeleton key={i}/>)
       }
       {
         !isStyleLoading && styles.map(style => <Style
@@ -170,7 +136,7 @@ export default function Form() {
       }
       <StyleForm/>
     </ul>
-    <div className={'text-white font-semibold text-2xl'}>
+    <div className={'font-semibold text-2xl'}>
       {t('pages.home.label.size')}
     </div>
     <div className={'flex gap-2 items-center '}>
@@ -181,17 +147,17 @@ export default function Form() {
         {
           value.batch && <div className="flex items-center gap-2">
                 <Button
-                    variant={'ghost'} size={'icon'} disabled={value.count < 2} onClick={() => minusCount()}><Minus/></Button>
+                    variant={'secondary'} size={'icon'} disabled={value.count < 2} onClick={() => minusCount()}><Minus/></Button>
                 <span>{value.count}</span>
                 <Button
-                    variant={'ghost'} size={'icon'} disabled={value.count > 9} onClick={() => addCount()}><Plus/></Button>
+                    variant={'secondary'} size={'icon'} disabled={value.count > 9} onClick={() => addCount()}><Plus/></Button>
             </div>
         }
         <Button
-          variant={'ghost'}
+          variant={'secondary'}
           className={cn(
             'inline-flex items-center justify-center gap-1 rounded-full p-2 px-3 border border-white/30',
-            'data-[selected=true]:bg-accent'
+            'data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground'
             )}
 
           data-selected={value.batch}
@@ -201,7 +167,8 @@ export default function Form() {
           <Label htmlFor={'batch'} className={'hidden md:inline'}>{t('pages.home.button.batch')}</Label>
         </Button>
         <Button
-          variant="ghost"
+          disabled={submitting}
+          variant='default'
           className=" inline-flex border border-white/30 backdrop-blur-xl items-center justify-center gap-1 rounded-full p-2"
           onClick={() => onSubmit()}
         >
@@ -225,8 +192,14 @@ type RatioOptionProps = {
 
 
 function RatioOption({onChange, size}: RatioOptionProps) {
-  const ratioStyle = 'px-2 data-[selected=true]:bg-black/30 bg-white/10 select-none rounded-full p-1 flex items-center justify-center bg-blend-soft-light'
-  return <div className={'flex items-center gap-2 *:px-2 *:border *:border-white/50 *:backdrop-blur-sm'}>
+  const ratioStyle =
+    cn(
+      'px-2',
+      'select-none rounded-full p-1 flex items-center justify-center bg-blend-soft-light',
+      ' data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground bg-secondary text-secondary-foreground',
+    )
+
+  return <div className={'flex items-center gap-2 *:px-2 *:border *:border-white/30  *:backdrop-blur-sm'}>
     <div
       onClick={() => {onChange('auto')}}
       data-selected={size === 'auto'}

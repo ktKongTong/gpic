@@ -1,5 +1,5 @@
 import { formatDuration, relativeDate } from "@/lib/utils";
-import {StatusBadge, TypeBadge} from "@/components/task/badge";
+import {StatusBadge, TypeBadge} from "../badge";
 import React from "react";
 import { BatchImageTask } from "@/lib/type";
 import {taskStatus} from "@repo/service/shared";
@@ -64,7 +64,7 @@ const ImageItem = ({taskItem}:{taskItem: ImageItemProps}) => {
         <div className={'absolute right-0 bottom-0'}>
           {
             taskItem.styles.map((style, i) =>
-              <div className={'rounded-full m-1 text-xs px-2 py-0.5  bg-black/40'} key={i}>
+              <div className={'rounded-full m-1 text-xs px-2 py-0.5'} key={i}>
                 {style}
               </div>
             )
@@ -97,7 +97,7 @@ export default function BatchTaskImageDetail({task}: BatchImageTaskDetailProps) 
         </div>
       <div className={'flex gap-2 items-center'}>
         <DropdownMenu>
-          <DropdownMenuTrigger><Button className={'bg-transparent text-white hover:bg-transparent hover:text-white border-white/30'} variant={'outline'} size={'icon'}><Ellipsis /></Button></DropdownMenuTrigger>
+          <DropdownMenuTrigger><Button className={''} variant={'outline'} size={'icon'}><Ellipsis /></Button></DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem>{'rerun failed'}</DropdownMenuItem>
             <DropdownMenuItem>{'rerun failed'}</DropdownMenuItem>

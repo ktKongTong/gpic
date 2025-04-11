@@ -32,7 +32,7 @@ type TaskCreateV2 = {
 
 type PresetStyle = {
   id: string,
-  friendlyStyleId: string,
+  styleId: string,
   version: number,
   i18n: string,
   name: string,

@@ -1,6 +1,6 @@
 import {ImageTask} from "@/lib/type";
 import {formatDate, formatDuration, relativeDate} from "@/lib/utils";
-import {StatusBadge, TypeBadge} from "@/components/task/badge";
+import {StatusBadge, TypeBadge} from "../badge";
 import React from "react";
 import {taskStatus, taskType} from "@repo/service/shared";
 import {Calendar, Clock7, Ellipsis, LucideMenu} from "lucide-react";
@@ -19,7 +19,7 @@ type ImageGenTaskDetailProps = {
 
 export const ImageGenTaskDetail = ({task}: ImageGenTaskDetailProps) => {
   const execution = task.executions?.[0]
-  return <>
+  return <div>
   <div className={'flex items-center justify-between w-full h-full'}>
     <div>
       <h3 className={'text-3xl font-bold'}>{task.name}</h3>
@@ -27,10 +27,9 @@ export const ImageGenTaskDetail = ({task}: ImageGenTaskDetailProps) => {
     </div>
     <div className={'flex gap-2 items-center'}>
       <DropdownMenu>
-        <DropdownMenuTrigger><Button className={'bg-transparent text-white hover:bg-transparent hover:text-white border-white/30'} variant={'outline'} size={'icon'}><Ellipsis /></Button></DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild><Button className={''} variant={'outline'} size={'icon'}><Ellipsis /></Button></DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem>{''}</DropdownMenuItem>
-          {/*show available job*/}
+          <DropdownMenuItem>{'rerun all job'}</DropdownMenuItem>
           <DropdownMenuItem>{'rerun all job'}</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -82,5 +81,5 @@ export const ImageGenTaskDetail = ({task}: ImageGenTaskDetailProps) => {
       }
     </div>
   </div>
-</>
+</div>
 }

@@ -11,7 +11,7 @@ const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
-
+// Pacifico
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
@@ -21,7 +21,6 @@ export const metadata: Metadata = {
   title: "Gpic",
   description: "generate stylish image with GPT-4o",
 };
-
 export default function RootLayout(
 {
   children,
@@ -32,15 +31,17 @@ export default function RootLayout(
   return (
     <html lang="en" suppressHydrationWarning>
     <body
-      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} antialiased bg-ghibli-background`}
     >
     <Providers>
-      <div className={'mx-auto bg-ghibli-background'}>
-        <div className="h-full min-h-screen flex flex-col w-full max-w-4xl  mx-auto grow">
-          <Header/>
-          {/*py-4 px-4 md:px-8 lg:px-12*/}
+      <div className={'mx-auto h-full min-h-screen flex flex-col w-full items-center backdrop-blur-xl relative'}>
+        <div className={'w-full h-full absolute blur-sm -z-10'}>
+        </div>
+        <Header/>
+        <div className=" grow w-full h-full mx-auto  max-w-4xl z-10">
           {children}
         </div>
+
       </div>
       <Toaster />
     </Providers>

@@ -1,7 +1,4 @@
 'use client'
-import Header from "@/app/v2/header";
-import Form from "@/app/v2/form";
-import {cn} from "@/lib/utils";
 import React from "react";
 import {Task, useTasks} from "@/hooks/use-task";
 import {taskType} from "@repo/service/shared";
@@ -21,7 +18,7 @@ const TaskComponent = ({task}:{task: Task}) => {
 export default function Page() {
   const {tasks} = useTasks();
   return <>
-    <div className={'p-2 pb-4 sm:px-4 md:px-10'}>
+    <div className={'p-2 pb-4 sm:px-4 md:px-10 w-full grow'}>
       <div className={'text-2xl font-bold my-4'}>Tasks</div>
       <div className={'grid gap-2 w-full grid-cols-3 items-center grow p-2'}>
         {tasks.map((task) => <TaskComponent key={task.id} task={task}/>)}

@@ -19,7 +19,7 @@ const randomName = () => friendlyWords(2, ' ')
 
 type PresetStyle = {
   id: string,
-  friendlyStyleId: string,
+  styleId: string,
   version: number,
   i18n: string,
   name: string,
@@ -35,7 +35,6 @@ type CustomStyle = {
   id: string,
   name?: string,
   prompt: string,
-  // imageUrls
   reference: string[],
   save?: boolean
 }
@@ -57,9 +56,10 @@ type StyleProps = {
 export default function Style({styleInfo,className, ...rest}: StyleProps) {
   const {removeLocalStyle} = useStyles()
   return <div className={cn(
+    'data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground',
+    'bg-secondary text-secondary-foreground backdrop-blur-2xl',
     'border border-white/30',
-    'data-[selected=true]:bg-accent',
-    'inline-flex gap-1 select-none  cursor-default items-center px-2 py-0.5 rounded-full  backdrop-blur-xs',
+    'inline-flex gap-1 select-none  cursor-default items-center px-2 py-0.5 rounded-full',
     className
   )} {...rest}>
     <span>{styleInfo.style.name}</span>
@@ -74,7 +74,7 @@ const localStyleFormSchema = z.object({
     message: 'name it please🥺'
   }),
   prompt: z.string().min(1, {
-    message: "👋还没写 prompt 呢"
+    message: "👋还没写 prompt 呢",
   }),
   reference: z.string().array().default([]),
   save: z.coerce.boolean().default(false),

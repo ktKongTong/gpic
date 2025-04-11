@@ -8,7 +8,7 @@ const createLocalId = () => typeid('style_local').toString();
 
 type PresetStyle = {
   id: string,
-  friendlyStyleId: string,
+  styleId: string,
   version: number,
   i18n: string,
   name: string,
@@ -62,7 +62,7 @@ const useStyleStore = create<StyleStore & StyleAction>()(
   syncRemoteStyle: (presetStyles: PresetStyle[]) => {
     const presetRecords = {} as Record<string, Style>
     presetStyles.forEach(preset => {
-      presetRecords[preset.friendlyStyleId] = {
+      presetRecords[preset.styleId] = {
         type: 'preset',
         style: preset,
       }

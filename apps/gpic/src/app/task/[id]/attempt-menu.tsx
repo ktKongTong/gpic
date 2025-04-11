@@ -7,7 +7,7 @@ export const AttemptMenu = ({...rest}: React.ComponentProps<typeof Button>) => {
   return <Button
     size="sm"
     variant="outline"
-    className="h-8 border-white/20 bg-transparent hover:bg-white/10"
+    className="h-8 border-white/20 bg-transparent "
     {...rest}
   >
     <RotateCcw className="h-3.5 w-3.5" />

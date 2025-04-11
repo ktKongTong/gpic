@@ -1,24 +1,51 @@
-
 import Form from "./form";
-import Balance from "@/app/balance";
 import Gallery from "@/components/gallery";
 import FAQ from "@/components/FAQ";
 import React from "react";
+import localFont from 'next/font/local'
+import {cn} from "@/lib/utils";
+import { Sparkles } from "lucide-react";
+
+const beauty = localFont({
+  src: './fonts/Pacifico-Regular.ttf',
+  display: 'swap',
+})
+
+const handwrite = localFont({
+  src: './fonts/FirstTimeWriting.woff2',
+  display: 'swap',
+})
+
 
 export default function Page() {
 
 
   return <div className={' p-4 md:p-8 lg:p-12'}>
-    <section className={'mb-8 grid md:grid-cols-3 md:grid-rows-4 gap-2 w-full items-center grow  justify-stretch'}>
-      <div className={'grow content-stretch md:col-span-2 md:row-span-full self-stretch justify-items-stretch'}>
-        <Form/>
+    <section className={'mb-8 grid md:grid-cols-5 gap-2 w-full items-center grow  justify-stretch'}>
+      <div className={'grow flex flex-col items-center relative justify-center w-full h-full content-stretch md:col-span-3 self-stretch justify-items-stretch'}>
+        <img src={'/pointer.png'} className={'hidden md:block absolute w-40 top-16 right-10'}/>
+        <div className={cn(
+          'absolute hidden md:block w-auto top-20 right-28 -rotate-30 text-xl font-bold',
+          handwrite.className,
+          )}>
+          try it now
+        </div>
+        <div className={'text-5xl md:text-7xl italic'}>Make this into</div>
+        <div className={cn(
+          ' relative rounded-lg text-6xl py-6 transition-all px-2', beauty.className,
+          'bg-gradient-to-r from-pink-200 via-indigo-200 to-blue-200 text-clip text-transparent bg-clip-text'
+        )}>
+          <span>ghibli</span>
+          <span className={' transition-all'}>style</span>
+        </div>
+        <div className={'text-lg text-white inline-flex items-center'}>With Powerful AI Models<Sparkles className={'bg-gradient-to-r text-xs w-4 h-4 ml-2 '}/></div>
       </div>
 
-      <div className={'hidden md:block grow md:col-span-1 row-span-2 self-stretch'}>
-        <Balance />
-      </div>
-      <div className={'hidden md:block grow md:col-span-1 row-span-2 self-stretch'}>
-        {/*price*/}
+      <div className={cn(
+        'grow content-stretch md:col-span-2 self-stretch justify-items-stretch p-2',
+        'glass-container rounded-2xl backdrop-blur-md bg-card/40 shadow-xl'
+      )}>
+        <Form/>
       </div>
     </section>
     <section id="gallery" className="w-full max-w-4xl mx-auto mb-20 scroll-mt-24">

@@ -93,7 +93,7 @@ export const useFileUpload = () => {
       upsertFile(file)
       const uploadedFile = getFileById(file.id)
       if(uploadedFile && (uploadedFile.state == 'UPLOADED' || uploadedFile.state == 'UPLOADING')) {
-        throw new Error('file is already uploading/uploaded')
+        return
       }
       const fileUrl = await readAsDataURL(file.file)
       // @ts-ignore
@@ -109,7 +109,9 @@ export const useFileUpload = () => {
       console.error(e)
     },
     onSuccess: async (data) => {
-      upsertFile(data)
+      if(data) {
+        upsertFile(data)
+      }
     }
   })
   const {files, upsertFile, removeFile, getFileById, removeAll} = useFileStore()

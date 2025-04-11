@@ -1,6 +1,6 @@
 import { Task } from "@/hooks/use-task";
 import {cn, relativeDate} from "@/lib/utils";
-import {StatusBadge} from "@/components/task/badge";
+import {StatusBadge} from "./badge";
 import {taskType} from "@repo/service/shared";
 import {Layers} from "lucide-react";
 import {Button} from "@/components/ui/button";
@@ -14,13 +14,13 @@ type TaskItemProps = { task: Task } & React.HTMLProps<HTMLDivElement>;
 
 const TaskItem: React.FC<TaskItemProps> = ({ task, onClick, className,children, ...rest }) => {
   const inputImages = task.input.files as string[]
-  const expectOutput: string = task.executions?.[0].output?.url ?? task.input.files[0]
+  const expectOutput: string = task.executions?.[0]?.output?.url ?? task.input.files[0]
   const outputs = [expectOutput]
 
   return (
     <div
       className={cn(
-        " border rounded-lg relative aspect-square overflow-hidden max-w-64",
+        " rounded-lg relative aspect-square overflow-hidden max-w-64",
         "z-auto",
         className
       )}
@@ -59,7 +59,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onClick, className,children, 
           <div className={'flex gap-2 w-full items-center justify-start overflow-x-auto'}>
             {
               inputImages.map((img, i) =>
-              <Image alt={'input image'} className={'rounded-md aspect-square'} src={img} width={40} height={40} />
+              <Image key={img+i} alt={'input image'} className={'rounded-md aspect-square'} src={img} width={40} height={40} />
               )
             }
           </div>

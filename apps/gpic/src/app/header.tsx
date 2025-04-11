@@ -1,31 +1,56 @@
 'use client'
-import React from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Link from "next/link";
 import UserProfile from "@/components/sign";
+import {cn} from "@/lib/utils";
+function useSticky() {
+  const ref = useRef<HTMLDivElement>(null)
 
-const Header: React.FC = () => {
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+  const [isSticky, setIsSticky] = useState(false)
+
+  useEffect(() => {
+    if (!ref.current) {
+      return
     }
-  };
+
+    const observer = new IntersectionObserver(
+      ([event]) => setIsSticky(event.intersectionRatio < 1),
+      {threshold: [1], rootMargin: '-1px 0px 0px 0px',}
+    )
+    observer.observe(ref.current)
+
+    return () => observer.disconnect()
+  }, [])
+
+  return {ref, isSticky}
+}
+const Header: React.FC = () => {
+
+  const {ref:stickyRef, isSticky} = useSticky()
 
   return (
-    <header className="sticky  top-0 z-50 w-full py-4 px-4 md:px-8 lg:px-12 flex justify-between items-center animate-fade-in">
-      <Link href="/" className="text-2xl font-black">
+    <header
+      ref={stickyRef}
+      className={cn(
+      'flex mx-auto w-full transition mt-1 sticky top-0 ',
+      isSticky && "bg-white/20 glass-container backdrop-blur-3xl"
+    )}>
+    <div
+            className={
+      cn(
+        "max-w-4xl mx-auto z-50 w-full py-4 px-4 md:px-8 lg:px-12 flex justify-between items-center",
+      )
+            }>
+      <div className="select-none cursor-default text-2xl font-black">
         GPIC
-      </Link>
-      <div className={'hidden sm:flex items-center gap-4'}>
-        <nav className="hidden md:flex gap-8 items-center">
-          <Link href={'/'} className={"text-white/80 hover:text-white transition-colors"}>
+      </div>
+      <div className={'flex items-center gap-4'}>
+        <nav className="flex gap-8 items-center">
+          <Link href={'/'} className={"transition-colors"}>
             Home
           </Link>
-          <Link href={'/task'} className={"text-white/80 hover:text-white transition-colors"}>
+          <Link href={'/task'} className={"transition-colors"}>
             Task
-          </Link>
-          <Link href={'/about'} className={"text-white/80 hover:text-white transition-colors"}>
-            About
           </Link>
         </nav>
         <UserProfile/>
@@ -33,6 +58,7 @@ const Header: React.FC = () => {
         </div>
       </div>
 
+    </div>
     </header>
   );
 };

@@ -22,6 +22,7 @@
     }
   }
 }
+/*picAI.style*/
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -84,24 +85,47 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(0 0 0 /40%);
-  --foreground: oklch(1 0 0);
-  --card: oklch(0 0 0 /20%);
-  --card-foreground: oklch(1 0 0);
-  --popover: oklch(0 0 0 /20%);
+  /*--background: oklch(0 0 0 /40%);*/
+  /*--foreground: oklch(0 0 0);*/
+  /*--card: oklch(0 0 0 /20%);*/
+  /*--card-foreground: oklch(1 0 0);*/
+  /*--popover: oklch(0 0 0 /20%);*/
+  /*--popover-foreground: oklch(1 0 0);*/
+  /*--primary: oklch(0 0 0 /80%);*/
+  /*--primary-foreground: oklch(1 0 0);*/
+  /*--secondary: oklch(0.97 0 0);*/
+  /*--secondary-foreground: oklch(0.205 0 0);*/
+  /*--muted: oklch(1 0 0 /20%);*/
+  /*--muted-foreground: oklch(1 0 0/70%);*/
+  /*--accent: oklch(1 0 0 /20%);*/
+  /*--accent-foreground: oklch(1 0 0);*/
+  /*--destructive: oklch(0.577 0.245 27.325);*/
+  /*--border: oklch(0 0 0 /20%);*/
+  /*--input: oklch(1 0 0 /20%);*/
+  /*--ring: oklch(0 0 0 /20%);*/
+  --radius: 0.625rem;
+  --background: oklch(0 0 0);
+  --foreground: oklch(1 0 89.876);
+
+  --card: oklch(0.97 0 89.876 / 0.4);
+  --card-foreground: oklch(0.4 0 0);
+
+  --popover: oklch(0.97 0 89.876 / 0.4);
   --popover-foreground: oklch(1 0 0);
-  --primary: oklch(0 0 0 /10%);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(1 0 0 /20%);
-  --muted-foreground: oklch(1 0 0/70%);
-  --accent: oklch(1 0 0 /20%);
-  --accent-foreground: oklch(1 0 0);
+  /*--popover: oklch(1 0 0);*/
+  /*--popover-foreground: oklch(0.145 0 0);*/
+  --primary: oklch(0.73 0.176 56.687);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 89.876 / 0.4);
+  --secondary-foreground: oklch(1 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0 0 0 /20%);
-  --input: oklch(1 0 0 /20%);
-  --ring: oklch(0 0 0 /20%);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -142,9 +166,12 @@
 }
 
 .bg-ghibli-background {
-  /*background-image: url('/bg.png');*/
+  background-image: url('/bg.png');
+  /**/
+  /*background-image: url("https://media-public.canva.cn/MADJCQqBsuA/1/screen.png");*/
+  /*background-image: url("https://media-public.canva.cn/MAC92qLGWMo/1/screen.png");*/
   /*background-image: -ms-linear-gradient();*/
-  @apply bg-gradient-to-br from-gray-400 via-40% via-slate-500 to-gray-400;
+  /*@apply bg-gradient-to-br from-gray-400 via-40% via-slate-500 to-gray-400;*/
   background-size: cover;
   background-position: center;
   background-attachment: fixed;

@@ -29,6 +29,8 @@ export type Task<
   usage:  number,
   input: I,
   metadata: M,
+  startAt?: string,
+  endedAt?: string,
   createdAt: string,
   updatedAt: string,
   executions: E[]
