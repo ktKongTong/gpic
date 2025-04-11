@@ -55,3 +55,4 @@ cloudflare-env.d.ts
 dist
 node_modules
 .next
+/.idea/sqldialects.xml
