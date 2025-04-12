@@ -9,6 +9,8 @@ export type Execution<I extends any = any,O extends any = any,S extends any = an
   input: I,
   output?: O,
   state: S,
+  startedAt?: string,
+  endedAt?: string,
   createdAt: string,
   updatedAt: string,
 }
@@ -35,8 +37,16 @@ export type Task<
   updatedAt: string,
   executions: E[]
 }
+
+type Style = {
+  styleId: string,
+} | {
+  prompt: string,
+  reference: string[]
+}
+
 declare namespace BatchType {
-  type Input = { files: string[], style: string[], times: number }
+  type Input = { files: string[], style: Style[], count: number }
   type Output = { url: string }
   type State = any
   type Metadata = {state: { total: number, completed: number, failed: number, processing: number, pending: number }}

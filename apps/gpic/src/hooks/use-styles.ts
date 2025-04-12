@@ -100,6 +100,7 @@ export const useStyles = () => {
   const styles = Object.values(stylesMap)
   const {data, isLoading} = useQuery({
     queryKey: ['styles'],
+    retry: false,
     queryFn: async () => {
       const res = await api.getStyles()
       syncRemoteStyle(res)

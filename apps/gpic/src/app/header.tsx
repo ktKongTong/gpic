@@ -32,7 +32,7 @@ const Header: React.FC = () => {
     <header
       ref={stickyRef}
       className={cn(
-      'flex mx-auto w-full transition mt-1 sticky top-0 ',
+      'flex mx-auto w-full transition mt-1 sticky top-0 z-20',
       isSticky && "bg-white/20 glass-container backdrop-blur-3xl"
     )}>
     <div

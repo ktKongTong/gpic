@@ -10,13 +10,16 @@ import {taskStatus} from "@repo/service/shared";
 import {Carousel, CarouselContent, CarouselItem} from "@/components/ui/carousel";
 import React from "react";
 
-type TaskItemProps = { task: Task } & React.HTMLProps<HTMLDivElement>;
+type TaskItemProps = {
+  task: Task,
+
+
+} & React.HTMLProps<HTMLDivElement>;
 
 const TaskItem: React.FC<TaskItemProps> = ({ task, onClick, className,children, ...rest }) => {
   const inputImages = task.input.files as string[]
   const expectOutput: string = task.executions?.[0]?.output?.url ?? task.input.files[0]
   const outputs = [expectOutput]
-
   return (
     <div
       className={cn(
@@ -24,32 +27,32 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onClick, className,children, 
         "z-auto",
         className
       )}
+
       {...rest}
     >
-      <Carousel className={
-        cn(
-          "w-full inset-0 aspect-square  bg-black/40  backdrop-blur-sm",
-          task.status !== taskStatus.SUCCESS && 'blur-sm'
-        )
-      }
-      >
-        <CarouselContent>
-          {outputs.map((it, index) => (
-            <CarouselItem key={index}>
-              <img src={it} alt={'Expect output'} className={cn('h-full object-cover aspect-square z-0')
-              }/>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-      </Carousel>
-
+        <Carousel className={
+          cn(
+            "w-full inset-0 aspect-square  bg-black/40  backdrop-blur-sm",
+            task.status !== taskStatus.SUCCESS && 'blur-sm'
+          )
+        }
+        >
+          <CarouselContent>
+            {outputs.map((it, index) => (
+              <CarouselItem key={index}>
+                <img src={it} alt={'Expect output'} className={cn('h-full object-cover aspect-square z-0')
+                }/>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
         <div className={'absolute top-0 from-transparent to-black/60 bg-gradient-to-t w-full p-2'}>
           <div className="flex w-full items-center justify-between mb-2">
             <h3 className="font-medium text-white">
-          <span className="text-white inline-flex gap-1 items-center">
-          { task.type === taskType.BATCH && <Layers className={'w-3 h-3'}/> }
-            { task.name }
-          </span>
+            <span className="text-white inline-flex gap-1 items-center">
+            { task.type === taskType.BATCH && <Layers className={'w-3 h-3'}/> }
+              { task.name }
+            </span>
             </h3>
             <StatusBadge status={task.status} />
           </div>

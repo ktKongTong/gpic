@@ -9,18 +9,6 @@ import Image from "next/image";
 import {taskStatus} from "@repo/service/shared";
 import {Carousel, CarouselContent, CarouselItem} from "@/components/ui/carousel";
 import React, {useState} from "react";
-type BatchTaskItemProps = {
-  task: BatchImageTask
-} & React.PropsWithChildren<React.HTMLProps<HTMLDivElement>>;
-
-
-type Unit = {
-  input: {
-    file: string
-    style?: string
-  },
-  output: string[]
-}
 
 const combineImagesImage = (task: BatchImageTask) => {
   const children = task.children ?? []
@@ -39,60 +27,79 @@ const combineImagesImage = (task: BatchImageTask) => {
     }
   })
 }
-const TaskItem: React.FC<BatchTaskItemProps> = ({ task, onClick, className,children, ...rest }) => {
 
-  const inputImage = combineImagesImage(task)
+type Style = {
+  styleId: string
+} | {
+  prompt: string,
+  reference: string[]
+}
+
+type TaskResult = {
+  input: string,
+  output: { style: Style, url?: string, status?: string }[],
+}
+
+type BatchTaskItemProps = {
+  task: BatchImageTask,
+  result: TaskResult[],
+} & React.PropsWithChildren<React.HTMLProps<HTMLDivElement>>;
+
+
+const TaskItem: React.FC<BatchTaskItemProps> = ({ task, onClick, result, className,children, ...rest }) => {
   const [idx, setIndex] = useState(0)
-  const inputImages = inputImage.map(i => i.file)
-  const outputs= inputImage.map(i => i.output?.[idx] ?? i.file)
-
+  const current = result[idx]
   return (
+
     <div
       className={cn(
-        " rounded-lg relative aspect-square overflow-hidden",
+        " rounded-lg relative aspect-square overflow-hidden max-w-64",
         "z-auto",
         className
       )}
+
       {...rest}
     >
       <Carousel className={
         cn(
-          "w-full aspect-square inset-0 absolute  bg-black/40  backdrop-blur-sm",
+          "w-full inset-0 aspect-square  bg-black/40  backdrop-blur-sm",
           task.status !== taskStatus.SUCCESS && 'blur-sm'
         )
       }
       >
         <CarouselContent>
-          {outputs.map((it, index) => (
+          {current.output.map((it, index) => (
             <CarouselItem key={index}>
-              <img src={it} alt={'Expect output'} className={cn('h-full object-cover aspect-square z-0')
+              <img src={it?.url ?? current.input} alt={'Expect output'} className={cn('h-full object-cover aspect-square z-0')
               }/>
             </CarouselItem>
           ))}
         </CarouselContent>
       </Carousel>
-
       <div className={'absolute top-0 from-transparent to-black/60 bg-gradient-to-t w-full p-2'}>
         <div className="flex w-full items-center justify-between mb-2">
           <h3 className="font-medium text-white">
-          <span className="text-white inline-flex gap-1 items-center">
-          { task.type === taskType.BATCH && <Layers className={'w-3 h-3'}/> }
-            { task.name }
-          </span>
+            <span className="text-white inline-flex gap-1 items-center">
+            { task.type === taskType.BATCH && <Layers className={'w-3 h-3'}/> }
+              { task.name }
+            </span>
           </h3>
           <StatusBadge status={task.status} />
         </div>
       </div>
 
-      <div className=" absolute bottom-0 text-xs w-full mt-auto p-2">
+      <div className=" absolute bottom-0 text-xs w-full mt-auto p-2  from-transparent to-black/60 bg-gradient-to-b">
         <div className={'flex gap-2 w-full items-center justify-start overflow-x-auto'}>
           {
-            inputImages.map((img, i) =>
+            result.map((img, i) =>
               <Image
+                key={(img.input)+i}
                 alt={'input image'}
-                onClick={() => {setIndex(i)}}
-                className={'rounded-md object-cover aspect-square'} src={img} width={40} height={40}
-              />
+                onClick={() => setIndex(i)}
+                className={'rounded-md object-cover aspect-square'}
+                src={img.input}
+                width={40}
+                height={40} />
             )
           }
         </div>

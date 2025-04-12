@@ -104,7 +104,7 @@
   /*--input: oklch(1 0 0 /20%);*/
   /*--ring: oklch(0 0 0 /20%);*/
   --radius: 0.625rem;
-  --background: oklch(0 0 0);
+  --background: oklch(0 0 0/70%);
   --foreground: oklch(1 0 89.876);
 
   --card: oklch(0.97 0 89.876 / 0.4);

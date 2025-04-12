@@ -1,17 +1,15 @@
 'use client'
 import {useMutation, useQuery} from "@tanstack/react-query";
 import {useState} from "react";
-import {toast} from "sonner";
 import {api} from "@/lib/api";
+import {ExecutionStatus, TaskStatus, TaskType } from "@repo/service/shared";
+
 declare namespace ImageGenType {
   type Input = { files: string[], style?: string, prompt?: string }
   type Output = { url: string }
   type State = { progress: number, message: string, error?: string }
 }
 
-type TaskType = 'image-gen' | 'batch'
-type TaskStatus = 'pending' | 'processing' | 'completed' | 'failed'
-type ExecutionStatus =  | 'processing' | 'completed' | 'failed'
 export type Execution<I extends any = any,O extends any = any,S extends any = any> = {
   id: string,
   taskId: string,
@@ -91,58 +89,5 @@ export const useTask = (taskId: string) => {
   return {
     task: data,
     isLoading: isLoading,
-  }
-}
-
-type GenerateProps = MultiFile
-
-export const useGenerateTasks = () => {
-  const {mutate: generateMutation, data } = useMutation({
-    mutationKey: ["generateTask"],
-    mutationFn: async (props: GenerateProps) => {
-      return await api.createTask(props)
-    },
-    onSuccess: async (data) => {
-      toast.success('任务已创建', { description: (data as any)?.id })
-    },
-    onError: async (err) => {
-      toast.error('任务创建失败', { description: err.message })
-    }
-  })
-  return {
-    generateTask: generateMutation,
-  }
-}
-
-type StyleInput = {
-  styleId: string,
-} | {
-  reference: string[],
-  prompt: string
-}
-
-type TaskCreateV2 = {
-  files: string[],
-  styles: StyleInput[]
-  count?: number,
-  size?: 'auto' |'1x1'| '3x2' | '2x3',
-  batch?: boolean
-}
-
-export const useGenerateTasksV2 = () => {
-  const {mutate: generateMutation, data } = useMutation({
-    mutationKey: ["generateTaskV2"],
-    mutationFn: async (props: TaskCreateV2) => {
-      return await api.createTaskV2(props)
-    },
-    onSuccess: async (data) => {
-      toast.success('任务已创建', { description: (data as any)?.id })
-    },
-    onError: async (err) => {
-      toast.error('任务创建失败', { description: err.message })
-    }
-  })
-  return {
-    generateTask: generateMutation,
   }
 }

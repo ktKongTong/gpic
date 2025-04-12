@@ -73,7 +73,10 @@ class API {
   createTaskV2(input: TaskCreateV2) {
     return fetchIns<Task>(`/api/v2/task/image/flavor-image`, {
       method: 'POST',
-      body: input
+      body: {
+        version: '1',
+        ...input,
+      }
     })
   }
 

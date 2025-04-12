@@ -2,7 +2,7 @@
 import {useTrans} from "@/i18n";
 import {Skeleton} from "@/components/ui/skeleton";
 import {Button} from "@/components/ui/button";
-import {Layers, Minus, Pencil, Plus} from "lucide-react";
+import {Layers, Menu, Minus, Pencil, Plus} from "lucide-react";
 import {cn} from "@/lib/utils";
 import {Label} from "@/components/ui/label";
 import React, {useState} from "react";
@@ -12,8 +12,9 @@ import {useFiles} from "@/hooks/use-file-upload";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
 import FileUploader from "./upload";
-import {useGenerateTasksV2} from "@/hooks/use-task";
 import {zodResolver} from "@hookform/resolvers/zod";
+import {useMutation} from "@tanstack/react-query";
+import {mutationKeys, TaskCreateV2} from "@/lib/query";
 
 type Size = 'auto' | '1x1' | '3x2' | '2x3'
 // local style id
@@ -37,7 +38,17 @@ const useTaskForm = () => {
   const checkStyleSelected = (id: string) => {
     return selectedStyleIds.includes(id)
   }
-  const {generateTask} = useGenerateTasksV2()
+
+  const {mutate: generateTask } = useMutation<unknown, unknown,TaskCreateV2>({
+    mutationKey: mutationKeys.task.generate,
+    onMutate: (variables) => {
+      setSubmitting(true)
+    },
+    onSettled: () => {
+      setSubmitting(false)
+    }
+  })
+
   const value = form.watch()
   const {count, batch, size } = value
   const setSize = (size: Size) => {
@@ -62,6 +73,7 @@ const useTaskForm = () => {
     if(submitting) return
     setSubmitting(true)
     const {count, batch, size} = form.getValues()
+    form.reset()
     const inputFiles = files.filter(it => it.state === 'UPLOADED')
       .map(it => it.url) as string[]
     const inputStyles = styles.map(it => {
@@ -172,7 +184,13 @@ export default function Form() {
           className=" inline-flex border border-white/30 backdrop-blur-xl items-center justify-center gap-1 rounded-full p-2"
           onClick={() => onSubmit()}
         >
-          <Pencil className="h-4 w-4" /><span className={'hidden md:inline'}>{t('pages.home.button.draw')}</span>
+          {
+            submitting ?
+              <>
+                  <Pencil className="h-4 w-4" /><span className={'hidden md:inline'}>{t('pages.home.button.draw')}</span>
+              </>: <Menu className="h-4 w-4"/>
+
+          }
         </Button>
       </div>
     </div>

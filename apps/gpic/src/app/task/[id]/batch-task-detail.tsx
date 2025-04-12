@@ -20,7 +20,7 @@ type Styles = {
 type BatchTaskItem = {
   url: string,
   count: number,
-  styles: string[]
+  styles: any[]
   output: {
     url: string,
     state: string,
@@ -33,20 +33,19 @@ const getTaskItem = (task: BatchImageTask): BatchTaskItem[] => {
     return {
       file,
       style: task.input.style,
-      times: task.input.times,
+      count: task.input.count,
     }
   })
   return units.map(it => {
     const matched = children.filter(child => child.input.files.includes(it.file))
-    const output = matched.map(it => it.executions?.[0].output?.url).filter(Boolean) as string[]
+    const output = matched.map(it => it.executions?.[0]?.output?.url).filter(Boolean) as string[]
     return {
       url: it.file,
-      count: it.times,
+      count: it.count,
       styles: it.style,
       output: output.map(it => ({ url: it, state: 'state' }))
     }
   })
-
 }
 
 type ImageItemProps = {

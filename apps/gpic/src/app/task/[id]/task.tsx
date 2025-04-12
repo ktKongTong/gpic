@@ -4,8 +4,8 @@ import React from "react";
 import {taskType, taskStatus} from "@repo/service/shared";
 
 import { ProgressBar } from "./progressbar";
-import {ImageGenTaskDetail} from "@/app/task/[id]/image-gen-task-detail";
-import BatchTaskImageDetail from "@/app/task/[id]/batch-task-detail";
+import {ImageGenTaskDetail} from "./image-gen-task-detail";
+import BatchTaskImageDetail from "./batch-task-detail";
 
 
 export default function TaskDetail({id}:{id: string}) {
@@ -23,6 +23,7 @@ export default function TaskDetail({id}:{id: string}) {
   if (task.type === taskType.IMAGE_GEN) {
     return <ImageGenTaskDetail task={task} />
   }
+  // @ts-ignore
   return <BatchTaskImageDetail task={task}/>
 }
 
@@ -81,7 +82,7 @@ const ImageGenOutput = ({task}:{task: ImageTask}) => {
     case taskStatus.FAILED:
       return <>
         <div className={'text-red-500'}>执行失败</div>
-        <div className={'text-red-500'}>{execution?.state.error}</div>
+        <div className={'text-red-500'}>{execution?.state?.error}</div>
       </>
     case taskStatus.PROCESSING:
       return <div className={'text-blue-500'}>执行中...</div>
