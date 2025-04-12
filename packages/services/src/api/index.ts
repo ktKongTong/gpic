@@ -11,6 +11,7 @@ import {timing} from "hono/timing";
 import {taskRoute} from "./routes/task";
 import {styleRoute} from "./routes/styles";
 import {taskV2Route} from "./routes/v2/task";
+import {balanceRoute} from "./routes/balance";
 
 const app = new Hono().basePath('/api')
 
@@ -51,6 +52,7 @@ app.route('/', fileRoute)
 app.route('/', aiRoute)
 app.route('/', styleRoute)
 app.route('/', taskRoute)
+app.route('/', balanceRoute)
 app.route('/v2', taskV2Route)
 
 export { app as route }
