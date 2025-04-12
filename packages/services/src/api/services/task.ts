@@ -1,6 +1,7 @@
 import {UserService} from "./user-service";
-import {DAO, Task, TaskStatus, taskStatus, taskType, TaskUpdateDBO} from "../storage/type";
-import {MQService, msgType} from "./mq";
+import {DAO, TaskUpdateDBO} from "../storage/type";
+import {MQService } from "./mq";
+import {taskType} from "../shared";
 
 type TaskInput = {
   input: any, parentId?: string
@@ -26,7 +27,9 @@ export class TaskService {
       input: it,
       type: taskType.IMAGE_GEN,
       retry: 0,
-      metadata: {},
+      metadata: {
+        version: '1'
+      },
       parentId: task.parentId
     }))
     return this.dao.task.batchCreateTasks(tasks)
@@ -38,7 +41,9 @@ export class TaskService {
       input: task.input,
       type: taskType.IMAGE_GEN,
       retry: 0,
-      metadata: {},
+      metadata: {
+        version: '1'
+      },
       parentId: task.parentId
     })
   }
@@ -58,7 +63,9 @@ export class TaskService {
       input: task.input,
       type: taskType.BATCH,
       retry: 0,
-      metadata: {},
+      metadata: {
+        version: '1'
+      },
     })
     return result
   }

@@ -9,9 +9,9 @@ import {getCloudflareEnv} from "../utils";
 const getKey = (buf: ArrayBuffer) => [...new Uint8Array(buf)].map(x => x.toString(16).padStart(2, '0')).join('')
 app.put('/upload',
   bodyLimit({
-    maxSize: 4 * 1024 * 1024, // 50kb
+    maxSize: 10 * 1024 * 1024,
     onError: (c) => {
-      return c.json({message: 'overflow :(, maximum body size is 4MB'}, 413)
+      return c.json({message: 'overflow :(, maximum body size is 10MB'}, 413)
     },
   }),
   async (c) => {

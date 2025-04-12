@@ -7,7 +7,7 @@
     "generate": "drizzle-kit generate",
     "generate:custom": "drizzle-kit generate --custom",
     "studio": "drizzle-kit studio",
-    "d1:mi": "wrangler d1 execute tiny_pic_preview --remote --file=./drizzle/0006_open_sersi.sql",
+    "d1:mi": "wrangler d1 execute tiny_pic_preview --remote --file=./drizzle/0008_stale_xavin.sql",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

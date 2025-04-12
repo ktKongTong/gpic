@@ -1,10 +1,9 @@
 import {Hono} from "hono";
 import {getService} from "../middlewares/service-di";
-
-import {NotFoundError, ParameterError} from "../errors/route";
+import {NotFoundError, ParameterError} from "../errors";
 import {msgType} from "../services";
-import {taskStatus, taskType} from "../storage/type";
 import {z} from "zod";
+import {batchTaskInputSchema, taskStatus, taskType} from "../shared";
 
 const app = new Hono().basePath('/task')
 
@@ -19,6 +18,7 @@ export const schema = z.object({
 },{
   message: "total task count should be less than 100",
 })
+
 
 app.post('/image/flavor-style', async (c) => {
   const body = await c.req.json()

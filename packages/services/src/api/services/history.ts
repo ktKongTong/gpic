@@ -1,4 +1,5 @@
 import {DAO, ExecutionCreateDBO, ExecutionUpdateDBO} from "../storage/type";
+import {executionStatus} from "../shared";
 
 
 export class ExecutionService {
@@ -16,6 +17,14 @@ export class ExecutionService {
 
   async createExecutionHistory(record: ExecutionCreateDBO) {
     return await this.dao.history.createExecutionHistory(record)
+  }
+
+  async startExecution(record: Omit<ExecutionCreateDBO, 'startedAt' | 'status'>) {
+    return this.createExecutionHistory({
+      ...record,
+      startedAt: new Date(),
+      status: executionStatus.PROCESSING
+    })
   }
 
   async updateExecutionHistory(record: ExecutionUpdateDBO) {

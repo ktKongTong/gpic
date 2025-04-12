@@ -1,32 +1,13 @@
-import {DrizzleD1Database} from "drizzle-orm/d1";
+import type {DrizzleD1Database} from "drizzle-orm/d1";
 import * as schema from "./schema";
 import {getDAO} from "./db";
+import {ExecutionStatus, TaskStatus, TaskType} from "../shared";
 
 export type DB = DrizzleD1Database<typeof schema>
 export type DAO = ReturnType<typeof getDAO>
 
-export type ExecutionStatus = 'processing' | 'completed' | 'failed'
-export type TaskStatus = 'pending' | 'processing' | 'completed' | 'failed'
-export type TaskType = 'image-gen' | 'batch'
-export const taskStatus = {
-  PENDING: 'pending' as const,
-  PROCESSING: 'processing' as const,
-  SUCCESS: 'completed' as const,
-  FAILED: 'failed' as const
-} as const
-export const taskType = {
-  IMAGE_GEN: 'image-gen' as const,
-  BATCH: 'batch' as const
-} as const
-
-export const executionStatus = {
-  PROCESSING: 'processing' as const,
-  SUCCESS: 'completed' as const,
-  FAILED: 'failed' as const
-} as const
-
 export type Task = typeof schema.task.$inferSelect
-export type Execution = typeof schema.history.$inferSelect
+export type Execution = typeof schema.execution.$inferSelect
 
 export type TaskUpdateDBO = {
   id: string,
@@ -41,7 +22,7 @@ export type TaskUpdateDBO = {
 
 export type ExecutionCreateDBO = {
   taskId: string,
-  usage: number,
+  usage?: number,
   state?: any,
   input: any,
   startedAt: Date,

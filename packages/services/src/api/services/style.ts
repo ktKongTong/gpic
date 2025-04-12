@@ -1,6 +1,5 @@
-import {UserService} from "./user-service";
 import {DAO} from "../storage/type";
-import {i18nCode} from "../storage/schema";
+import {i18nCode} from "../shared";
 
 export class StyleService {
 

@@ -1,7 +1,7 @@
 import {DB} from "../type";
 import * as table from '../schema'
-import {and, eq, getTableColumns, max, or, sql, getViewSelectedFields} from "drizzle-orm";
-import {i18nCode} from "../schema";
+import { eq, max, sql } from "drizzle-orm";
+import {i18nCode} from "../../shared";
 export class StyleDAO {
   constructor(private readonly db: DB) {
   }

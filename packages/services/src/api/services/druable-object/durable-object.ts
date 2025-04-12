@@ -3,12 +3,10 @@ import {DurableObject} from "cloudflare:workers";
 import {
   Execution,
   Task,
-  taskStatus,
-  TaskType,
-  taskType,
 } from "../../storage/type";
 import {Events, eventType} from "./type";
 import {createService} from "../factory";
+import {taskStatus, taskType, TaskType} from "../../shared";
 
 type BatchState = {
   total: number;

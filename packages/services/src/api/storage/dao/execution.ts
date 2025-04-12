@@ -12,14 +12,14 @@ export class HistoryDAO {
 
   async getRecentHistory() {
     const res = await this.db.select()
-      .from(table.history)
+      .from(table.execution)
       .limit(10)
     return res
   }
 
   async createExecutionHistory(record: ExecutionCreateDBO) {
     const id = uniqueId(`exec`).toString()
-    const [res] = await this.db.insert(table.history)
+    const [res] = await this.db.insert(table.execution)
       .values({
         id,
         ...record,
@@ -29,17 +29,17 @@ export class HistoryDAO {
 
   async updateExecutionHistory(record: ExecutionUpdateDBO) {
     const {id, ...rest} = record
-    const [res] = await this.db.update(table.history)
+    const [res] = await this.db.update(table.execution)
       .set({ ...rest })
-      .where(eq(table.history.id, record.id))
+      .where(eq(table.execution.id, record.id))
       .returning()
     return res
   }
 
   async getExecutionHistoriesByTaskId(taskId: string) {
     const res = await this.db.select()
-      .from(table.history)
-      .where(eq(table.history.taskId, taskId))
+      .from(table.execution)
+      .where(eq(table.execution.taskId, taskId))
     return res
   }
 

@@ -6,3 +6,9 @@ export class NotImplementedError extends BaseError {
     this.message = name ? `${name} not implemented yet` : `not implemented yet`
   }
 }
+
+export class DBError extends BaseError {
+  constructor(message?: string) {
+    super(message);
+  }
+}

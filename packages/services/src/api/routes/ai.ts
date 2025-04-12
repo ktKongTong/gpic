@@ -58,8 +58,8 @@ app.post('/image/flavor-style', async (c) => {
 
 
 app.get('/image/quota', async (c) => {
-  const  {userQuotaService} = getService(c)
-  const result = await userQuotaService.getQuota()
+  const  {userBalanceService} = getService(c)
+  const result = await userBalanceService.getBalance()
   return c.json(result)
 })
 

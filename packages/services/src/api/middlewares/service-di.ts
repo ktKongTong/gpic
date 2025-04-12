@@ -4,7 +4,7 @@ import {
   ExecutionService,
   UserService,
   AIImageService,
-  UserQuotaService,
+  UserBalanceService,
   MQService,
   StyleService,
   TaskService
@@ -17,7 +17,7 @@ declare module 'hono' {
     userService: UserService
     aiImageService: AIImageService
     fileService: FileService
-    userQuotaService: UserQuotaService
+    userBalanceService: UserBalanceService
     historyService: ExecutionService
     taskService: TaskService
     mqService: MQService
@@ -29,7 +29,7 @@ export const getService = (c:Context) => {
     fileService: c.get('fileService'),
     userService: c.get('userService'),
     aiImageService: c.get('aiImageService'),
-    userQuotaService: c.get('userQuotaService'),
+    userBalanceService: c.get('userBalanceService'),
     historyService: c.get('historyService'),
     taskService: c.get('taskService'),
     mqService: c.get('mqService'),
@@ -46,14 +46,14 @@ export const ServiceDIMiddleware = (): MiddlewareHandler => {
     const dao = getDAO()
     const styleService = new StyleService(dao)
     const aiImageService = new AIImageService(fileService, styleService)
-    const quotaService = new UserQuotaService(userService, dao)
+    const userBalanceService = new UserBalanceService(userService, dao)
     const mqService = new MQService()
     const taskService = new TaskService(userService, mqService, dao)
     const historyService = new ExecutionService(dao)
     c.set('userService', userService)
     c.set('fileService', fileService)
     c.set('aiImageService', aiImageService)
-    c.set('userQuotaService', quotaService)
+    c.set('userBalanceService', userBalanceService)
     c.set('historyService', historyService)
     c.set('taskService', taskService)
     c.set('mqService', mqService)

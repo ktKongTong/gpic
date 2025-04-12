@@ -1,13 +1,14 @@
-import {DB, TaskStatus, taskStatus, taskType, TaskUpdateDBO} from "../type";
+import {DB, TaskUpdateDBO} from "../type";
 import * as table from '../schema'
 import {desc, eq, getTableColumns, or, sql, inArray, and} from "drizzle-orm";
 import {uniqueId} from "../../utils";
+import {taskStatus} from "../../shared";
 
 const taskColumns = getTableColumns(table.task)
-const historyColumns = getTableColumns(table.history)
+const historyColumns = getTableColumns(table.execution)
 type TaskColumn = typeof table.task.$inferSelect
 type TaskInsert = typeof table.task.$inferInsert
-type ExecutionColumn = (typeof table.history.$inferSelect)
+type ExecutionColumn = (typeof table.execution.$inferSelect)
 type CommonColumn = TaskColumn & {
   children?: CommonColumn[]
 }
@@ -96,8 +97,8 @@ export class TaskDAO {
         task: taskColumns,
         execution: historyColumns,
       }).from(table.task)
-        .leftJoin(table.history, eq(table.task.id, table.history.taskId))
-        .orderBy(desc(table.history.createdAt))
+        .leftJoin(table.execution, eq(table.task.id, table.execution.taskId))
+        .orderBy(desc(table.execution.createdAt))
         .where(or(eq(table.task.id, id), eq(table.task.parentId, id)))
       const rows = await s
       const result = rows.reduce<Record<string, TaskColumn & { executions: ExecutionColumn[] }>>(
@@ -132,9 +133,9 @@ export class TaskDAO {
     if (withHistory) {
       const rows = await this.db.select({
           task: getTableColumns(table.task),
-          execution: getTableColumns(table.history),
+          execution: getTableColumns(table.execution),
         }).from(table.task)
-        .leftJoin(table.history, eq(table.task.id, table.history.taskId))
+        .leftJoin(table.execution, eq(table.task.id, table.execution.taskId))
         .orderBy(desc(table.task.createdAt))
         .where(eq(table.task.userId, userId))
       const result = rows.reduce<Record<string, TaskColumn & { executions: ExecutionColumn[] }>>(
