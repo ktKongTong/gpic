@@ -36,6 +36,7 @@ export class ImageTaskHandlerV1 {
     let res: StatusRes
     try {
       const onProgress = async (progress: ProgressCtx) => {
+        console.log('onprogress', progress)
         const updatedExec = await this.services.historyService
           .updateExecutionHistory({id: execution.id, state: progress, status: executionStatus.PROCESSING})
         await notifyDO(eventType.EXECUTION_UPDATE, updatedExec)

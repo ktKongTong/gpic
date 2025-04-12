@@ -20,14 +20,19 @@ export class BalanceDAO {
   async createTaskOrder(userId: string, taskId: string, cost: number) {
     const id =typeid('cost').toString()
 
-    const [ok] = await this.db.update(table.credit)
+    const s = this.db.update(table.credit)
       .set({
-        balance: sql`${table.credit.balance}-${cost}`,
+        balance: sql`${table.credit.balance} - ${cost}`,
       })
-      .where(and(eq(table.credit.userId, userId), gte(sql`${table.credit.balance}-${cost}`, 0)))
-      .returning()
-    if(ok) {
-      throw new DBError('balance not enough')
+      .where(
+        and(
+          eq(table.credit.userId, userId),
+          gte(sql`${table.credit.balance} - ${cost}`, 0)
+        )
+      )
+    const [ok] = await s.returning()
+    if(!ok) {
+      throw new DBError(`failed to descrease balance userId: ${userId}, cost: ${cost}`)
     }
     const [res] = await this.db.insert(table.usage).values({
       id,

@@ -73,6 +73,8 @@ export class TaskDAO {
       .set({
         status: taskStatus.PENDING,
         retry: sql`${table.task.retry} + 1`,
+        startedAt: null,
+        endedAt: null,
       })
       .where(
         and(

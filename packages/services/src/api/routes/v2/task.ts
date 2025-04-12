@@ -13,11 +13,11 @@ app.post('/image/flavor-image', async (c) => {
   const data = batchTaskInputSchema.parse(body)
   const  {mqService, taskService,userService, userBalanceService} = getService(c)
   const {batch, ...rest} = data
-  const totalTaskCount = data.files.length * data.count & data.styles.length
+  const totalTaskCount = data.files.length * data.count * data.styles.length
   const cost = totalTaskCount * 5
   const balance = await userBalanceService.getBalance()
   if (balance.balance < cost) {
-    throw new BizError(`no more balance to consume need ${cost}, remain: ${balance.balance}`, 400)
+    throw new BizError(`no enough balance, need: ${cost}, remain: ${balance.balance}`, 400)
   }
   let task: any
   if(batch) {

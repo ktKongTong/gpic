@@ -22,9 +22,9 @@ export const versionSchema = z.object({
 export type Versioned = z.infer<typeof versionSchema>
 
 export const batchTaskInputSchema = versionSchema.extend({
-  files: z.string().array().min(1).max(10, "Maximum 10 files"),
+  files: z.string().array().min(1).max(10, "Maximum 10 file"),
   styles: styleSchema.array().min(1).max(5, "Maximum 5 style"),
-  count: z.coerce.number().min(1).max(100, "Maximum 100 count").optional().default(1),
+  count: z.coerce.number().min(1, "minimal count 1").max(100, "Maximum count 100").optional().default(1),
   size: z.coerce.string().optional(),
 }).refine((data) => {
   const total = data.styles.length * data.files.length * data.count

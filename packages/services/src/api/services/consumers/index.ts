@@ -23,7 +23,7 @@ export class ConsumerService {
       case msgType.BATCH_IMAGE_GEN:
         return await this.batchTaskHandler.handleBatchImageGenTask(msg.payload)
       case msgType.TASK_RETRY:
-        return await this.batchTaskHandler.handleBatchImageGenTask(msg.payload)
+        return await this.imageTaskHandler.handleTaskRetry(msg.payload)
       case msgType.BATCH_TASK_RETRY:
         return await this.batchTaskHandler.handleBatchTaskRetry(msg.payload.task, msg.payload.failOnly)
     }

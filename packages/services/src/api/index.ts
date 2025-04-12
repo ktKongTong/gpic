@@ -12,6 +12,7 @@ import {taskRoute} from "./routes/task";
 import {styleRoute} from "./routes/styles";
 import {taskV2Route} from "./routes/v2/task";
 import {balanceRoute} from "./routes/balance";
+import {BaseError} from "./errors/base";
 
 const app = new Hono().basePath('/api')
 
@@ -38,7 +39,7 @@ app.onError((err, c) => {
 	if(err instanceof ZodError) {
 		return c.json({error: err.message}, 400)
 	}
-	if(err instanceof ParameterError) {
+	if(err instanceof BaseError) {
 		return c.json({error: err.message}, 400)
 	}
 	return c.json({error: "Unknown Error"}, 500)
