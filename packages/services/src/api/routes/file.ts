@@ -11,7 +11,7 @@ app.put('/upload',
   bodyLimit({
     maxSize: 10 * 1024 * 1024,
     onError: (c) => {
-      return c.json({message: 'overflow :(, maximum body size is 10MB'}, 413)
+      return c.json({message: 'overflow :(, maximum file size is 10MB'}, 413)
     },
   }),
   async (c) => {

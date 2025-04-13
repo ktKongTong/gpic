@@ -30,7 +30,7 @@ export type Versioned = z.infer<typeof versionSchema>
 
 export const batchTaskInputSchema = versionSchema.extend({
   files: z.string().array().min(1).max(10, "Maximum 10 file"),
-  styles: styleSchema.array().min(1).max(5, "Maximum 5 style"),
+  styles: styleSchema.array().min(1, "please choose one style at least").max(5, "Maximum 5 style"),
   count: z.coerce.number().min(1, "minimal count 1").max(100, "Maximum count 100").optional().default(1),
   size: z.coerce.string().optional(),
 }).refine((data) => {

@@ -9,11 +9,11 @@ import {ZodError} from "zod";
 import { BizError } from "./errors";
 import {timing} from "hono/timing";
 import {taskRoute} from "./routes/task";
-import {styleRoute} from "./routes/styles";
 import {taskV2Route} from "./routes/v2/task";
 import {balanceRoute} from "./routes/balance";
 import {BaseError} from "./errors/base";
 import {setCloudflareEnv} from "./utils";
+import {commonRoute} from "./routes/common";
 
 const app = new Hono().basePath('/api')
 app.use('*', async (c, next) => {
@@ -55,7 +55,7 @@ app.on(["POST", "GET"], "/auth/*", (c) => {
 
 app.route('/', fileRoute)
 app.route('/', aiRoute)
-app.route('/', styleRoute)
+app.route('/', commonRoute)
 app.route('/', taskRoute)
 app.route('/', balanceRoute)
 app.route('/v2', taskV2Route)

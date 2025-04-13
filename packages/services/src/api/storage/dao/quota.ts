@@ -3,7 +3,6 @@ import * as table from '../schema'
 import {and, eq, getTableColumns, gte, sql} from "drizzle-orm";
 import {typeid} from "typeid-js";
 import {DBError} from "../../errors";
-import {user} from "../schema";
 export class BalanceDAO {
 
   constructor(private readonly db: DB) {

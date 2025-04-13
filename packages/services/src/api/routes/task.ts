@@ -10,7 +10,7 @@ const app = new Hono().basePath('/task')
 
 export const schema = z.object({
   files: z.string().array().min(1).max(10, "Maximum 10 files"),
-  style: z.string().array().min(1).max(5, "Maximum 5 style"),
+  style: z.string().array().min(1, "please choose one style at least").max(5, "Maximum 5 style"),
   times: z.coerce.number().min(1).max(10, "Maximum 10 times").optional().default(1),
   batch: z.boolean().optional().default(false),
 }).refine((data) => {

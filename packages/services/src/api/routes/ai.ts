@@ -5,18 +5,6 @@ import { streamSSE } from 'hono/streaming'
 
 const app = new Hono().basePath('/ai')
 
-
-
-function getRandomDelay(minSeconds = 1, maxSeconds = 10) {
-  const minMs = minSeconds * 1000;
-  const maxMs = maxSeconds * 1000;
-  return Math.floor(Math.random() * (maxMs - minMs + 1)) + minMs;
-}
-
-function wait(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 export const schema = z.object({
   files: z.string().array().max(5, "Maximum 5 files"),
   style: z.string().array().min(1).max(10, "Maximum 10 style"),
@@ -52,15 +40,6 @@ app.post('/image/flavor-style', async (c) => {
       }
       await stream.close()
     })
-})
-
-
-
-
-app.get('/image/quota', async (c) => {
-  const  {userBalanceService} = getService(c)
-  const result = await userBalanceService.getBalance()
-  return c.json(result)
 })
 
 export {app as aiRoute}
