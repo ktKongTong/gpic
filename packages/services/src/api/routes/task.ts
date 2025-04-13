@@ -3,7 +3,8 @@ import {getService} from "../middlewares/service-di";
 import {NotFoundError, ParameterError} from "../errors";
 import {msgType} from "../services";
 import {z} from "zod";
-import {batchTaskInputSchema, taskStatus, taskType} from "../shared";
+import {taskStatus, taskType} from "../shared";
+import {getCloudflareEnv} from "../utils";
 
 const app = new Hono().basePath('/task')
 
@@ -58,10 +59,12 @@ app.patch('/:taskid/retry', async (c) => {
   return c.json(task)
 })
 
-// todo change to websocket, realtime status
-app.get('/:taskid/realtime', async (c) => {
+app.get('/:taskid/ws', async (c) => {
   const taskId = c.req.param('taskid')
-  const  {mqService, taskService } = getService(c)
+  if (c.req.header("upgrade") !== "websocket") {
+    return c.text("Expected Upgrade: websocket", 426);
+  }
+  const  { taskService } = getService(c)
   let task = await taskService.getTaskById(taskId, false)
   if(!task) {
     throw new NotFoundError()
@@ -72,7 +75,16 @@ app.get('/:taskid/realtime', async (c) => {
   if(task.status !== taskStatus.PENDING &&  task.status !== taskStatus.PROCESSING) {
     throw new ParameterError("realtime task status only for pending or processing")
   }
-  return c.json({})
+  const id = getCloudflareEnv().DO_TASK_STATUS.idFromName(taskId)
+  const stub = getCloudflareEnv().DO_TASK_STATUS.get(id)
+  //@see https://discord.com/channels/595317990191398933/773219443911819284/1300064731259736177
+  // pass c.req.raw directly will cause TypeError: Invalid URL: [object Request]
+  // (work well in plain worker but get error in opennext)
+  const res =await stub.fetch(c.req.raw.url, {
+    ...c.req.raw,
+    headers: c.req.raw.headers
+  })
+  return  res
 })
 
 app.get('/', async (c) => {

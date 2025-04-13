@@ -33,8 +33,11 @@ declare namespace Cloudflare {
     DO_TASK_STATUS: DurableObjectNamespace<BatchTaskStateDO>;
 	}
 }
-interface CloudflareEnv extends Cloudflare.Env {}
-
+interface CloudflareEnv extends Cloudflare.Env {
+    DO_TASK_STATUS: DurableObjectNamespace<
+      import("../../apps/queue-consumers/image-task/src/do").DOTaskStatus
+    >;
+}
 // Begin runtime types
 /*! *****************************************************************************
 Copyright (c) Cloudflare. All rights reserved.

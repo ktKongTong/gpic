@@ -2,7 +2,6 @@ import {Hono} from "hono";
 import {getService} from "../../middlewares/service-di";
 import {msgType} from "../../services";
 import {batchTaskInputSchema, taskStatus} from "../../shared";
-import {Task} from "../../storage/type";
 import {BizError} from "../../errors";
 
 const app = new Hono().basePath('/task')
@@ -37,7 +36,6 @@ app.post('/image/flavor-image', async (c) => {
     taskId: task.id,
     cost
   })
-  console.log(order)
   if(!order) {
     await taskService.updateTask({status: taskStatus.FAILED, id: task.id, metadata: {version: '1', error:'failed to decrease user balance' }})
     throw new BizError('failed to decrease user balance', 400)

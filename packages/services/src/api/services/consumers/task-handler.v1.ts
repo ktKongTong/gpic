@@ -59,10 +59,10 @@ export class ImageTaskHandlerV1 {
       switch (event.type) {
         case 'error':
           ctx.success = false;
-          ctx.message += "aisdk stream error:"+ String(event.error)
+          ctx.message += "\n\naisdk stream error:"+ String(event.error)
           break
         case "finish":
-          ctx.message += `aisdk finish-reason: ${event.finishReason}`
+          ctx.message += `\n\naisdk finish-reason: ${event.finishReason}`
           break
         case 'text-delta':
           ctx.message += event.textDelta

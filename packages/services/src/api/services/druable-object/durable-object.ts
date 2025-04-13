@@ -6,36 +6,54 @@ import {
 } from "../../storage/type";
 import {Events, eventType} from "./type";
 import {createService} from "../factory";
-import {taskStatus, taskType, TaskType} from "../../shared";
+import {BatchState, defaultBatchState, taskStatus, taskType, TaskType} from "../../shared";
 
-type BatchState = {
-  total: number;
-  pending: number;
-  processing: number;
-  completed: number;
-  failed: number;
-}
-const defaultState = {
-  total: 0,
-  pending: 0,
-  processing: 0,
-  completed: 0,
-  failed: 0
-}
 
 export class BatchTaskStateDO extends DurableObject {
   taskType: TaskType | undefined
   private services: ReturnType<typeof createService>
   state : BatchTaskState | undefined
   initialized = false
+  connections: Set<WebSocket>;
   constructor(ctx: DurableObjectState, env: CloudflareEnv) {
     super(ctx, env);
     this.services = createService(env)
+    this.connections = new Set<WebSocket>();
     ctx.blockConcurrencyWhile(async () => {
       this.taskType = (await ctx.storage.get('task-type')) as TaskType
       this.initialized = (await ctx.storage.get('initialized')) as boolean
       await this.getState()
     })
+  }
+
+
+  async fetch() {
+    console.log("accepting ws")
+    const websocketPair = new WebSocketPair();
+    const [client, server] = Object.values(websocketPair);
+    this.ctx.acceptWebSocket(server);
+    this.connections.add(client);
+    console.log("returning")
+    return new Response(null, {
+      status: 101,
+      webSocket: client
+    });
+  }
+
+  webSocketError(ws: WebSocket, error: unknown) {
+    console.error("webSocketError", error);
+    this.connections.delete(ws);
+  }
+
+  webSocketClose(
+    ws: WebSocket,
+    _code: number,
+    _reason: string,
+    _wasClean: boolean
+  ) {
+    console.log(_code, _reason, _wasClean)
+    console.log("webSocketClose, connections", this.connections);
+    this.connections.delete(ws);
   }
 
   // https://developers.cloudflare.com/durable-objects/observability/troubleshooting/#durable-object-reset-because-its-code-was-updated
@@ -185,7 +203,7 @@ const handleTaskEvent = (event: Events, state: TaskState) => {
         res = { ...state, children }; break
       case eventType.TASK_PROCESSING:
         const metadata = state.metadata as any
-        let curs = metadata.state ?? defaultState as BatchState
+        let curs = metadata.state ?? defaultBatchState as BatchState
         curs.processing++
         curs.pending--
         res = { ...state,
@@ -216,7 +234,7 @@ const handleTaskEvent = (event: Events, state: TaskState) => {
         }}; break
       case eventType.TASK_FAIL:
         const m1 = state.metadata as any
-        let bs1 = (m1.state ?? defaultState) as BatchState
+        let bs1 = (m1.state ?? defaultBatchState) as BatchState
         bs1.processing--
         bs1.failed++
         let batchstatus = state.status
@@ -235,7 +253,7 @@ const handleTaskEvent = (event: Events, state: TaskState) => {
         break
       case eventType.TASK_COMPLETE:
         const m = state.metadata as any
-        let bs = (m.state ?? defaultState) as BatchState
+        let bs = (m.state ?? defaultBatchState) as BatchState
         bs.processing--
         bs.completed++
         let status = state.status

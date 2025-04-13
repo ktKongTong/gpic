@@ -15,3 +15,5 @@ export const styleSchema = z.union([
     reference: z.string().array(),
   })
 ])
+
+export type StyleInfo = z.infer<typeof styleSchema>

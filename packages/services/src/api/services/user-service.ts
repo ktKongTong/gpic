@@ -1,4 +1,4 @@
-import { getAuth } from "../services/auth";
+import { getAuth } from "./auth";
 import { Context } from "hono";
 import {User} from 'better-auth'
 import { getContext } from 'hono/context-storage'

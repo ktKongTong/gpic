@@ -2,7 +2,7 @@ import { createOpenAI } from '@ai-sdk/openai';
 import {backendEnv} from "../env";
 import {ImagePart, TextPart, UserContent} from "ai";
 import {StyleService} from "../style";
-import {NotFoundError, ParameterError} from "../../errors/route";
+import { NotFoundError } from "../../errors";
 
 
 

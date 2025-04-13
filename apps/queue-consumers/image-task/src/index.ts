@@ -1,9 +1,11 @@
 import { Task, ConsumerService } from "@repo/service";
 export { DOTaskStatus } from './do'
 import Env = Cloudflare.Env;
+import {route} from "@repo/service";
 type ImageTask = Task
 
 export default {
+  fetch: route.fetch,
   async queue(batch: MessageBatch<Message<ImageTask>>, env: Env): Promise<void> {
     const consumerService = new ConsumerService(env)
     const handler = async (msg:MessageBatch<Message<ImageTask>>['messages'][number]) => {

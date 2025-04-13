@@ -6,16 +6,20 @@ import { ServiceDIMiddleware } from "./middlewares/service-di";
 import { getAuth } from "./services";
 import { contextStorage } from "hono/context-storage";
 import {ZodError} from "zod";
-import {BizError, ParameterError} from "./errors";
+import { BizError } from "./errors";
 import {timing} from "hono/timing";
 import {taskRoute} from "./routes/task";
 import {styleRoute} from "./routes/styles";
 import {taskV2Route} from "./routes/v2/task";
 import {balanceRoute} from "./routes/balance";
 import {BaseError} from "./errors/base";
+import {setCloudflareEnv} from "./utils";
 
 const app = new Hono().basePath('/api')
-
+app.use('*', async (c, next) => {
+	setCloudflareEnv(c.env as any)
+	await next()
+})
 app.use(contextStorage())
 app.use(ServiceDIMiddleware())
 

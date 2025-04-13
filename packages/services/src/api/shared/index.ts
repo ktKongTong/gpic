@@ -10,6 +10,13 @@ export type BatchState = {
   total: number,
 }
 
+export const defaultBatchState = {
+  total: 0,
+  pending: 0,
+  processing: 0,
+  completed: 0,
+  failed: 0
+}
 export const styleSchema = z.union([z.object({ styleId: z.string() }), z.object({
   prompt: z.string(),
   reference: z.string().array(),
