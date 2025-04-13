@@ -15,7 +15,7 @@ import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import {Checkbox} from "@/components/ui/checkbox";
 import {Button} from "@/components/ui/button";
-import {Loader2} from "lucide-react";
+import {Loader2, User, VenetianMask} from "lucide-react";
 import {cn} from "@/lib/utils";
 import {useState} from "react";
 import {useQueryClient} from "@tanstack/react-query";
@@ -74,7 +74,8 @@ export default function UserProfile() {
         <Dialog>
           <DialogTrigger>
             <>
-              <div className={'flex items-center gap-2 w-8 h-8 bg-teal-100 rounded-full'}>
+              <div className={'inline-flex justify-center items-center gap-2 w-8 h-8 bg-gray-100/40 rounded-full'}>
+                  <User className={'w-6 h-6'}/>
               </div>
             </>
           </DialogTrigger>
@@ -198,6 +199,18 @@ export default function UserProfile() {
                               <path fill="#EB4335" d="M130.55 50.479c24.514 0 41.05 10.589 50.479 19.438l36.844-35.974C195.245 12.91 165.798 0 130.55 0C79.49 0 35.393 29.301 13.925 71.947l42.211 32.783c10.59-31.477 39.891-54.251 74.414-54.251"></path>
                           </svg>
                           Sign in with Google
+                      </Button>
+                      <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full gap-2"
+                          )}
+                          disabled={loading}
+                          onClick={async () => {
+                            await signIn.anonymous();
+                          }}
+                      >
+                          <VenetianMask />Sign in Anonymous
                       </Button>
                       <Button
                           variant="outline"

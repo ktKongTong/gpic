@@ -147,6 +147,18 @@ export default function SignIn() {
               )}
               disabled={loading}
               onClick={async () => {
+                await signIn.anonymous();
+              }}
+            >
+              Sign in Anonymous
+            </Button>
+            <Button
+              variant="outline"
+              className={cn(
+                "w-full gap-2"
+              )}
+              disabled={loading}
+              onClick={async () => {
                 await signIn.social(
                   {
                     provider: "github",

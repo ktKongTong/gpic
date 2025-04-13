@@ -64,6 +64,13 @@
       "when": 1744434971857,
       "tag": "0008_stale_xavin",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1744509705616,
+      "tag": "0009_daily_giant_girl",
+      "breakpoints": true
     }
   ]
 }

@@ -13,30 +13,32 @@ export class UserBalanceService {
   }
 
   async getBalance() {
-    const user = await this.userService.getCurrentUser()
-    const uid = user?.id ?? 'anonymous'
+    const uid = await this.getConsumeUserid()
     const quota = this.dao.balance.createIfNotExistAndGetBalanceByUserId(uid)
     return quota
   }
-  async getConsumeHistory() {
+  async getOrders() {
     const user = await this.userService.getCurrentUser()
-    // this.userService.getCurrentUser()
     const uid = user?.id ?? 'anonymous'
     const orders = this.dao.balance.getOrdersByUserId(uid)
     return orders
   }
 
   async createTaskOrder(order: TaskOrderCreate) {
-    // create task
     const user = await this.userService.getCurrentUser()
     const uid = user?.id ?? 'anonymous'
     return this.dao.balance.createTaskOrder(uid, order.taskId, order.cost)
   }
-
+  // all anonymous user share the same balance
+  async getConsumeUserid() {
+    const user = await this.userService.getCurrentUser()
+    const isAnonymous = await this.userService.isAnonymousUser()
+    const uid = isAnonymous ? 'anonymous' : user?.id ?? 'anonymous'
+    return uid
+  }
 
   async tryDecreaseBalance(point:number) {
-    const user = await this.userService.getCurrentUser()
-    const uid = user?.id ?? 'anonymous'
+    const uid = await this.getConsumeUserid()
     const quota = await this.dao.balance.decreaseBalanceUserId(point, uid)
     if(quota) {
       return quota
@@ -49,8 +51,7 @@ export class UserBalanceService {
   }
 
   async increaseBalance(point:number) {
-    const user = await this.userService.getCurrentUser()
-    const uid = user?.id ?? 'anonymous'
+    const uid = await this.getConsumeUserid()
     const remain = await this.dao.balance.createIfNotExistAndGetBalanceByUserId(uid)
     if(!remain) {
       throw new BizError(`User Not Found`, 400)

@@ -13,7 +13,7 @@ app.get('/balance', async (c) => {
 
 app.get('/order', async (c) => {
   const  { userBalanceService } = getService(c)
-  const orders = await userBalanceService.getConsumeHistory()
+  const orders = await userBalanceService.getOrders()
   return c.json(orders)
 })
 

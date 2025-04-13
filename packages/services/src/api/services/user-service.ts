@@ -21,8 +21,15 @@ export class UserService {
             return cached
         }
         const session = await getAuth().api.getSession({ headers: ctx.req.raw.headers })
+
         ctx.set(userSymbol, session?.user)
         return session?.user
+    }
+
+    async isAnonymousUser() {
+        const user = await this.getCurrentUser()
+        // @ts-ignore
+        return (user?.isAnonymous ?? true) as boolean
     }
 
 
