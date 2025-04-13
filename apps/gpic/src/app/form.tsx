@@ -2,10 +2,10 @@
 import {useTrans} from "@/i18n";
 import {Skeleton} from "@/components/ui/skeleton";
 import {Button} from "@/components/ui/button";
-import {Layers, Menu, Minus, Pencil, Plus} from "lucide-react";
+import {Coins, Ellipsis, Layers, Menu, Minus, Pencil, Plus} from "lucide-react";
 import {cn} from "@/lib/utils";
 import {Label} from "@/components/ui/label";
-import React, {useState} from "react";
+import React, {use, useState} from "react";
 import {useStyles} from "@/hooks/use-styles";
 import Style, {StyleForm} from "./style";
 import {useFiles} from "@/hooks/use-file-upload";
@@ -15,6 +15,7 @@ import FileUploader from "./upload";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useMutation} from "@tanstack/react-query";
 import {mutationKeys, TaskCreateV2} from "@/lib/query";
+import {useBalance} from "@/hooks/use-balance";
 
 type Size = 'auto' | '1x1' | '3x2' | '2x3'
 // local style id
@@ -50,7 +51,7 @@ const useTaskForm = () => {
   })
 
   const value = form.watch()
-  const {count, batch, size } = value
+  const { count, batch } = value
   const setSize = (size: Size) => {
     form.setValue('size', size)
   }
@@ -94,10 +95,13 @@ const useTaskForm = () => {
     setSubmitting(false)
   }
 
+  const creditNeed = count * files.length * selectedStyleIds.length * 5
+
 
   return {
     submitting,
     value,
+    creditNeed,
     toggleBatch,
     addCount,
     minusCount,
@@ -113,8 +117,10 @@ const useTaskForm = () => {
 
 export default function Form() {
 
+  const {balance, isLoading} = useBalance()
   const {
     submitting,
+    creditNeed,
     value,
     toggleBatch,
     addCount,
@@ -129,9 +135,20 @@ export default function Form() {
   const {t} = useTrans()
 
   return (<div className={'h-full flex flex-col gap-4'}>
-    <div className={' font-semibold text-2xl'}>
-      {t('pages.home.label.upload')}
+<div className={'flex w-full flex-col'}>
+  <div className={'flex w-full justify-between'}>
+    <span className={' font-semibold text-2xl'}>{t('pages.home.label.upload')}</span>
+    <div className={'inline-flex items-center gap-2 bg-black/30 rounded-full px-2'}>
+      <Coins /> {balance.balance}
     </div>
+  </div>
+  <div className={cn(
+    'text-sm self-end', (balance.balance >= creditNeed) && 'invisible'
+  )}>
+    😵‍💫no enough credit, need {creditNeed}
+  </div>
+</div>
+
     <FileUploader/>
     <div className={'font-semibold text-2xl'}>
       {t('pages.home.label.style')}
@@ -156,7 +173,8 @@ export default function Form() {
     <div className={'flex gap-2 items-center '}>
       <RatioOption size={value.size} onChange={setSize}/>
     </div>
-    <div className={'mt-auto self-end'}>
+    <div className={'mt-auto w-full flex justify-end'}>
+
       <div className="flex items-center justify-end w-full gap-2">
         {
           value.batch && <div className="flex items-center gap-2">
@@ -187,10 +205,10 @@ export default function Form() {
           onClick={() => onSubmit()}
         >
           {
-            submitting ?
+            !submitting ?
               <>
                   <Pencil className="h-4 w-4" /><span className={'hidden md:inline'}>{t('pages.home.button.draw')}</span>
-              </>: <Menu className="h-4 w-4"/>
+              </>: <Ellipsis className="h-4 w-4"/>
 
           }
         </Button>

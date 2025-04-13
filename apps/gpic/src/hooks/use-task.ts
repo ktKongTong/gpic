@@ -1,9 +1,10 @@
 'use client'
-import {useMutation, useQuery} from "@tanstack/react-query";
-import {useState} from "react";
-import {api} from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { api } from "@/lib/api";
 import {ExecutionStatus, TaskStatus, TaskType } from "@repo/service/shared";
 import {StyleInfo} from "@repo/service/shared";
+import {queryKeys} from "@/lib/query";
 
 declare namespace ImageGenType {
   type Input = { files: string[], style?: StyleInfo, prompt?: string }
@@ -64,31 +65,45 @@ type MultiFile = {
 }
 
 export const useTasks = () => {
-  const {data, isLoading} = useQuery({
-    queryKey: ['tasks'],
-    queryFn: () => api.getTasks(),
-  })
+  const {data, isLoading} = useQuery({ queryKey: queryKeys.tasks, queryFn: () => api.getTasks() })
   const tasks = (data ?? []) as (BatchImageTask | ImageTask)[]
-  const [selectedTask, setSelectedTask] = useState<Task | null>(tasks.length > 0 ? tasks[0] : null);
-
+  // const [selectedTask, setSelectedTask] = useState<Task | null>(tasks.length > 0 ? tasks[0] : null);
   return {
     tasks,
-    selectedTask,
-    setSelectedTask,
+    // selectedTask,
+    // setSelectedTask,
   }
 }
 
+type TaskResult = BatchImageTask | ImageTask
+
+const WS_URL = process.env.NEXT_PUBLIC_WS_URL
+
 
 export const useTask = (taskId: string) => {
-  const {data, isLoading} = useQuery({
+  const [task, setTask] = useState<TaskResult | undefined>(undefined)
+  const { isLoading } = useQuery({
     queryKey: ['task', 'task-item', taskId],
     queryFn: async () => {
       const res = await api.getTaskById(taskId)
-      return res as BatchImageTask | ImageTask
-    }
+      setTask(res)
+    },
   })
+
+  useEffect(() => {
+    if(!task) return
+    const id = task?.parentTaskId ?? task.id
+    const ws = new WebSocket(`${WS_URL}/task/${id}/ws`)
+    ws.onmessage = (e) => {
+      console.log(e)
+    }
+    return () => {
+      ws.close()
+    }
+  }, [task])
+
   return {
-    task: data,
+    task,
     isLoading: isLoading,
   }
 }

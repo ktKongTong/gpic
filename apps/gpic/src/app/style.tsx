@@ -109,7 +109,7 @@ function StyleFormInternal() {
   const [open, setOpen] = useState(false)
   return <Popover open={open} onOpenChange={setOpen}>
     <PopoverTrigger><Plus/></PopoverTrigger>
-    <PopoverContent className={'backdrop-blur-sm border-border'}>
+    <PopoverContent className={'backdrop-blur-sm border-none'}>
       <form onSubmit={form.handleSubmit(onSubmit)} className={'flex flex-col gap-4 items-start justify-end *:w-full'}>
         <Form  {...form}>
           <FormField

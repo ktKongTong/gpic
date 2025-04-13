@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import GalleryItem from "@/components/gallery-item";
-import {useGallery} from "@/hooks/use-gallery";
+import { useGallery } from '@/hooks/use-gallery';
 
 export interface GalleryImage {
   id: string | number;
@@ -12,19 +12,18 @@ export interface GalleryImage {
   originImageURL?: string;
 }
 
+
 const Gallery = () => {
-  const { images } = useGallery()
+  const { images,isLoading } = useGallery()
   const [columns, setColumns] = useState<GalleryImage[][]>([[], [], []]);
   useEffect(() => {
     const handleResize = () => {
       const newColumns: GalleryImage[][] = [[], [], []];
-      // For mobile, use 1 column
       const columnCount = window.innerWidth < 768 ? 1 : (window.innerWidth < 1024 ? 2 : 2);
 
       images.forEach((image, index) => {
         newColumns[index % columnCount].push(image);
       });
-
       setColumns(newColumns.filter(column => column.length > 0));
     };
 

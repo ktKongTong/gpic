@@ -14,6 +14,7 @@ import {balanceRoute} from "./routes/balance";
 import {BaseError} from "./errors/base";
 import {setCloudflareEnv} from "./utils";
 import {commonRoute} from "./routes/common";
+import {userRoute} from "./routes/user";
 
 const app = new Hono().basePath('/api')
 app.use('*', async (c, next) => {
@@ -58,6 +59,7 @@ app.route('/', aiRoute)
 app.route('/', commonRoute)
 app.route('/', taskRoute)
 app.route('/', balanceRoute)
+app.route('/', userRoute)
 app.route('/v2', taskV2Route)
 
 export { app as route }

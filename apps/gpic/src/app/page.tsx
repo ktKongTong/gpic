@@ -32,9 +32,10 @@ export default function Page() {
         </div>
         <div className={'text-5xl md:text-7xl italic'}>Make this into</div>
         <div className={cn(
-          ' relative rounded-lg text-6xl py-6 transition-all px-2', beauty.className,
+          ' relative rounded-lg text-6xl py-12 transition-all px-8', beauty.className,
           'bg-gradient-to-r from-pink-200 via-indigo-200 to-blue-200 text-clip text-transparent bg-clip-text'
         )}>
+          <div className={'absolute inset-0  rounded-full backdrop-blur-md'}></div>
           <span>ghibli</span>
           <span className={' transition-all'}>style</span>
         </div>
@@ -43,7 +44,7 @@ export default function Page() {
 
       <div className={cn(
         'grow content-stretch md:col-span-2 self-stretch justify-items-stretch p-2',
-        'glass-container rounded-2xl backdrop-blur-md bg-card/40 shadow-xl'
+        'glass-container p-4 rounded-2xl backdrop-blur-md bg-card/40 shadow-xl'
       )}>
         <Form/>
       </div>

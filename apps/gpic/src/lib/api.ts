@@ -1,12 +1,20 @@
 import {ofetch} from "ofetch";
 import {Task} from "./type";
-
+import {useState} from "react";
+export class ReqError extends Error {
+  constructor(message: string) {
+    super(message);
+  }
+}
 const fetchIns = ofetch.create({
-  onResponseError: (ctx) => {
-    ctx.error
+  onResponseError: async (ctx) => {
+    const data =await ctx.response._data
+    // @ts-ignore
+    console.error("ctx", data?.error);
+    // @ts-ignore
+    throw new ReqError(data?.error);
   },
   retry: false,
-
 });
 
 type TaskCreate = {
@@ -101,6 +109,12 @@ class API {
     })
   }
 
+  getGallery() {
+    return fetchIns<{id: string|number, url: string}[]>('/api/gallery', {
+      method: 'GET',
+    })
+  }
+
   batchUpload(files: File[]) {
     const formData = new FormData()
     files.forEach((file) => {
@@ -114,5 +128,7 @@ class API {
 
 
 }
+
+
 
 export const api = new API()

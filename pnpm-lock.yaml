@@ -7,11 +7,26 @@ settings:
 catalogs:
   default:
     '@cloudflare/workers-types':
-      specifier: ^4.20250327.0
-      version: 4.20250327.0
+      specifier: 4.20250409.0
+      version: 4.20250409.0
+    '@opennextjs/cloudflare':
+      specifier: ^1.0.0-beta.2
+      version: 1.0.0-beta.2
+    better-auth:
+      specifier: 1.2.6
+      version: 1.2.6
+    drizzle-kit:
+      specifier: ^0.30.6
+      version: 0.30.6
+    drizzle-orm:
+      specifier: ^0.41.0
+      version: 0.41.0
+    hono:
+      specifier: ^4.7.6
+      version: 4.7.6
     wrangler:
-      specifier: ^4.9.1
-      version: 4.9.1
+      specifier: ^4.10.0
+      version: 4.10.0
 
 patchedDependencies:
   '@hono-rate-limiter/cloudflare':
@@ -38,10 +53,10 @@ importers:
         version: 2.2.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@hono-rate-limiter/cloudflare':
         specifier: ^0.2.2
-        version: 0.2.2(patch_hash=bfdb1b6ac7cac7019ee5d321b0604df608bd1dc83a114476e71a583e70172089)(@cloudflare/workers-types@4.20250327.0)(hono@4.7.5)
+        version: 0.2.2(patch_hash=bfdb1b6ac7cac7019ee5d321b0604df608bd1dc83a114476e71a583e70172089)(@cloudflare/workers-types@4.20250409.0)(hono@4.7.6)
       '@hono/zod-validator':
         specifier: ^0.4.3
-        version: 0.4.3(hono@4.7.5)(zod@3.24.2)
+        version: 0.4.3(hono@4.7.6)(zod@3.24.2)
       '@hookform/resolvers':
         specifier: ^4.1.3
         version: 4.1.3(react-hook-form@7.54.2(react@19.0.0))
@@ -163,8 +178,8 @@ importers:
         specifier: ^1.11.13
         version: 1.11.13
       drizzle-orm:
-        specifier: ^0.41.0
-        version: 0.41.0(@cloudflare/workers-types@4.20250327.0)(@opentelemetry/api@1.9.0)(gel@2.0.1)(kysely@0.27.6)
+        specifier: 'catalog:'
+        version: 0.41.0(@cloudflare/workers-types@4.20250409.0)(@opentelemetry/api@1.9.0)(gel@2.0.1)(kysely@0.27.6)
       embla-carousel-react:
         specifier: ^8.5.2
         version: 8.5.2(react@19.0.0)
@@ -172,14 +187,14 @@ importers:
         specifier: ^1.1.3
         version: 1.1.3
       hono:
-        specifier: ^4.7.5
-        version: 4.7.5
+        specifier: 'catalog:'
+        version: 4.7.6
       hono-openapi:
         specifier: ^0.4.6
-        version: 0.4.6(@hono/zod-validator@0.4.3(hono@4.7.5)(zod@3.24.2))(hono@4.7.5)(valibot@1.0.0-beta.15(typescript@5.8.2))(zod@3.24.2)
+        version: 0.4.6(@hono/zod-validator@0.4.3(hono@4.7.6)(zod@3.24.2))(hono@4.7.6)(valibot@1.0.0-beta.15(typescript@5.8.2))(zod@3.24.2)
       hono-rate-limiter:
         specifier: ^0.4.2
-        version: 0.4.2(hono@4.7.5)
+        version: 0.4.2(hono@4.7.6)
       input-otp:
         specifier: ^1.4.2
         version: 1.4.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -248,8 +263,8 @@ importers:
         version: 5.0.3(@types/react@19.0.12)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0))
     devDependencies:
       '@opennextjs/cloudflare':
-        specifier: ^0.6.4
-        version: 0.6.4(wrangler@4.9.1(@cloudflare/workers-types@4.20250327.0))
+        specifier: 'catalog:'
+        version: 1.0.0-beta.2(wrangler@4.10.0(@cloudflare/workers-types@4.20250409.0))
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.0.17
@@ -263,7 +278,7 @@ importers:
         specifier: ^19
         version: 19.0.4(@types/react@19.0.12)
       drizzle-kit:
-        specifier: ^0.30.6
+        specifier: 'catalog:'
         version: 0.30.6
       tailwindcss:
         specifier: ^4
@@ -273,7 +288,7 @@ importers:
         version: 5.8.2
       wrangler:
         specifier: 'catalog:'
-        version: 4.9.1(@cloudflare/workers-types@4.20250327.0)
+        version: 4.10.0(@cloudflare/workers-types@4.20250409.0)
 
   apps/queue-consumers/image-task:
     dependencies:
@@ -283,13 +298,13 @@ importers:
     devDependencies:
       '@cloudflare/workers-types':
         specifier: 'catalog:'
-        version: 4.20250327.0
+        version: 4.20250409.0
       typescript:
         specifier: ^5.8
         version: 5.8.2
       wrangler:
         specifier: 'catalog:'
-        version: 4.9.1(@cloudflare/workers-types@4.20250327.0)
+        version: 4.10.0(@cloudflare/workers-types@4.20250409.0)
 
   packages/services:
     dependencies:
@@ -301,13 +316,10 @@ importers:
         version: 1.3.4(zod@3.24.2)
       '@hono-rate-limiter/cloudflare':
         specifier: ^0.2.2
-        version: 0.2.2(patch_hash=bfdb1b6ac7cac7019ee5d321b0604df608bd1dc83a114476e71a583e70172089)(@cloudflare/workers-types@4.20250327.0)(hono@4.7.5)
+        version: 0.2.2(patch_hash=bfdb1b6ac7cac7019ee5d321b0604df608bd1dc83a114476e71a583e70172089)(@cloudflare/workers-types@4.20250409.0)(hono@4.7.6)
       '@hono/zod-validator':
         specifier: ^0.4.3
-        version: 0.4.3(hono@4.7.5)(zod@3.24.2)
-      '@opennextjs/cloudflare':
-        specifier: ^0.6.5
-        version: 0.6.5(wrangler@4.9.1(@cloudflare/workers-types@4.20250327.0))
+        version: 0.4.3(hono@4.7.6)(zod@3.24.2)
       ai:
         specifier: ^4.2.6
         version: 4.2.8(react@19.0.0)(zod@3.24.2)
@@ -315,23 +327,20 @@ importers:
         specifier: ^1.0.20
         version: 1.0.20
       better-auth:
-        specifier: ^1.2.5
-        version: 1.2.5(typescript@5.8.2)
-      drizzle-kit:
-        specifier: ^0.30.6
-        version: 0.30.6
+        specifier: 'catalog:'
+        version: 1.2.6
       drizzle-orm:
-        specifier: ^0.41.0
-        version: 0.41.0(@cloudflare/workers-types@4.20250327.0)(@opentelemetry/api@1.9.0)(gel@2.0.1)(kysely@0.27.6)
+        specifier: 'catalog:'
+        version: 0.41.0(@cloudflare/workers-types@4.20250409.0)(@opentelemetry/api@1.9.0)(gel@2.0.1)(kysely@0.27.6)
       hono:
-        specifier: ^4.7.5
-        version: 4.7.5
+        specifier: 'catalog:'
+        version: 4.7.6
       hono-openapi:
         specifier: ^0.4.6
-        version: 0.4.6(@hono/zod-validator@0.4.3(hono@4.7.5)(zod@3.24.2))(hono@4.7.5)(valibot@1.0.0-beta.15(typescript@5.8.2))(zod@3.24.2)
+        version: 0.4.6(@hono/zod-validator@0.4.3(hono@4.7.6)(zod@3.24.2))(hono@4.7.6)(valibot@1.0.0-beta.15(typescript@5.8.2))(zod@3.24.2)
       hono-rate-limiter:
         specifier: ^0.4.2
-        version: 0.4.2(hono@4.7.5)
+        version: 0.4.2(hono@4.7.6)
       ofetch:
         specifier: ^1.4.1
         version: 1.4.1
@@ -345,9 +354,15 @@ importers:
         specifier: 3.24.2
         version: 3.24.2
     devDependencies:
+      '@opennextjs/cloudflare':
+        specifier: 'catalog:'
+        version: 1.0.0-beta.2(wrangler@4.10.0(@cloudflare/workers-types@4.20250409.0))
       '@types/node':
         specifier: ^20
         version: 20.17.28
+      drizzle-kit:
+        specifier: 'catalog:'
+        version: 0.30.6
       tsup:
         specifier: ^8.4.0
         version: 8.4.0(jiti@2.4.2)(postcss@8.5.3)(typescript@5.8.2)(yaml@2.7.0)
@@ -356,7 +371,7 @@ importers:
         version: 5.8.2
       wrangler:
         specifier: 'catalog:'
-        version: 4.9.1(@cloudflare/workers-types@4.20250327.0)
+        version: 4.10.0(@cloudflare/workers-types@4.20250409.0)
 
 packages:
 
@@ -788,38 +803,38 @@ packages:
       workerd:
         optional: true
 
-  '@cloudflare/workerd-darwin-64@1.20250408.0':
-    resolution: {integrity: sha512-bxhIwBWxaNItZLXDNOKY2dCv0FHjDiDkfJFpwv4HvtvU5MKcrivZHVmmfDzLW85rqzfcDOmKbZeMPVfiKxdBZw==}
+  '@cloudflare/workerd-darwin-64@1.20250409.0':
+    resolution: {integrity: sha512-smA9yq77xsdQ1NMLhFz3JZxMHGd01lg0bE+X3dTFmIUs+hHskJ+HJ/IkMFInkCCeEFlUkoL4yO7ilaU/fin/xA==}
     engines: {node: '>=16'}
     cpu: [x64]
     os: [darwin]
 
-  '@cloudflare/workerd-darwin-arm64@1.20250408.0':
-    resolution: {integrity: sha512-5XZ2Oykr8bSo7zBmERtHh18h5BZYC/6H1YFWVxEj3PtalF3+6SHsO4KZsbGvDml9Pu7sHV277jiZE5eny8Hlyw==}
+  '@cloudflare/workerd-darwin-arm64@1.20250409.0':
+    resolution: {integrity: sha512-oLVcf+Y5Qun8JHcy1VcR/YnbA5U2ne0czh3XNhDqdHZFK8+vKeC7MnVPX+kEqQA3+uLcMM1/FsIDU1U4Na0h1g==}
     engines: {node: '>=16'}
     cpu: [arm64]
     os: [darwin]
 
-  '@cloudflare/workerd-linux-64@1.20250408.0':
-    resolution: {integrity: sha512-WbgItXWln6G5d7GvYLWcuOzAVwafysZaWunH3UEfsm95wPuRofpYnlDD861gdWJX10IHSVgMStGESUcs7FLerQ==}
+  '@cloudflare/workerd-linux-64@1.20250409.0':
+    resolution: {integrity: sha512-D31B4kdC3a0RD5yfpdIa89//kGHbYsYihZmejm1k4S4NHOho3MUDHAEh4aHtafQNXbZdydGHlSyiVYjTdQ9ILQ==}
     engines: {node: '>=16'}
     cpu: [x64]
     os: [linux]
 
-  '@cloudflare/workerd-linux-arm64@1.20250408.0':
-    resolution: {integrity: sha512-pAhEywPPvr92SLylnQfZEPgXz+9pOG9G9haAPLpEatncZwYiYd9yiR6HYWhKp2erzCoNrOqKg9IlQwU3z1IDiw==}
+  '@cloudflare/workerd-linux-arm64@1.20250409.0':
+    resolution: {integrity: sha512-Sr59P0TREayil5OQ7kcbjuIn6L6OTSRLI91LKu0D8vi1hss2q9FUwBcwxg0+Yd/x+ty/x7IISiAK5QBkAMeITQ==}
     engines: {node: '>=16'}
     cpu: [arm64]
     os: [linux]
 
-  '@cloudflare/workerd-windows-64@1.20250408.0':
-    resolution: {integrity: sha512-nJ3RjMKGae2aF2rZ/CNeBvQPM+W5V1SUK0FYWG/uomyr7uQ2l4IayHna1ODg/OHHTEgIjwom0Mbn58iXb0WOcQ==}
+  '@cloudflare/workerd-windows-64@1.20250409.0':
+    resolution: {integrity: sha512-dK9I8zBX5rR7MtaaP2AhICQTEw3PVzHcsltN8o46w7JsbYlMvFOj27FfYH5dhs3IahgmIfw2e572QXW2o/dbpg==}
     engines: {node: '>=16'}
     cpu: [x64]
     os: [win32]
 
-  '@cloudflare/workers-types@4.20250327.0':
-    resolution: {integrity: sha512-rkoGnSY/GgBLCuhjZMIC3mt0jjqqvL17uOK92OI4eivmE+pMFOAchowDxIWOzDyYe5vwNCakbCeIM/FrSmwGJA==}
+  '@cloudflare/workers-types@4.20250409.0':
+    resolution: {integrity: sha512-yPxxwE5nr168huEfLNOB6904OsvIWcq0tWT23NMD6jT5SIp2ds3oOGANw7wz39r5y3jZYC2h1OnGwnZXJDDCOg==}
 
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
@@ -1851,27 +1866,15 @@ packages:
     resolution: {integrity: sha512-csY4qcR7jUwiZmkreNTJhcypQfts2aY2CK+a+rXgXUImZiZiySh0FvwHjRnlqWKvg+y6ae9lHFzDRjBTmqlTIQ==}
     engines: {node: '>=16.0.0'}
 
-  '@opennextjs/aws@https://pkg.pr.new/@opennextjs/aws@798':
-    resolution: {tarball: https://pkg.pr.new/@opennextjs/aws@798}
-    version: 3.5.3
+  '@opennextjs/aws@3.5.5':
+    resolution: {integrity: sha512-vIqCcNxy7vPdC5HQQkCN+AXhxdNvagZ8EYw5XvuYIAP2T1Ci9ai/8m6UXtjgd3L9+aBA8pbWfr2Wr/BNLX5m2Q==}
     hasBin: true
 
-  '@opennextjs/aws@https://pkg.pr.new/@opennextjs/aws@802':
-    resolution: {tarball: https://pkg.pr.new/@opennextjs/aws@802}
-    version: 3.5.3
-    hasBin: true
-
-  '@opennextjs/cloudflare@0.6.4':
-    resolution: {integrity: sha512-87EyjNzlTxtEhEb2ATDYJxllmGW00CTeVOpj3Z8Tg3ukgvURESuA9r+fUqjqbIuFppVGSP4kIxIlpkJsVT0KoQ==}
+  '@opennextjs/cloudflare@1.0.0-beta.2':
+    resolution: {integrity: sha512-nflcIrcC7kNPEdUc7vKeju546qTQN3xfLK44Ao1jF4q/BsjFhTzHWRKiw2no6K5CnX++I/Y/F9+6bzPzLW+OMQ==}
     hasBin: true
     peerDependencies:
-      wrangler: ^3.114.1 || ^4.0.0
-
-  '@opennextjs/cloudflare@0.6.5':
-    resolution: {integrity: sha512-Ml9LDs1v0OvYZDOgUHGbFHcE2hzz0pty71mWkDwusAy6UgudtNAVZjN1yJC+McMqdPViEQb1IL6Qi2ameN3Y+g==}
-    hasBin: true
-    peerDependencies:
-      wrangler: ^3.114.1 || ^4.6.0
+      wrangler: ^3.114.3 || ^4.7.0
 
   '@opentelemetry/api@1.9.0':
     resolution: {integrity: sha512-3giAOQvZiH5F9bMlMiv8+GSPMeqg0dbaeo58/0SlA9sxSqZhnUtxzX9/2FzyhS9sWQf5S0GJE0AKBrFqjpeYcg==}
@@ -3272,8 +3275,14 @@ packages:
   better-auth@1.2.5:
     resolution: {integrity: sha512-Tz2aKImkvaT7P9qHQ67Vhw/Slo6zpvE0jG7GoDQM+dd5tWuC3lP0OGjjWkNCZdToVlWB193i5nSHeZT90sFqEw==}
 
+  better-auth@1.2.6:
+    resolution: {integrity: sha512-RVy6nfNCXpohx49zP2ChUO3zN0nvz5UXuETJIhWU+dshBKpFMk4P4hAQauM3xqTJdd9hfeB5y+segmG1oYGTJQ==}
+
   better-call@1.0.5:
     resolution: {integrity: sha512-rAT73GWIJ8LbSP8Y3BdJnY1hwAiQPRRmUJ4R3YVhcVGS927l3eTXG5o5TD6Bv6je6ygjdx6iVq3/BU49eGUCHg==}
+
+  better-call@1.0.8:
+    resolution: {integrity: sha512-/PV8JLqDRUN7JyBPbklVsS/8E4SO3pnf8hbpa8B7xrBrr+BBYpeOAxoqtnsyk/pRs35vNB4MZx8cn9dBuNlLDA==}
 
   blake3-wasm@2.1.5:
     resolution: {integrity: sha512-F1+K8EbfOZE49dtoPtmxUQrpXaBIl3ICvasLh+nJta0xkz+9kF/7uet9fLnwKqhDrmj6g+6K3Tw9yQPUg2ka5g==}
@@ -3935,8 +3944,8 @@ packages:
     peerDependencies:
       hono: ^4.1.1
 
-  hono@4.7.5:
-    resolution: {integrity: sha512-fDOK5W2C1vZACsgLONigdZTRZxuBqFtcKh7bUQ5cVSbwI2RWjloJDcgFOVzbQrlI6pCmhlTsVYZ7zpLj4m4qMQ==}
+  hono@4.7.6:
+    resolution: {integrity: sha512-564rVzELU+9BRqqx5k8sT2NFwGD3I3Vifdb6P7CmM6FiarOSY+fDC+6B+k9wcCb86ReoayteZP2ki0cRLN1jbw==}
     engines: {node: '>=16.9.0'}
 
   html-url-attributes@3.0.1:
@@ -4283,8 +4292,8 @@ packages:
     resolution: {integrity: sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg==}
     engines: {node: '>=6'}
 
-  miniflare@4.20250408.0:
-    resolution: {integrity: sha512-h1FAK1l/RzZyhGAeLKD+XawWBWowY8tjOcj0Yz8RmCpZ5xBfl255O5eGw4Xk1rcpgxyEB0qiaL2CmV9HAyMfhw==}
+  miniflare@4.20250409.0:
+    resolution: {integrity: sha512-Hu02dYZvFR+MyrI57O6rSrOUTofcO9EIvcodgq2SAHzAeWSJw2E0oq9lylOrcckFwPMcwxUAb/cQN1LIoCyySw==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -4892,6 +4901,9 @@ packages:
   ts-interface-checker@0.1.13:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
 
+  ts-tqdm@0.8.6:
+    resolution: {integrity: sha512-3X3M1PZcHtgQbnwizL+xU8CAgbYbeLHrrDwL9xxcZZrV5J+e7loJm1XrXozHjSkl44J0Zg0SgA8rXbh83kCkcQ==}
+
   tslib@1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
 
@@ -5057,17 +5069,17 @@ packages:
     engines: {node: ^16.13.0 || >=18.0.0}
     hasBin: true
 
-  workerd@1.20250408.0:
-    resolution: {integrity: sha512-bBUX+UsvpzAqiWFNeZrlZmDGddiGZdBBbftZJz2wE6iUg/cIAJeVQYTtS/3ahaicguoLBz4nJiDo8luqM9fx1A==}
+  workerd@1.20250409.0:
+    resolution: {integrity: sha512-hqjX9swiHvrkOI3jlH9lrZsZRRv9lddUwcMe8Ua76jnyQz+brybWznNjHu8U5oswwcrFwvky1A4CcLjcLY31gQ==}
     engines: {node: '>=16'}
     hasBin: true
 
-  wrangler@4.9.1:
-    resolution: {integrity: sha512-wBV0OKFp+4Ii4bFIIBRm1JJi1od5KGhzsUjWw+2jtlX/H0n2TkdskMDQtrOdV9ybFKj2h+v93VxhAEBePghAkQ==}
+  wrangler@4.10.0:
+    resolution: {integrity: sha512-fTE4hZ79msEUt8+HEjl/8Q72haCyzPLu4PgrU3L81ysmjrMEdiYfUPqnvCkBUVtJvrDNdctTEimkufT1Y0ipNg==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     peerDependencies:
-      '@cloudflare/workers-types': ^4.20250408.0
+      '@cloudflare/workers-types': ^4.20250409.0
     peerDependenciesMeta:
       '@cloudflare/workers-types':
         optional: true
@@ -6218,28 +6230,28 @@ snapshots:
     dependencies:
       mime: 3.0.0
 
-  '@cloudflare/unenv-preset@2.3.1(unenv@2.0.0-rc.15)(workerd@1.20250408.0)':
+  '@cloudflare/unenv-preset@2.3.1(unenv@2.0.0-rc.15)(workerd@1.20250409.0)':
     dependencies:
       unenv: 2.0.0-rc.15
     optionalDependencies:
-      workerd: 1.20250408.0
+      workerd: 1.20250409.0
 
-  '@cloudflare/workerd-darwin-64@1.20250408.0':
+  '@cloudflare/workerd-darwin-64@1.20250409.0':
     optional: true
 
-  '@cloudflare/workerd-darwin-arm64@1.20250408.0':
+  '@cloudflare/workerd-darwin-arm64@1.20250409.0':
     optional: true
 
-  '@cloudflare/workerd-linux-64@1.20250408.0':
+  '@cloudflare/workerd-linux-64@1.20250409.0':
     optional: true
 
-  '@cloudflare/workerd-linux-arm64@1.20250408.0':
+  '@cloudflare/workerd-linux-arm64@1.20250409.0':
     optional: true
 
-  '@cloudflare/workerd-windows-64@1.20250408.0':
+  '@cloudflare/workerd-windows-64@1.20250409.0':
     optional: true
 
-  '@cloudflare/workers-types@4.20250327.0': {}
+  '@cloudflare/workers-types@4.20250409.0': {}
 
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
@@ -6667,14 +6679,14 @@ snapshots:
 
   '@hexagon/base64@1.1.28': {}
 
-  '@hono-rate-limiter/cloudflare@0.2.2(patch_hash=bfdb1b6ac7cac7019ee5d321b0604df608bd1dc83a114476e71a583e70172089)(@cloudflare/workers-types@4.20250327.0)(hono@4.7.5)':
+  '@hono-rate-limiter/cloudflare@0.2.2(patch_hash=bfdb1b6ac7cac7019ee5d321b0604df608bd1dc83a114476e71a583e70172089)(@cloudflare/workers-types@4.20250409.0)(hono@4.7.6)':
     dependencies:
-      '@cloudflare/workers-types': 4.20250327.0
-      hono: 4.7.5
+      '@cloudflare/workers-types': 4.20250409.0
+      hono: 4.7.6
 
-  '@hono/zod-validator@0.4.3(hono@4.7.5)(zod@3.24.2)':
+  '@hono/zod-validator@0.4.3(hono@4.7.6)(zod@3.24.2)':
     dependencies:
-      hono: 4.7.5
+      hono: 4.7.6
       zod: 3.24.2
 
   '@hookform/resolvers@4.1.3(react-hook-form@7.54.2(react@19.0.0))':
@@ -6859,7 +6871,7 @@ snapshots:
     dependencies:
       gzip-size: 6.0.0
 
-  '@opennextjs/aws@https://pkg.pr.new/@opennextjs/aws@798':
+  '@opennextjs/aws@3.5.5':
     dependencies:
       '@ast-grep/napi': 0.35.0
       '@aws-sdk/client-cloudfront': 3.398.0
@@ -6881,46 +6893,14 @@ snapshots:
       - aws-crt
       - supports-color
 
-  '@opennextjs/aws@https://pkg.pr.new/@opennextjs/aws@802':
-    dependencies:
-      '@ast-grep/napi': 0.35.0
-      '@aws-sdk/client-cloudfront': 3.398.0
-      '@aws-sdk/client-dynamodb': 3.777.0
-      '@aws-sdk/client-lambda': 3.777.0
-      '@aws-sdk/client-s3': 3.777.0
-      '@aws-sdk/client-sqs': 3.777.0
-      '@node-minify/core': 8.0.6
-      '@node-minify/terser': 8.0.6
-      '@tsconfig/node18': 1.0.3
-      aws4fetch: 1.0.20
-      chalk: 5.4.1
-      esbuild: 0.19.2
-      express: 5.0.1
-      path-to-regexp: 6.3.0
-      urlpattern-polyfill: 10.0.0
-      yaml: 2.7.0
-    transitivePeerDependencies:
-      - aws-crt
-      - supports-color
-
-  '@opennextjs/cloudflare@0.6.4(wrangler@4.9.1(@cloudflare/workers-types@4.20250327.0))':
+  '@opennextjs/cloudflare@1.0.0-beta.2(wrangler@4.10.0(@cloudflare/workers-types@4.20250409.0))':
     dependencies:
       '@dotenvx/dotenvx': 1.31.0
-      '@opennextjs/aws': https://pkg.pr.new/@opennextjs/aws@798
+      '@opennextjs/aws': 3.5.5
       enquirer: 2.4.1
       glob: 11.0.1
-      wrangler: 4.9.1(@cloudflare/workers-types@4.20250327.0)
-    transitivePeerDependencies:
-      - aws-crt
-      - supports-color
-
-  '@opennextjs/cloudflare@0.6.5(wrangler@4.9.1(@cloudflare/workers-types@4.20250327.0))':
-    dependencies:
-      '@dotenvx/dotenvx': 1.31.0
-      '@opennextjs/aws': https://pkg.pr.new/@opennextjs/aws@802
-      enquirer: 2.4.1
-      glob: 11.0.1
-      wrangler: 4.9.1(@cloudflare/workers-types@4.20250327.0)
+      ts-tqdm: 0.8.6
+      wrangler: 4.10.0(@cloudflare/workers-types@4.20250409.0)
     transitivePeerDependencies:
       - aws-crt
       - supports-color
@@ -8525,7 +8505,29 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
+  better-auth@1.2.6:
+    dependencies:
+      '@better-auth/utils': 0.2.4
+      '@better-fetch/fetch': 1.1.18
+      '@noble/ciphers': 0.6.0
+      '@noble/hashes': 1.7.1
+      '@simplewebauthn/browser': 13.1.0
+      '@simplewebauthn/server': 13.1.1
+      better-call: 1.0.8
+      defu: 6.1.4
+      jose: 5.10.0
+      kysely: 0.27.6
+      nanostores: 0.11.4
+      zod: 3.24.2
+
   better-call@1.0.5:
+    dependencies:
+      '@better-fetch/fetch': 1.1.18
+      rou3: 0.5.1
+      set-cookie-parser: 2.7.1
+      uncrypto: 0.1.3
+
+  better-call@1.0.8:
     dependencies:
       '@better-fetch/fetch': 1.1.18
       rou3: 0.5.1
@@ -8758,9 +8760,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.41.0(@cloudflare/workers-types@4.20250327.0)(@opentelemetry/api@1.9.0)(gel@2.0.1)(kysely@0.27.6):
+  drizzle-orm@0.41.0(@cloudflare/workers-types@4.20250409.0)(@opentelemetry/api@1.9.0)(gel@2.0.1)(kysely@0.27.6):
     optionalDependencies:
-      '@cloudflare/workers-types': 4.20250327.0
+      '@cloudflare/workers-types': 4.20250409.0
       '@opentelemetry/api': 1.9.0
       gel: 2.0.1
       kysely: 0.27.6
@@ -9187,20 +9189,20 @@ snapshots:
     dependencies:
       '@types/hast': 3.0.4
 
-  hono-openapi@0.4.6(@hono/zod-validator@0.4.3(hono@4.7.5)(zod@3.24.2))(hono@4.7.5)(valibot@1.0.0-beta.15(typescript@5.8.2))(zod@3.24.2):
+  hono-openapi@0.4.6(@hono/zod-validator@0.4.3(hono@4.7.6)(zod@3.24.2))(hono@4.7.6)(valibot@1.0.0-beta.15(typescript@5.8.2))(zod@3.24.2):
     dependencies:
       json-schema-walker: 2.0.0
     optionalDependencies:
-      '@hono/zod-validator': 0.4.3(hono@4.7.5)(zod@3.24.2)
-      hono: 4.7.5
+      '@hono/zod-validator': 0.4.3(hono@4.7.6)(zod@3.24.2)
+      hono: 4.7.6
       valibot: 1.0.0-beta.15(typescript@5.8.2)
       zod: 3.24.2
 
-  hono-rate-limiter@0.4.2(hono@4.7.5):
+  hono-rate-limiter@0.4.2(hono@4.7.6):
     dependencies:
-      hono: 4.7.5
+      hono: 4.7.6
 
-  hono@4.7.5: {}
+  hono@4.7.6: {}
 
   html-url-attributes@3.0.1: {}
 
@@ -9607,7 +9609,7 @@ snapshots:
 
   mimic-fn@2.1.0: {}
 
-  miniflare@4.20250408.0:
+  miniflare@4.20250409.0:
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       acorn: 8.14.0
@@ -9616,7 +9618,7 @@ snapshots:
       glob-to-regexp: 0.4.1
       stoppable: 1.1.0
       undici: 5.29.0
-      workerd: 1.20250408.0
+      workerd: 1.20250409.0
       ws: 8.18.0
       youch: 3.3.4
       zod: 3.22.3
@@ -10263,6 +10265,8 @@ snapshots:
 
   ts-interface-checker@0.1.13: {}
 
+  ts-tqdm@0.8.6: {}
+
   tslib@1.14.1: {}
 
   tslib@2.8.1: {}
@@ -10448,26 +10452,26 @@ snapshots:
     dependencies:
       isexe: 3.1.1
 
-  workerd@1.20250408.0:
+  workerd@1.20250409.0:
     optionalDependencies:
-      '@cloudflare/workerd-darwin-64': 1.20250408.0
-      '@cloudflare/workerd-darwin-arm64': 1.20250408.0
-      '@cloudflare/workerd-linux-64': 1.20250408.0
-      '@cloudflare/workerd-linux-arm64': 1.20250408.0
-      '@cloudflare/workerd-windows-64': 1.20250408.0
+      '@cloudflare/workerd-darwin-64': 1.20250409.0
+      '@cloudflare/workerd-darwin-arm64': 1.20250409.0
+      '@cloudflare/workerd-linux-64': 1.20250409.0
+      '@cloudflare/workerd-linux-arm64': 1.20250409.0
+      '@cloudflare/workerd-windows-64': 1.20250409.0
 
-  wrangler@4.9.1(@cloudflare/workers-types@4.20250327.0):
+  wrangler@4.10.0(@cloudflare/workers-types@4.20250409.0):
     dependencies:
       '@cloudflare/kv-asset-handler': 0.4.0
-      '@cloudflare/unenv-preset': 2.3.1(unenv@2.0.0-rc.15)(workerd@1.20250408.0)
+      '@cloudflare/unenv-preset': 2.3.1(unenv@2.0.0-rc.15)(workerd@1.20250409.0)
       blake3-wasm: 2.1.5
       esbuild: 0.24.2
-      miniflare: 4.20250408.0
+      miniflare: 4.20250409.0
       path-to-regexp: 6.3.0
       unenv: 2.0.0-rc.15
-      workerd: 1.20250408.0
+      workerd: 1.20250409.0
     optionalDependencies:
-      '@cloudflare/workers-types': 4.20250327.0
+      '@cloudflare/workers-types': 4.20250409.0
       fsevents: 2.3.3
       sharp: 0.33.5
     transitivePeerDependencies:

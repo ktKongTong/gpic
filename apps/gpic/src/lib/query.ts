@@ -29,6 +29,8 @@ export const mutationKeys = {
 
 export const queryKeys = {
   balance: ['balance'],
+  gallery: ['gallery'],
+  tasks: ['tasks']
 }
 
 type StyleInput = {

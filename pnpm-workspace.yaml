@@ -2,5 +2,10 @@ packages:
   - 'apps/**/*'
   - 'packages/**/*'
 catalog:
-  wrangler: ^4.9.1
-  "@cloudflare/workers-types": ^4.20250327.0
+  wrangler: ^4.10.0
+  "drizzle-orm": ^0.41.0
+  "drizzle-kit": ^0.30.6
+  "hono": ^4.7.6
+  "better-auth": 1.2.6
+  "@opennextjs/cloudflare": ^1.0.0-beta.2
+  "@cloudflare/workers-types": 4.20250409.0

@@ -1,8 +1,5 @@
-import {StyleInfo} from "@repo/service/shared";
+import {ExecutionStatus, TaskType, TaskStatus, StyleInfo} from "@repo/service/shared";
 
-type TaskType = 'image-gen' | 'batch'
-type TaskStatus = 'pending' | 'processing' | 'completed' | 'failed'
-type ExecutionStatus =  | 'processing' | 'completed' | 'failed'
 export type Execution<I extends any = any,O extends any = any,S extends any = any> = {
   id: string,
   taskId: string,
@@ -63,9 +60,4 @@ export type BatchExecution = Execution<BatchType.Input, BatchType.Output, BatchT
 export type ImageTask = Task<'image-gen',ImageExecution>
 export type BatchImageTask = Task<'batch', BatchExecution, BatchType.Metadata> & {
   children?: ImageTask[]
-}
-
-type MultiFile = {
-  files: string[],
-  style: string[],
 }

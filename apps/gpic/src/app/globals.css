@@ -110,7 +110,7 @@
   --card: oklch(0.97 0 89.876 / 0.4);
   --card-foreground: oklch(0.4 0 0);
 
-  --popover: oklch(0.97 0 89.876 / 0.4);
+  --popover: oklch(0 0 0/70%);
   --popover-foreground: oklch(1 0 0);
   /*--popover: oklch(1 0 0);*/
   /*--popover-foreground: oklch(0.145 0 0);*/
@@ -167,12 +167,8 @@
 
 .bg-ghibli-background {
   background-image: url('/bg.png');
-  /**/
-  /*background-image: url("https://media-public.canva.cn/MADJCQqBsuA/1/screen.png");*/
   /*background-image: url("https://media-public.canva.cn/MAC92qLGWMo/1/screen.png");*/
-  /*background-image: -ms-linear-gradient();*/
-  /*@apply bg-gradient-to-br from-gray-400 via-40% via-slate-500 to-gray-400;*/
-  background-size: cover;
+  /*background-size: cover;*/
   background-position: center;
   background-attachment: fixed;
 }

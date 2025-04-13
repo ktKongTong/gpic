@@ -12,7 +12,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare",
+    "preview": "opennextjs-cloudflare build",
     "deploy:preview": "opennextjs-cloudflare build && wrangler deploy -e preview",
     "deploy": "opennextjs-cloudflare build && wrangler deploy",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
@@ -64,10 +64,10 @@
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
-    "drizzle-orm": "^0.41.0",
+    "drizzle-orm": "catalog:",
     "embla-carousel-react": "^8.5.2",
     "friendlier-words": "^1.1.3",
-    "hono": "^4.7.5",
+    "hono": "catalog:",
     "hono-openapi": "^0.4.6",
     "hono-rate-limiter": "^0.4.2",
     "input-otp": "^1.4.2",
@@ -94,12 +94,12 @@
     "zustand": "^5.0.3"
   },
   "devDependencies": {
-    "@opennextjs/cloudflare": "^0.6.4",
+    "@opennextjs/cloudflare": "catalog:",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "drizzle-kit": "^0.30.6",
+    "drizzle-kit": "catalog:",
     "tailwindcss": "^4",
     "typescript": "^5",
     "wrangler": "catalog:"

@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { getDB } from "../storage/db";
 import { backendEnv } from "./env";
-import {anonymous} from "better-auth/plugins";
+import { anonymous } from "better-auth/plugins";
 
 export let auth: ReturnType<typeof getIns>
 
@@ -11,16 +11,16 @@ const getIns = () =>  betterAuth({
         provider: 'sqlite',
     }),
     plugins: [
-        anonymous({
-            // onLinkAccount: async ({ anonymousUser, newUser }) => {
-            //
-            // }
-        })
+        anonymous()
     ],
     socialProviders: {
         github: {
             clientId: backendEnv().GITHUB_CLIENT_ID,
             clientSecret: backendEnv().GITHUB_CLIENT_SECRET,
+        },
+        google: {
+            clientId: backendEnv().GOOGLE_CLIENT_ID,
+            clientSecret: backendEnv().GOOGLE_CLIENT_SECRET,
         }
     },
 });

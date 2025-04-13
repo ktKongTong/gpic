@@ -12,6 +12,8 @@ export const backedEnvSchema = z.object({
   AI_MODEL_NAME: z.string(),
   GITHUB_CLIENT_ID: z.string(),
   GITHUB_CLIENT_SECRET: z.string(),
+  GOOGLE_CLIENT_ID: z.string(),
+  GOOGLE_CLIENT_SECRET: z.string(),
 })
 
 type Env = z.infer<typeof backedEnvSchema>

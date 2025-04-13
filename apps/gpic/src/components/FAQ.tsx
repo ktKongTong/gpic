@@ -5,30 +5,30 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+const faqItems = [
+  {
+    question: "What is GPIC? How does it work?",
+    answer: "GPIC is an AI-powered tool that uses the most advanced image generation technology to transform your photos into different styles. It analyzes your images and applies an artistic style while preserving important details."
+  },
+  {
+    question: "Which kind of images can I convert?",
+    answer: "You can convert most type of image - animation, portrait, landscape. Advanced AI models can effectively process various types of pictures.",
+  },
+  {
+    question: "Why is the generation slow?",
+    answer: "Due to the distribution of the number of users and limited server resources, the generation may take some time, usually completed within 5 minutes."
+  },
+  {
+    question: "What AI model is used?",
+    answer: "We use the latest GPT-4o model, one of the most advanced AI techniques currently available, capable of generating high-quality stylized images."
+  },
+  {
+    question: "How to get the best results?",
+    answer: "For best results, use a high-quality input image. Our live preview feature helps you find the perfect balance."
+  }
+];
 
 const FAQ = () => {
-  const faqItems = [
-    {
-      question: "How does the image enhancement work?",
-      answer: "Our image enhancement uses advanced AI algorithms to analyze your image and make smart adjustments to lighting, color balance, and sharpness. The AI recognizes elements in your photo and optimizes them specifically for the best visual impact."
-    },
-    {
-      question: "What image formats are supported?",
-      answer: "We support most common image formats including JPEG, PNG, WebP, and HEIC. Our system automatically converts your images to the optimal format for processing while maintaining the highest quality possible."
-    },
-    {
-      question: "Are my images stored on your servers?",
-      answer: "Your privacy is important to us. Your images are processed securely and are not permanently stored on our servers. After processing is complete, your original and enhanced images are automatically deleted from our system within 24 hours."
-    },
-    {
-      question: "Can I use the enhanced images commercially?",
-      answer: "Yes! Once you've enhanced your images with our tool, you retain all rights to your transformed images. You're free to use them for personal or commercial purposes without any attribution requirements."
-    },
-    {
-      question: "Is there a limit to how many images I can enhance?",
-      answer: "Free accounts can enhance up to 10 images per day. Premium subscribers enjoy unlimited image enhancements and access to our advanced transformation filters and effects."
-    }
-  ];
 
   return (
     <Accordion type="single" collapsible className="w-full">
