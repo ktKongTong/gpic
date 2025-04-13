@@ -3,6 +3,8 @@ import {api} from "@/lib/api";
 import {create} from "zustand";
 import {createJSONStorage, persist} from "zustand/middleware";
 import { typeid } from 'typeid-js';
+import {StyleInfo} from "@repo/service/shared";
+import {friendlyWords} from "friendlier-words";
 const createLocalId = () => typeid('style_local').toString();
 
 
@@ -114,5 +116,25 @@ export const useStyles = () => {
     addLocalStyle,
     selectedStyleIds,
     isLoading: isLoading,
+  }
+}
+
+export const useStyle = (info: StyleInfo) => {
+  const stylesMap = useStyleStore(state => state.styles)
+  const styles = Object.values(stylesMap)
+  const id = (info as any).styleId
+  let style = styles.find(it => it.style.id === id)
+  if (!style) {
+    style = {
+      type: 'local',
+      style: {
+        ...info as unknown as any,
+        id: createLocalId(),
+        name: friendlyWords()
+      }
+    }
+  }
+  return {
+    style
   }
 }

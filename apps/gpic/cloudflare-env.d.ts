@@ -22,7 +22,11 @@ declare namespace Cloudflare {
 		ASSETS: Fetcher;
 	}
 }
-interface CloudflareEnv extends Cloudflare.Env {}
+interface CloudflareEnv extends Cloudflare.Env {
+    DO_TASK_STATUS: DurableObjectNamespace<
+      import("../queue-consumers/image-task/src/do").DOTaskStatus
+    >;
+}
 
 // Begin runtime types
 /*! *****************************************************************************

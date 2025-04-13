@@ -76,12 +76,14 @@ const useTaskForm = () => {
     form.reset()
     const inputFiles = files.filter(it => it.state === 'UPLOADED')
       .map(it => it.url) as string[]
-    const inputStyles = styles.map(it => {
-      if(it.type === 'preset') {
-        return {styleId: it.style.id}
-      }
-      return { prompt: it.style.prompt, reference: it.style.reference }
-    })
+    const inputStyles = styles
+      .filter(it => selectedStyleIds.includes(it.style.id))
+      .map(it => {
+        if(it.type === 'preset') {
+          return {styleId: it.style.id}
+        }
+        return { prompt: it.style.prompt, reference: it.style.reference }
+      })
     generateTask({
       files: inputFiles,
       styles: inputStyles,

@@ -18,7 +18,7 @@ export const queryClient = new QueryClient({
 export const mutationKeys = {
   task: {
     generate: ['generate-task'],
-
+    retry: ['task', 'retry']
   },
   file: {
     upload: ['file-upload'],
@@ -58,9 +58,23 @@ queryClient.setMutationDefaults(mutationKeys.task.generate,{
   },
   onSuccess: async (data) => {
     toast.success('任务已创建', { description: (data as any)?.id })
+    queryClient.invalidateQueries({queryKey:queryKeys.balance})
   },
   onError: async (err) => {
     toast.error('任务创建失败', { description: err.message })
+  }
+})
+
+
+queryClient.setMutationDefaults(mutationKeys.task.retry,{
+  mutationFn: async (id: string) => {
+    return await api.retryTask(id)
+  },
+  onSuccess: async (data) => {
+    toast.success('任务已开始重试', { description: (data as any)?.id })
+  },
+  onError: async (err) => {
+    toast.error('任务重试创建失败', { description: err.message })
   }
 })
 

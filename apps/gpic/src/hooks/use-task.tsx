@@ -3,9 +3,10 @@ import {useMutation, useQuery} from "@tanstack/react-query";
 import {useState} from "react";
 import {api} from "@/lib/api";
 import {ExecutionStatus, TaskStatus, TaskType } from "@repo/service/shared";
+import {StyleInfo} from "@repo/service/shared";
 
 declare namespace ImageGenType {
-  type Input = { files: string[], style?: string, prompt?: string }
+  type Input = { files: string[], style?: StyleInfo, prompt?: string }
   type Output = { url: string }
   type State = { progress: number, message: string, error?: string }
 }

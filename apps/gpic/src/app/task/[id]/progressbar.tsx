@@ -10,10 +10,9 @@ const ProgressSegment: React.FC<ProgressSegmentProps> = ({ color, percentage, co
   return (
     <div
       className={cn(
-        `overflow-hidden text-clip text-nowrap flex items-center justify-center h-full`,
-        ` text-white text-xs font-medium backdrop-blur-2xl opacity-70`,
-        color,
-        ` transition-all duration-500 ease-out`
+        `overflow-hidden text-nowrap flex items-center justify-center h-full`,
+        ` text-white text-xs font-medium`,
+        color
       )}
 
       style={{ width: `${percentage}%`,
@@ -43,39 +42,34 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ data }) => {
     return (count / total) * 100;
   }
   const status = [
-    { name: '已完成', color: 'bg-lime-400/40', percentage: getPercentage(data.completed), count: data.completed },
-    { name: '处理中', color: 'bg-blue-400/40', percentage: getPercentage(data.processing), count: data.processing },
-    { name: '等待中', color: 'bg-gray-400/30', percentage: getPercentage(data.pending), count: data.pending },
+    { name: '等待中', color: 'bg-gray-400/50', percentage: getPercentage(data.pending), count: data.pending },
+    { name: '处理中', color: 'bg-orange-500/90', percentage: getPercentage(data.processing), count: data.processing },
     { name: '失败', color: 'bg-red-500/40', percentage: getPercentage(data.failed), count: data.failed },
+    { name: '已完成', color: 'bg-lime-400/60', percentage: getPercentage(data.completed), count: data.completed },
   ]
-
   return (
-    <div className="w-full">
-      <div className="flex items-center space-x-4">
-        <div className="flex w-full h-4 rounded-full overflow-hidden border border-gray-300 bg-gray-200">
-          {total === 0 ? (
-            <div className="flex items-center justify-center h-full w-full bg-gray-200 text-gray-500 text-xs italic rounded-full">
-              暂无任务
-            </div>
-          ) : (
-            <>
-              {
-                status.map((segment, index) => (
-                  <ProgressSegment
-                    key={segment.name}
-                    color={segment.color}
-                    percentage={segment.percentage}
-                    count={segment.count}
-                  />)
-                )
-              }
-            </>
-          )
-          }
+
+    <div className="flex w-full h-4 rounded-full overflow-hidden max-w-96 my-2">
+      {total === 0 ? (
+        <div className="flex items-center  justify-center h-full w-full  text-xs italic rounded-full">
+          暂无任务
         </div>
-      </div>
-      {/* 图例 */}
-      {/*<Legend data={data} statusConfig={statusConfig} />*/}
+      ) : (
+        <>
+          {
+            status.map((segment, index) => (
+              <ProgressSegment
+                key={segment.name}
+                color={segment.color}
+                percentage={segment.percentage}
+                count={segment.count}
+              />)
+            )
+          }
+        </>
+      )
+      }
     </div>
+
   );
 };

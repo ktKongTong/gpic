@@ -180,3 +180,7 @@
 .drop-zone {
   @apply border shadow-[1_8px_32px_rgba(0,0,0,0.2)] border-dashed rounded-lg;
 }
+
+pre {
+  @apply whitespace-pre-wrap break-words break-all;
+}

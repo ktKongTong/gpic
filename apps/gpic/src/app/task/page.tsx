@@ -38,15 +38,15 @@ const combineImagesImage = (task: BatchImageTask):TaskResult[] => {
     return res
   })
 }
-
 const TaskComponent = ({task}:{task: Task}) => {
   if(task.type === taskType.IMAGE_GEN) {
     const inputImages = task.input.files as string[]
+    const sortedExecution = task.executions.toSorted((a,b)=> b.createdAt.localeCompare(a.createdAt))
     const result = [{
       input: inputImages[0],
       output: [{
         style: task.input?.style as any,
-        url: task.executions?.[0]?.output?.url ?? task.input.files?.[0],
+        url: sortedExecution?.[0]?.output?.url ?? task.input.files?.[0],
         status: task.status,
       }]
     }]

@@ -7,6 +7,10 @@ import {Calendar, Clock7, Ellipsis} from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import TaskItem from "@/app/task/task-item";
+import {useMutation} from "@tanstack/react-query";
+import {mutationKeys} from "@/lib/query";
+import {useDuration} from "@/app/task/[id]/duration";
+import {ProgressBar} from "@/app/task/[id]/progressbar";
 
 
 type BatchImageTaskDetailProps = {
@@ -75,14 +79,24 @@ const ImageItem = ({taskItem}:{taskItem: ImageItemProps}) => {
   )
 }
 
+const state = {
+  total: 100,
+  pending: 10,
+  processing: 20,
+  completed: 40,
+  failed: 30,
+}
+
 export default function BatchTaskImageDetail({task}: BatchImageTaskDetailProps) {
-  const taskItem = getTaskItem(task)
+  const {mutate: retryTask } = useMutation<unknown, unknown,string>({mutationKey: mutationKeys.task.retry})
+  const {duration} = useDuration(task.startedAt, task.endedAt)
+
   return <>
     <div className={'flex items-center justify-between w-full h-full'}>
-      <div>
-          <h3 className={'text-3xl font-bold'}>{task.name}</h3>
+        <div>
+          <h3 className={'text-3xl font-bold text-ellipsis line-clamp-1'}>{task.name}</h3>
           <div className={'items-center justify-start gap-2  text-xs flex'}>
-            <span className={'inline-flex items-center gap-1'}><Clock7 className={'h-3 w-3'}/>{formatDuration(4090)}</span>
+            <span className={'inline-flex items-center gap-1'}><Clock7 className={'h-3 w-3'}/>{formatDuration(duration)}</span>
             <span className={'inline-flex items-center gap-1'}><Calendar className={'h-3 w-3'}/>{relativeDate(task.createdAt)}</span>
             <div className={'items-center gap-1 hidden sm:flex'}>
               <StatusBadge status={task.status} />
@@ -96,23 +110,21 @@ export default function BatchTaskImageDetail({task}: BatchImageTaskDetailProps) 
         </div>
       <div className={'flex gap-2 items-center'}>
         <DropdownMenu>
-          <DropdownMenuTrigger><Button className={''} variant={'outline'} size={'icon'}><Ellipsis /></Button></DropdownMenuTrigger>
+          <DropdownMenuTrigger><Button className={''} variant={'secondary'} size={'icon'}><Ellipsis /></Button></DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem>{'rerun failed'}</DropdownMenuItem>
-            <DropdownMenuItem>{'rerun failed'}</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => retryTask(task.id)}>{'rerun failed'}</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
     </div>
     <div className="p-4 h-full w-full">
-      <div className="flex flex-col w-full">
-        <div className={'text-3xl'}>Children</div>
-        {/*progressbar*/}
+      <div className="flex flex-col w-full items-center justify-center ">
+        <ProgressBar data={state}/>
         { task.status === taskStatus.PENDING && <>排队中</> }
         { task.status === taskStatus.PROCESSING && <>处理中...</> }
         { task.status === taskStatus.FAILED && <div className={'bg-red-500/30 rounded-lg p-3'}>
             <div className={'text-red-400'}>Error</div>
-              show logs
+              WIP
             </div>
         }
         <div className={'grid md:grid-cols-3 sm:grid-cols-2 justify-center justify-items-center gap-2'}>

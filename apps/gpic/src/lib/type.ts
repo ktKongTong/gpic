@@ -1,3 +1,5 @@
+import {StyleInfo} from "@repo/service/shared";
+
 type TaskType = 'image-gen' | 'batch'
 type TaskStatus = 'pending' | 'processing' | 'completed' | 'failed'
 type ExecutionStatus =  | 'processing' | 'completed' | 'failed'
@@ -31,7 +33,7 @@ export type Task<
   usage:  number,
   input: I,
   metadata: M,
-  startAt?: string,
+  startedAt?: string,
   endedAt?: string,
   createdAt: string,
   updatedAt: string,
@@ -52,7 +54,7 @@ declare namespace BatchType {
   type Metadata = {state: { total: number, completed: number, failed: number, processing: number, pending: number }}
 }
 declare namespace ImageGenType {
-  type Input = { files: string[], style?: string, prompt?: string }
+  type Input = { files: string[], style?: StyleInfo, prompt?: string }
   type Output = { url: string }
   type State = { progress: number, message: string, error?: string }
 }
