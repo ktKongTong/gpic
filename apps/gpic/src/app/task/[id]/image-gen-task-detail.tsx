@@ -27,10 +27,10 @@ export const ImageGenTaskDetail = ({task}: ImageGenTaskDetailProps) => {
   const {duration} = useDuration(startTime, endTime)
   const status = current?.status ?? task.status
   const {mutate: retryTask } = useMutation<unknown, unknown,string>({mutationKey: mutationKeys.task.retry})
-
-
+  const message = current?.state?.message ?? ""
   const currentIdx = task.executions.length - task.executions.findIndex(it => it.id === execId)
   const execMenu = task.executions.map((it,idx) => ({...it, idx: task.executions.length - idx}))
+
   return <>
   <div className={'flex items-center justify-between w-full h-full'}>
     <div>
@@ -107,7 +107,9 @@ export const ImageGenTaskDetail = ({task}: ImageGenTaskDetailProps) => {
             </div>
           </div>
           { status === taskStatus.PENDING && <>queueing</> }
-          { status === taskStatus.PROCESSING && <>processing</> }
+          { status === taskStatus.PROCESSING && <>
+            <Markdown>{message}</Markdown>
+          </> }
           { status === taskStatus.FAILED && <div className={'relative overflow-y-auto bg-red-500/30 rounded-lg p-3'}>
               <div className={'text-red-400'}>Error</div>
               <div className={'overflow-auto whitespace-pre-wrap'}>
@@ -116,7 +118,7 @@ export const ImageGenTaskDetail = ({task}: ImageGenTaskDetailProps) => {
           </div> }
           {
             status === taskStatus.SUCCESS &&
-              <img src={current?.output?.url} className={'max-w-64 md:max-w-48  rounded-lg aspect-square'} />
+              <img src={current?.output?.url} className={'max-w-64 md:max-w-48  rounded-lg aspect-square object-cover'} />
           }
         </div>
       </div>

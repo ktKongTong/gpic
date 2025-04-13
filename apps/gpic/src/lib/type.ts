@@ -34,7 +34,8 @@ export type Task<
   endedAt?: string,
   createdAt: string,
   updatedAt: string,
-  executions: E[]
+  executions: E[],
+  children?: ImageTask[]
 }
 
 type Style = {

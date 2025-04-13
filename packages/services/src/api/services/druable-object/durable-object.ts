@@ -28,12 +28,10 @@ export class BatchTaskStateDO extends DurableObject {
 
 
   async fetch() {
-    console.log("accepting ws")
     const websocketPair = new WebSocketPair();
     const [client, server] = Object.values(websocketPair);
     this.ctx.acceptWebSocket(server);
     this.connections.add(client);
-    console.log("returning")
     return new Response(null, {
       status: 101,
       webSocket: client
@@ -101,11 +99,21 @@ export class BatchTaskStateDO extends DurableObject {
   }
 
   async broadcast(state: any) {
+    const {children, ...rest}= state
+    const newState = {
+      ...rest,
+      children: Object.values(children ?? {})
+    }
     this.ctx.getWebSockets().forEach(ws =>{
-      if(ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(state))
+      if(ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(newState))
     })
   }
 
+  async closeAll() {
+    this.ctx.getWebSockets().forEach(ws =>{
+      if(ws.readyState === WebSocket.OPEN) ws.close()
+    })
+  }
   async getTaskType(retried: boolean = false): Promise<TaskType> {
     try {
       if(this.taskType) return this.taskType
@@ -129,9 +137,13 @@ export class BatchTaskStateDO extends DurableObject {
         // @ts-ignore
         const currentState = await this.getState()
         const newState = handleBatchTaskEvent(data, currentState)
+
         await this.setState(newState)
         await this.services.taskService.updateTask({id: newState.id, metadata: newState.metadata, status: newState.status })
         await this.broadcast(newState)
+        if(data.event === eventType.BATCH_FAILED || data.event === eventType.BATCH_RETRY_FAILED) {
+          await this.closeAll()
+        }
       }else {
         const currentState = await this.getState()
         // @ts-ignore
@@ -140,6 +152,9 @@ export class BatchTaskStateDO extends DurableObject {
         await this.setState(newState)
         await this.services.taskService.updateTask({id: newState.id, metadata: newState.metadata, status: newState.status })
         await this.broadcast(newState)
+        if(data.event === eventType.TASK_FAIL || data.event === eventType.TASK_COMPLETE || data.event === eventType.RETRY_TASK_FAILED) {
+          await this.closeAll()
+        }
       }
     })
   }
@@ -154,14 +169,14 @@ type BatchTaskState = Task & {
 }
 
 type ImageTaskState = Task & {
-  execution?: Execution
+  executions?: Execution[]
 }
 
 
 
 
 type TaskState = {
-  execution: Execution,
+  executions?: Execution[],
 } & Task
 
 const handleTaskEvent = (event: Events, state: TaskState) => {
@@ -177,7 +192,7 @@ const handleTaskEvent = (event: Events, state: TaskState) => {
     case eventType.EXECUTION_PROCESSING:
     case eventType.EXECUTION_UPDATE:
     case eventType.EXECUTION_COMPLETE:
-      res = { ...state, execution: event.payload};
+      res = { ...state, executions: [event.payload]};
       break
     case eventType.TASK_FAIL:
     case eventType.TASK_COMPLETE:
@@ -198,7 +213,7 @@ const handleTaskEvent = (event: Events, state: TaskState) => {
       case eventType.TASK_CREATE:
         const children:Record<string, ImageTaskState> = {}
         event.payload.reduce((acc, it) => {
-          acc[it.id] = { ...it, execution: undefined}
+          acc[it.id] = { ...it, executions: []}
           return acc }, {} as Record<string, ImageTaskState>)
         res = { ...state, children }; break
       case eventType.TASK_PROCESSING:
@@ -214,7 +229,7 @@ const handleTaskEvent = (event: Events, state: TaskState) => {
       case eventType.EXECUTION_PROCESSING:
         res = { ...state,
           children: { ...state.children,
-            [event.taskId]: { ...state.children[event.taskId], execution: event.payload }
+            [event.taskId]: { ...state.children[event.taskId], executions: [event.payload] }
         }
         };
         break
@@ -224,13 +239,13 @@ const handleTaskEvent = (event: Events, state: TaskState) => {
           ...state,
           children: {
             ...state.children,
-            [event.taskId]: { ...current, execution: event.payload }
+            [event.taskId]: { ...current, executions: [event.payload] }
           }
         }; break
       case eventType.EXECUTION_COMPLETE:
         res = { ...state, children: {
           ...state.children,
-          [event.taskId]: { ...state.children[event.taskId], execution: event.payload }
+          [event.taskId]: { ...state.children[event.taskId], executions: [event.payload] }
         }}; break
       case eventType.TASK_FAIL:
         const m1 = state.metadata as any

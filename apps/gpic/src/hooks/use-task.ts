@@ -93,7 +93,7 @@ export const useTask = (taskId: string) => {
   useEffect(() => {
     if(!task) return
     const id = task?.parentTaskId ?? task.id
-    const ws = new WebSocket(`${WS_URL}/task/${id}/ws`)
+    const ws = new WebSocket(`${WS_URL}/api/task/${id}/ws`)
     ws.onmessage = (e) => {
       console.log(e)
     }

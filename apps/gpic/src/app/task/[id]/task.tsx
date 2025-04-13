@@ -1,35 +1,57 @@
 'use client'
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { taskType } from "@repo/service/shared";
 
 import {ImageGenTaskDetail} from "./image-gen-task-detail";
 import BatchTaskImageDetail from "./batch-task-detail";
 import {useQuery} from "@tanstack/react-query";
 import {api} from "@/lib/api";
+import {Task} from "@/lib/type";
 
 
 const WS_URL = process.env.NEXT_PUBLIC_WS_URL
 
 
 export const useTask = (taskId: string) => {
-  const [task, setTask] = useState<any | undefined>(undefined)
+  const [task, setTask] = useState<Task>();
   const { isLoading } = useQuery({
     queryKey: ['task', 'task-item', taskId],
     queryFn: async () => {
       const res = await api.getTaskById(taskId)
       setTask(res)
+      return res
     },
+    refetchOnMount: false,
+    refetchInterval: false,
+    refetchOnWindowFocus: false,
   })
 
+  const wsRef = useRef<WebSocket>(null)
   useEffect(() => {
-    if(!task) return
+    if(!task || wsRef.current) return
+    const isChild = !!task.parentTaskId
     const id = task?.parentTaskId ?? task.id
-    const ws = new WebSocket(`${WS_URL}/task/${id}/ws`)
+    const ws = new WebSocket(`${WS_URL}/api/task/${id}/ws`)
+    wsRef.current = ws
     ws.onmessage = (e) => {
-      console.log(e)
+      const data = JSON.parse(e.data)
+      const {children, executions, ...rest} = data
+      if(isChild) {
+        const currentTask = (data as Task).children?.find(it => it.id === task.id)
+        setTask(currentTask)
+      } else {
+        setTask(data)
+      }
+    }
+    ws.onclose = (e) => {
+      wsRef.current = null
+    }
+    ws.onerror = (e) => {
+      wsRef.current = null
     }
     return () => {
       ws.close()
+      wsRef.current = null
     }
   }, [task])
 
@@ -52,6 +74,7 @@ export default function TaskDetail({id}:{id: string}) {
     </div>
   }
   if (task.type === taskType.IMAGE_GEN) {
+    // @ts-ignore
     return <ImageGenTaskDetail task={task} />
   }
   // @ts-ignore

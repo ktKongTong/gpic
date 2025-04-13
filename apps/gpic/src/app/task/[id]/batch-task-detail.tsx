@@ -79,18 +79,18 @@ const ImageItem = ({taskItem}:{taskItem: ImageItemProps}) => {
   )
 }
 
-const state = {
-  total: 100,
-  pending: 10,
-  processing: 20,
-  completed: 40,
-  failed: 30,
+const defaultState = {
+  total: 0,
+  pending: 0,
+  processing: 0,
+  completed: 0,
+  failed: 0,
 }
 
 export default function BatchTaskImageDetail({task}: BatchImageTaskDetailProps) {
   const {mutate: retryTask } = useMutation<unknown, unknown,string>({mutationKey: mutationKeys.task.retry})
   const {duration} = useDuration(task.startedAt, task.endedAt)
-
+  const currentState = task?.metadata?.state??defaultState
   return <>
     <div className={'flex items-center justify-between w-full h-full'}>
         <div>
@@ -119,7 +119,7 @@ export default function BatchTaskImageDetail({task}: BatchImageTaskDetailProps) 
     </div>
     <div className="p-4 h-full w-full">
       <div className="flex flex-col w-full items-center justify-center ">
-        <ProgressBar data={state}/>
+        <ProgressBar data={currentState}/>
         { task.status === taskStatus.PENDING && <>排队中</> }
         { task.status === taskStatus.PROCESSING && <>处理中...</> }
         { task.status === taskStatus.FAILED && <div className={'bg-red-500/30 rounded-lg p-3'}>
