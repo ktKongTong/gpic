@@ -72,8 +72,6 @@ export class AIImageService {
         return { event: 'progress', data: progress as string}
       }else if(failedRegex.test(text)) {
         return { event: 'failed', data: 'meet rate-limit or content-policy'}
-      }else if(successRegex.test(text)) {
-        return { event: 'success', data: ''}
       }
       return {
         data: text,

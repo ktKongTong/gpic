@@ -24,7 +24,13 @@ export class ImageTaskHandlerV1 {
     const taskDO = getDO(task.parentId ?? task.id)
     // notify (parent, if exist) task durable object
     const notifyDO = async (event: string, payload: any) => {
-      await taskDO.onTaskEvent({ taskId: task.id, event: event, payload: payload })
+      try {
+        await taskDO.onTaskEvent({ taskId: task.id, event: event, payload: payload }) 
+      }catch (e: any) {
+        if(e?.retryable) {
+          await notifyDO(event, payload)
+        }
+      }
     }
 
     const processingTask = await this.services.taskService.updateTask({ id: task.id, startedAt: new Date(), status: taskStatus.PROCESSING })
