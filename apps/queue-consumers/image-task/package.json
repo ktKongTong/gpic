@@ -1,5 +1,5 @@
 {
-  "name": "@repo/mq-consumer-image-task",
+  "name": "@apps/mq-consumer-image-task",
   "version": "0.0.0",
   "devDependencies": {
     "@cloudflare/workers-types": "catalog:",

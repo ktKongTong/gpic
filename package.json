@@ -2,6 +2,9 @@
   "name": "gpic-repo",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "deploy:preview": "pnpm run --filter=@apps/* deploy:preview"
+  },
   "pnpm": {
     "patchedDependencies": {
       "@hono-rate-limiter/cloudflare": "patches/@hono-rate-limiter__cloudflare.patch"
