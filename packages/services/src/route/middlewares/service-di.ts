@@ -12,6 +12,7 @@ import {
 import {createMQService, MQService} from "../../queue/producer";
 import { getDAO } from "../../libs/storage/db";
 import {MQMessage} from "../../shared";
+import { GalleryService } from "../../services/gallery";
 
 
 
@@ -22,6 +23,7 @@ declare module 'hono' {
     fileService: FileService
     userBalanceService: UserBalanceService
     historyService: ExecutionService
+    galleryService: GalleryService
     taskService: TaskService
     consumerService: ConsumerService
     mqService: MQService<MQMessage>
@@ -39,6 +41,7 @@ export const getService = (c:Context) => {
     mqService: c.get('mqService'),
     consumerService: c.get('consumerService'),
     styleService: c.get('styleService'),
+    galleryService: c.get('galleryService'),
   }
 }
 
@@ -61,6 +64,7 @@ export const ServiceDIMiddleware = (): MiddlewareHandler => {
     const mqService = createMQService()
     const taskService = new TaskService(dao)
     const historyService = new ExecutionService(dao)
+    const galleryService = GalleryService.create(dao)
     const consumerService = new ConsumerService(c.env)
     c.set('userService', userService)
     c.set('consumerService', consumerService)
@@ -68,6 +72,7 @@ export const ServiceDIMiddleware = (): MiddlewareHandler => {
     c.set('aiImageService', aiImageService)
     c.set('userBalanceService', userBalanceService)
     c.set('historyService', historyService)
+    c.set('galleryService', galleryService)
     c.set('taskService', taskService)
     c.set('mqService', mqService)
     c.set('styleService', styleService)

@@ -3,9 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "migrate": "drizzle-kit migrate",
-    "generate": "drizzle-kit generate",
-    "d1:migrate": "wrangler d1 execute tiny_pic --remote --file=./drizzle/0001_overconfident_alice.sql",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "build": "tsup"
   },
@@ -55,8 +52,7 @@
     "hono-rate-limiter": "^0.4.2",
     "ofetch": "^1.4.1",
     "typeid-js": "^1.2.0",
-    "uuid": "^11.1.0",
-    "zod": "3.24.2",
+    "zod": "catalog:",
     "@hono/zod-validator": "^0.4.3",
     "@upstash/qstash": "^2.7.23"
   },

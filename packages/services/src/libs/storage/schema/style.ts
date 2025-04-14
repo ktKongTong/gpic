@@ -16,7 +16,7 @@ export const style = sqliteTable("style", {
 
 export const styleI18n = sqliteTable("style_i18n", {
   id: text("id").primaryKey(),
-  styleId: text("style_friendly_id").notNull().references(() => style.styleId, {onUpdate: 'cascade', onDelete: 'cascade'}),
+  styleId: text("style_friendly_id").notNull(),
   i18n: text("i18n", {enum: i18nCodeArr }).notNull(),
   name: text('name').notNull(),
   aliases: text('aliases', {mode: 'json'}).$type<string[]>().notNull().$defaultFn(() => []),

@@ -5,7 +5,7 @@ import {index, integer, sqliteTable, text} from "drizzle-orm/sqlite-core";
 import {commonTimeFields} from "./common";
 import {user} from "./auth-schema";
 
-export const apiKey = sqliteTable("apikey", {
+export const apikey = sqliteTable("apikey", {
   id: text("id").primaryKey(),
   name: text('name'),
   start: text('start'),
@@ -20,7 +20,7 @@ export const apiKey = sqliteTable("apikey", {
   rateLimitTimeWindow: integer('rate_limit_time_window'),
   rateLimitMax: integer('rate_limit_max'),
   requestCount: integer('request_count').notNull(),
-  remain: integer('remain'),
+  remaining: integer('remaining'),
   lastRequest: integer('last_request', {mode: 'timestamp_ms'}),
   expiresAt: integer('expires_at', {mode: 'timestamp_ms'}),
   permissions: text('permissions'),

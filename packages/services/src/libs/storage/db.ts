@@ -3,6 +3,7 @@ import * as schema from "./schema";
 import {BalanceDAO} from "./dao/quota";
 import {HistoryDAO} from "./dao/execution";
 import {TaskDAO} from "./dao/task";
+import {GalleryDAO} from "./dao/gallery";
 import {StyleDAO} from './dao/style'
 import {getCloudflareEnv} from "../../utils";
 
@@ -31,6 +32,7 @@ export const getDAO = (env?: CloudflareEnv) => {
   return {
     balance: new BalanceDAO(db),
     style: new StyleDAO(db),
+    gallery: new GalleryDAO(db),
     history: new HistoryDAO(db),
     task: new TaskDAO(db)
   }
