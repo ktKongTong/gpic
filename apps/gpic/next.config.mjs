@@ -3,12 +3,13 @@ import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 initOpenNextCloudflareForDev().then(() => {
     console.log("Cloudflare loaded");
 })
+
 const nextConfig = {
     images: {
         remotePatterns: [
             {
                 protocol: 'https',
-                hostname: 'picit-usercontent.ktlab.io',
+                hostname: process.env.S3_USER_CONTENT_HOSTNAME,
                 port: '',
                 pathname: '/**',
                 search: '',
@@ -20,7 +21,7 @@ const nextConfig = {
         return [
             {
                 source: '/api/:path*',
-                destination: 'https://gpic-queue-preview.ktlab.io/api/:path*',
+                destination: `${process.env.BACKEND_HOST}/api/:path*`,
             },
         ]
     },
