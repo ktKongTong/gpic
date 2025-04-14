@@ -16,20 +16,30 @@
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js"
     },
+    "./route": {
+      "types": "./dist/types/route/index.d.ts",
+      "import": "./dist/esm/route/index.js",
+      "require": "./dist/cjs/route/index.js"
+    },
     "./schema": {
-      "types": "./dist/types/api/storage/schema/index.d.ts",
-      "import": "./dist/esm/api/storage/schema/index.js",
-      "require": "./dist/cjs/api/storage/schema/index.js"
+      "types": "./dist/types/libs/storage/schema/index.d.ts",
+      "import": "./dist/esm/libs/storage/schema/index.js",
+      "require": "./dist/cjs/libs/storage/schema/index.js"
     },
     "./shared": {
-      "types": "./dist/types/shared.d.ts",
-      "import": "./dist/esm/shared.js",
-      "require": "./dist/cjs/shared.js"
+      "types": "./dist/types/shared/index.d.ts",
+      "import": "./dist/esm/shared/index.js",
+      "require": "./dist/cjs/shared/index.js"
     },
     "./do": {
-      "types": "./dist/types/do.d.ts",
-      "import": "./dist/esm/do.js",
-      "require": "./dist/cjs/do.js"
+      "types": "./dist/types/durable-object/batch-task-state.d.ts",
+      "import": "./dist/esm/durable-object/batch-task-state.js",
+      "require": "./dist/cjs/durable-object/batch-task-state.js"
+    },
+    "./quque/adapter/cf": {
+      "types": "./dist/types/queue/consumer/adapter/cf.d.ts",
+      "import": "./dist/esm/queue/consumer/adapter/cf.js",
+      "require": "./dist/cjs/queue/consumer/adapter/cf.js"
     }
   },
   "dependencies": {
@@ -47,7 +57,8 @@
     "typeid-js": "^1.2.0",
     "uuid": "^11.1.0",
     "zod": "3.24.2",
-    "@hono/zod-validator": "^0.4.3"
+    "@hono/zod-validator": "^0.4.3",
+    "@upstash/qstash": "^2.7.23"
   },
   "devDependencies": {
     "@opennextjs/cloudflare": "catalog:",
