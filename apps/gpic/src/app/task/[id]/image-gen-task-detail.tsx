@@ -21,15 +21,16 @@ type ImageGenTaskDetailProps = {
 export const ImageGenTaskDetail = ({task}: ImageGenTaskDetailProps) => {
   const first = task.executions?.[0]
   const [execId, setExecId] = useState(first?.id)
-  const current = task.executions.find(it => it.id === execId)
+  const executions = task.executions ?? []
+  const current = executions.find(it => it.id === execId)
   const startTime = current?.startedAt
   const endTime = current?.endedAt
   const {duration} = useDuration(startTime, endTime)
   const status = current?.status ?? task.status
   const {mutate: retryTask } = useMutation<unknown, unknown,string>({mutationKey: mutationKeys.task.retry})
   const message = current?.state?.message ?? ""
-  const currentIdx = task.executions.length - task.executions.findIndex(it => it.id === execId)
-  const execMenu = task.executions.map((it,idx) => ({...it, idx: task.executions.length - idx}))
+  const currentIdx = executions.length - executions.findIndex(it => it.id === execId)
+  const execMenu = executions.map((it,idx) => ({...it, idx: executions.length - idx}))
 
   return <>
   <div className={'flex items-center justify-between w-full h-full'}>

@@ -5,6 +5,7 @@ import React from "react";
 import localFont from 'next/font/local'
 import {cn} from "@/lib/utils";
 import { Sparkles } from "lucide-react";
+import {FileCtxProvider} from "@/hooks/use-file-upload";
 
 const beauty = localFont({
   src: './fonts/Pacifico-Regular.ttf',
@@ -46,7 +47,10 @@ export default function Page() {
         'grow content-stretch md:col-span-2 self-stretch justify-items-stretch p-2',
         'glass-container p-4 rounded-2xl backdrop-blur-md bg-card/40 shadow-xl'
       )}>
-        <Form/>
+        <FileCtxProvider>
+          <Form/>
+        </FileCtxProvider>
+
       </div>
     </section>
     <section id="gallery" className="w-full max-w-4xl mx-auto mb-20 scroll-mt-24">

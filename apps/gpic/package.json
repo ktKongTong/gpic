@@ -7,7 +7,7 @@
     "generate": "drizzle-kit generate",
     "generate:custom": "drizzle-kit generate --custom",
     "studio": "drizzle-kit studio",
-    "d1:mi": "wrangler d1 execute tiny_pic_preview --remote --file=./drizzle/0009_daily_giant_girl.sql",
+    "d1:mi": "wrangler d1 execute tiny_pic_preview --remote --file=./drizzle/0011_motionless_ma_gnuci.sql",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -18,10 +18,6 @@
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
-    "@ai-sdk/google": "^1.2.3",
-    "@ai-sdk/openai": "^1.3.3",
-    "@ai-sdk/react": "1.2.2",
-    "@headlessui/react": "^2.2.0",
     "@hono-rate-limiter/cloudflare": "^0.2.2",
     "@hono/zod-validator": "^0.4.3",
     "@hookform/resolvers": "^4.1.3",

@@ -16,14 +16,14 @@ const nextConfig = {
         ],
     },
   /* config options here */
-    // async rewrites() {
-    //     return [
-    //         {
-    //             source: '/api/:path*',
-    //             destination: 'https://gpic-preview.ktlab.io/api/:path*',
-    //         },
-    //     ]
-    // },
+    async rewrites() {
+        return [
+            {
+                source: '/api/:path*',
+                destination: 'https://gpic-queue-preview.ktlab.io/api/:path*',
+            },
+        ]
+    },
 };
 
 

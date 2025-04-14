@@ -7,6 +7,7 @@ import BatchTaskImageDetail from "./batch-task-detail";
 import {useQuery} from "@tanstack/react-query";
 import {api} from "@/lib/api";
 import {Task} from "@/lib/type";
+import {taskStatus} from "@repo/service/shared";
 
 
 const WS_URL = process.env.NEXT_PUBLIC_WS_URL
@@ -29,6 +30,10 @@ export const useTask = (taskId: string) => {
   const wsRef = useRef<WebSocket>(null)
   useEffect(() => {
     if(!task || wsRef.current) return
+    if(task.status !== taskStatus.PENDING && task.status !== taskStatus.PROCESSING) {
+      return
+    }
+    console.log("refCurrent", wsRef.current)
     const isChild = !!task.parentTaskId
     const id = task?.parentTaskId ?? task.id
     const ws = new WebSocket(`${WS_URL}/api/task/${id}/ws`)
@@ -47,13 +52,14 @@ export const useTask = (taskId: string) => {
       wsRef.current = null
     }
     ws.onerror = (e) => {
+      ws.close()
       wsRef.current = null
     }
     return () => {
       ws.close()
       wsRef.current = null
     }
-  }, [task])
+  }, [task?.status])
 
   return {
     task,

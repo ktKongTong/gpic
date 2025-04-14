@@ -1,6 +1,5 @@
 import {ofetch} from "ofetch";
 import {Task} from "./type";
-import {useState} from "react";
 export class ReqError extends Error {
   constructor(message: string) {
     super(message);

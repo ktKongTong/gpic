@@ -9,9 +9,7 @@ export default function Providers({children}: {children: React.ReactNode}) {
   return <>
     <LocaleProvider>
       <QueryClientProvider client={queryClient}>
-        <FileCtxProvider>
           {children}
-        </FileCtxProvider>
       </QueryClientProvider>
     </LocaleProvider>
   </>

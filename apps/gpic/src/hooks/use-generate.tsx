@@ -1,7 +1,6 @@
 'use client'
 import {useEffect, useRef, useState} from "react";
 import { fetchEventSource } from '@microsoft/fetch-event-source';
-import {useFiles} from "@/hooks/use-file-upload";
 import {toast} from "sonner";
 
 

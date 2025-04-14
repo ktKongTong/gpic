@@ -59,51 +59,11 @@ export type BatchImageTask = Task<'batch', BatchExecution, BatchType.Metadata> &
   children?: ImageTask[]
 }
 
-type MultiFile = {
-  files: string[],
-  style: string[],
-}
-
 export const useTasks = () => {
   const {data, isLoading} = useQuery({ queryKey: queryKeys.tasks, queryFn: () => api.getTasks() })
   const tasks = (data ?? []) as (BatchImageTask | ImageTask)[]
-  // const [selectedTask, setSelectedTask] = useState<Task | null>(tasks.length > 0 ? tasks[0] : null);
+
   return {
     tasks,
-    // selectedTask,
-    // setSelectedTask,
-  }
-}
-
-type TaskResult = BatchImageTask | ImageTask
-
-const WS_URL = process.env.NEXT_PUBLIC_WS_URL
-
-
-export const useTask = (taskId: string) => {
-  const [task, setTask] = useState<TaskResult | undefined>(undefined)
-  const { isLoading } = useQuery({
-    queryKey: ['task', 'task-item', taskId],
-    queryFn: async () => {
-      const res = await api.getTaskById(taskId)
-      setTask(res)
-    },
-  })
-
-  useEffect(() => {
-    if(!task) return
-    const id = task?.parentTaskId ?? task.id
-    const ws = new WebSocket(`${WS_URL}/api/task/${id}/ws`)
-    ws.onmessage = (e) => {
-      console.log(e)
-    }
-    return () => {
-      ws.close()
-    }
-  }, [task])
-
-  return {
-    task,
-    isLoading: isLoading,
   }
 }

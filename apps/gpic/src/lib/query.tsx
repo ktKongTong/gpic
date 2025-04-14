@@ -1,6 +1,8 @@
 import {QueryCache, QueryClient} from "@tanstack/react-query";
 import {toast} from "sonner";
 import {api} from "@/lib/api";
+import {Button} from "@/components/ui/button";
+import Link from "next/link";
 
 export const queryClient = new QueryClient({
   queryCache: new QueryCache({
@@ -59,7 +61,10 @@ queryClient.setMutationDefaults(mutationKeys.task.generate,{
     return await api.createTaskV2(props)
   },
   onSuccess: async (data) => {
-    toast.success('任务已创建', { description: (data as any)?.id })
+    toast.success('任务已创建', {
+      description: (data as any)?.id,
+      action: <Button size={'sm'} variant={'link'} ><Link href={`/task/${data.id}`}>查看详情</Link></Button>
+    })
     queryClient.invalidateQueries({queryKey:queryKeys.balance})
   },
   onError: async (err) => {

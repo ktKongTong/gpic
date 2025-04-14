@@ -14,8 +14,9 @@ import {z} from "zod";
 import FileUploader from "./upload";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useMutation} from "@tanstack/react-query";
-import {mutationKeys, TaskCreateV2} from "@/lib/query";
+import {mutationKeys, queryClient, queryKeys, TaskCreateV2} from "@/lib/query";
 import {useBalance} from "@/hooks/use-balance";
+import {toast} from "sonner";
 
 type Size = 'auto' | '1x1' | '3x2' | '2x3'
 // local style id
@@ -39,7 +40,6 @@ const useTaskForm = () => {
   const checkStyleSelected = (id: string) => {
     return selectedStyleIds.includes(id)
   }
-
   const {mutate: generateTask } = useMutation<unknown, unknown,TaskCreateV2>({
     mutationKey: mutationKeys.task.generate,
     onMutate: (variables) => {
