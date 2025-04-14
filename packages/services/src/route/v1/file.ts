@@ -1,7 +1,6 @@
 import {Hono} from "hono";
 import { getService } from "../middlewares/service-di";
 import { bodyLimit } from 'hono/body-limit'
-import {getCloudflareContext} from "@opennextjs/cloudflare";
 const app = new Hono().basePath('/file')
 
 import { startTime, endTime } from 'hono/timing'
