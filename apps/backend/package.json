@@ -4,11 +4,18 @@
   "devDependencies": {
     "@cloudflare/workers-types": "catalog:",
     "typescript": "^5.8",
-    "wrangler": "catalog:"
+    "wrangler": "catalog:",
+    "drizzle-kit": "catalog:"
   },
   "private": true,
   "type": "module",
   "scripts": {
+    "migrate": "drizzle-kit migrate",
+    "generate": "drizzle-kit generate",
+    "generate:custom": "drizzle-kit generate --custom",
+    "d1:mi:apply": "wrangler d1 migrations apply gpic",
+    "d1:mi:apply:remote": "wrangler d1 migrations apply gpic --remote --preview",
+    "d1:mi:apply:remote:prod": "wrangler d1 migrations apply gpic --remote",
     "start": "wrangler dev",
     "deploy:preview": "wrangler deploy -e preview",
     "deploy": "wrangler deploy"
