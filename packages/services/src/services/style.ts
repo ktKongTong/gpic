@@ -27,4 +27,7 @@ export class StyleService {
     const styles = await this.dao.style.getStyleById(id)
     return styles;
   }
+  async removeStyleById(id: string) {
+    await this.dao.style.removeStyleById(id)
+  }
 }

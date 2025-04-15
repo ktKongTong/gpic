@@ -92,4 +92,8 @@ export class StyleDAO {
     const [res] = await this.db.select().from(table.style).where(eq(table.style.id, styleId))
     return res
   }
+
+  async removeStyleById(id: string) {
+    return this.db.delete(table.style).where(eq(table.style.id, id))
+  }
 }
