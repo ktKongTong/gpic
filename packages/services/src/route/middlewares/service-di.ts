@@ -13,6 +13,7 @@ import {createMQService, MQService} from "../../queue/producer";
 import { getDAO } from "../../libs/storage/db";
 import {MQMessage} from "../../shared";
 import { GalleryService } from "../../services/gallery";
+import {createKVService} from "../../kv";
 
 
 
@@ -60,8 +61,9 @@ export const ServiceDIMiddleware = (): MiddlewareHandler => {
     const dao = getDAO()
     const styleService = new StyleService(dao)
     const aiImageService = new AIImageService(fileService, styleService)
-    const userBalanceService = new UserBalanceService(userService, dao)
+    const kv = createKVService(c.env)
     const mqService = createMQService()
+    const userBalanceService = new UserBalanceService(userService, dao, kv)
     const taskService = new TaskService(dao)
     const historyService = new ExecutionService(dao)
     const galleryService = GalleryService.create(dao)

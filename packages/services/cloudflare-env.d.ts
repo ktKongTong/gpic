@@ -31,6 +31,7 @@ declare namespace Cloudflare {
 interface CloudflareEnv extends Cloudflare.Env {
     MQ_PROVIDER: 'cf' | 'upstash'
     BACKEND_HOST: string,
+    KV: KVNamespace;
     BETTER_AUTH_TRUST_ORIGIN?: string
     UPSTASH_QSTASH_TOKEN?: string
     UPSTASH_QSTASH_CURRENT_SIGNING_KEY?: string
