@@ -3,14 +3,19 @@ import {getService} from "../middlewares/service-di";
 import {NotFoundError, ParameterError, UnauthorizedError} from "../../errors";
 import {taskStatus, taskType, msgType} from "../../shared";
 import {getCloudflareEnv} from "../../utils";
+import {authRequire} from "../middlewares/auth";
 
 const app = new Hono().basePath('/task')
 
+app.use(authRequire())
 
 app.get('/', async (c) => {
   const  { taskService, userService } = getService(c)
-  const user =await userService.getCurrentUser()
-  const tasks = await taskService.getTaskByUserId(user?.id ?? 'anonymous')
+  const user = await userService.getCurrentUser()
+  if(!user) {
+    throw new UnauthorizedError()
+  }
+  const tasks = await taskService.getTaskByUserId(user.id)
   return c.json(tasks)
 })
 
@@ -19,7 +24,10 @@ app.patch('/:taskid/retry', async (c) => {
   const failOnly = Boolean(c.req.query('failOnly'))
   const  {mqService, taskService, userService } = getService(c)
   const user = await userService.getCurrentUser()
-  const uid = user?.id ?? 'anonymous'
+  const uid = user?.id
+  if(!uid) {
+    throw new UnauthorizedError()
+  }
   let task = await taskService.getTaskByIdAndUserId(taskId, uid, false)
   if(!task) {
     throw new NotFoundError()
@@ -51,12 +59,16 @@ app.get('/:taskid/ws', async (c) => {
   }
   const  { taskService, userService} = getService(c)
   const user = await userService.getCurrentUser()
-  const uid = user?.id ?? 'anonymous'
+  const uid = user?.id
+  if(!uid) {
+    throw new UnauthorizedError()
+  }
   let task = await taskService.getTaskByIdAndUserId(taskId, uid, false)
 
   if(!task) {
     throw new NotFoundError()
   }
+
   if(task.parentId) {
     task = (await taskService.getTaskById(task.parentId, false))!
   }
@@ -80,7 +92,7 @@ app.get('/:taskid', async (c) => {
   const taskId = c.req.param('taskid')
   const  { taskService, userService} = getService(c)
   const user = await userService.getCurrentUser()
-  const uid = user?.id ?? 'anonymous'
+  const uid = user?.id!
   let task = await taskService.getTaskByIdAndUserId(taskId, uid)
   if(!task) {
     throw new NotFoundError()

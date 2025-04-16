@@ -33,7 +33,6 @@ export class UserService {
         }
         const session = await getAuth().api
           .getSession({headers:_req.headers})
-        console.log("session", session)
         this.cache?.set(userSymbol, session?.user)
         return session?.user
     }

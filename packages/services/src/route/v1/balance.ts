@@ -1,9 +1,11 @@
 import {Hono} from "hono";
 import {getService} from "../middlewares/service-di";
+import {authRequire} from "../middlewares/auth";
 
 
 const app = new Hono().basePath('/')
 
+app.use(authRequire())
 
 app.get('/balance', async (c) => {
   const  { userBalanceService } = getService(c)

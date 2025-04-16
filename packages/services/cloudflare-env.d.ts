@@ -38,6 +38,9 @@ interface CloudflareEnv extends Cloudflare.Env {
     DO_TASK_STATUS: DurableObjectNamespace<
       import("./src/durable-object/batch-task-state").BatchTaskStateDO
     >;
+    DO_ATOMIC_KV: DurableObjectNamespace<
+      import("./src/durable-object/atomic-kv").AtomicKVDO
+    >;
 }
 // Begin runtime types
 /*! *****************************************************************************

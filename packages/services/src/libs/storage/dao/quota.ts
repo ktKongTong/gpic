@@ -17,7 +17,7 @@ export class BalanceDAO {
   }
 
   // todo transaction
-  async createTaskOrder(userId: string, taskId: string, cost: number) {
+  async createTaskOrder(userId: string, taskId: string, cost: number, msg: string) {
     const id =typeid('cost').toString()
     const s = this.db.update(table.credit)
       .set({
@@ -33,24 +33,25 @@ export class BalanceDAO {
     if(!ok) {
       throw new DBError(`failed to descrease balance userId: ${userId}, cost: ${cost}`)
     }
-    const [res] = await this.db.insert(table.usage).values({
+    const [res] = await this.db.insert(table.order).values({
       id,
       userId,
       taskId,
-      cost,
+      count: cost,
+      msg,
     }).returning()
     return res
   }
 
   async getOrdersByUserId(userId: string) {
-    const {userId:uidColumn, ...rest} = getTableColumns(table.usage)
+    const {userId:uidColumn, ...rest} = getTableColumns(table.order)
     const res = await this.db.select({
       user: table.user,
       ...rest,
-    }).from(table.usage)
-    .leftJoin(table.user, eq(table.user.id, table.usage.userId))
-    .leftJoin(table.task, eq(table.usage.taskId, table.task.id))
-    .where(eq(table.usage.userId, userId))
+    }).from(table.order)
+    .leftJoin(table.user, eq(table.user.id, table.order.userId))
+    .leftJoin(table.task, eq(table.order.taskId, table.task.id))
+    .where(eq(table.order.userId, userId))
     return res
   }
 

@@ -3,8 +3,11 @@ import {getService} from "../middlewares/service-di";
 
 import {batchTaskInputSchema, taskStatus, msgType} from "../../shared";
 import {BizError} from "../../errors";
+import {authRequire} from "../middlewares/auth";
 
 const app = new Hono().basePath('/task')
+
+app.use(authRequire())
 
 app.post('/image/flavor-image', async (c) => {
   const body = await c.req.json()
@@ -18,7 +21,7 @@ app.post('/image/flavor-image', async (c) => {
     throw new BizError(`no enough balance, need: ${cost}, remain: ${balance.balance}`, 400)
   }
   const user = await userService.getCurrentUser()
-  const userId = user?.id ?? 'anonymous'
+  const userId = user!.id!
   let task: any
   if(batch) {
     task = await taskService.createBatchTask({ input:rest, userId})

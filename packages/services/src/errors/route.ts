@@ -11,6 +11,13 @@ export class UnauthorizedError extends BizError {
   }
 }
 
+
+export class AccessDeniedError extends BizError {
+  constructor(message?: string) {
+    super(message??'AccessDenied', 401)
+  }
+}
+
 export class NotFoundError extends BizError {
   constructor(message?: string) {
     super(message ?? 'Not Found', 404)

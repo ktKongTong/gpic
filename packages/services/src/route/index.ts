@@ -15,7 +15,7 @@ import {setCloudflareEnv} from "../utils";
 import {commonRoute} from "./v1/common";
 import {userRoute} from "./v1/user";
 import {upstashRoute} from "./v1/upstash";
-import {authn} from "./middlewares/auth";
+import {authn, authRequire} from "./middlewares/auth";
 
 const app = new Hono().basePath('/api')
 app.use('*', async (c, next) => {
@@ -24,7 +24,7 @@ app.use('*', async (c, next) => {
 })
 app.use(contextStorage())
 app.use(ServiceDIMiddleware())
-app.use(authn)
+
 
 app.use(rateLimitFactory({max: 60, windowMs: 300 * 1000, strategy: 'ip'}))
 
@@ -37,7 +37,7 @@ app.use(
 		enabled: (c) => c.req.method === 'POST' || c.req.method === 'PUT',
 	})
 )
-
+app.use(authn)
 app.onError((err, c) => {
 	console.error(err)
 	if(err instanceof BizError) {
@@ -55,9 +55,9 @@ app.onError((err, c) => {
 app.on(["POST", "GET"], "/auth/*", (c) => {
 	return getAuth().handler(c.req.raw);
 });
+app.route('/', commonRoute)
 
 app.route('/', fileRoute)
-app.route('/', commonRoute)
 app.route('/', taskRoute)
 app.route('/', balanceRoute)
 app.route('/', userRoute)

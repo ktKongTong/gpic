@@ -1,11 +1,17 @@
 import {Hono} from "hono";
 import { getService } from "../middlewares/service-di";
 import { bodyLimit } from 'hono/body-limit'
-const app = new Hono().basePath('/file')
 
 import { startTime, endTime } from 'hono/timing'
 import {getCloudflareEnv} from "../../utils";
+import {authRequire} from "../middlewares/auth";
+
+const app = new Hono().basePath('/file')
+
+app.use(authRequire())
+
 const getKey = (buf: ArrayBuffer) => [...new Uint8Array(buf)].map(x => x.toString(16).padStart(2, '0')).join('')
+
 app.put('/upload',
   bodyLimit({
     maxSize: 10 * 1024 * 1024,

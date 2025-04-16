@@ -7,7 +7,6 @@ import {getService} from "../middlewares/service-di";
 const app = new Hono()
 
 app.post('/quque/upstash', async (c) => {
-  getCloudflareEnv()
   const { consumerService } = getService(c)
   const consumer = await upstashAdapter(c.req.raw, getCloudflareEnv())
   await consumer.consume((msg: MQMessage) => consumerService.handleMsg(msg))

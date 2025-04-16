@@ -8,11 +8,13 @@ export const credit = sqliteTable("credit", {
 }, (table) => [
 ]);
 
-export const usage = sqliteTable("usage", {
+export const order = sqliteTable("order", {
   id: text("id").primaryKey(),
   userId: text("user_id").notNull(),
-  taskId: text("task_id").notNull(),
-  cost: integer("cost", {mode: 'number'}).notNull(),
+  taskId: text("task_id"),
+  type: text("type", {enum: ['task', 'credit-add']}),
+  count: integer("count", {mode: 'number'}).notNull(),
+  msg: text("msg"),
   ...commonTimeFields
 }, (table) => [
   index('usage_task_id_idx').on(table.taskId),
