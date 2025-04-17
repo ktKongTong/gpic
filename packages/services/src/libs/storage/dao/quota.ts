@@ -9,6 +9,14 @@ export class BalanceDAO {
   constructor(private readonly db: DB) {
   }
 
+  async createWalletByUserId(userId: string, balance: number = 0) {
+    const [res] = await this.db.insert(table.credit)
+      .values({
+        userId,
+        balance
+      }).returning()
+    return res
+  }
   async getBalanceByUserId(userId: string) {
     const [res] = await this.db.select()
       .from(table.credit)

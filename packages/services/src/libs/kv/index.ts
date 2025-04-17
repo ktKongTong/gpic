@@ -1,4 +1,4 @@
-import {getCloudflareEnv} from "../utils";
+import {getCloudflareEnv} from "../../utils";
 import {CFKVStore} from "./cf";
 
 export interface KVService {

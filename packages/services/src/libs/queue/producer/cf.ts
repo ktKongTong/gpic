@@ -1,4 +1,4 @@
-import {getCloudflareEnv} from "../../utils";
+import {getCloudflareEnv} from "../../../utils";
 import {MQService} from "./index";
 
 export class CFMQServiceImpl<T = unknown> implements MQService<T> {

@@ -34,9 +34,9 @@
       "require": "./dist/cjs/durable-object/batch-task-state.js"
     },
     "./quque/adapter/cf": {
-      "types": "./dist/types/queue/consumer/adapter/cf.d.ts",
-      "import": "./dist/esm/queue/consumer/adapter/cf.js",
-      "require": "./dist/cjs/queue/consumer/adapter/cf.js"
+      "types": "./dist/types/libs/queue/consumer/adapter/cf.d.ts",
+      "import": "./dist/esm/libs/queue/consumer/adapter/cf.js",
+      "require": "./dist/cjs/libs/queue/consumer/adapter/cf.js"
     }
   },
   "dependencies": {

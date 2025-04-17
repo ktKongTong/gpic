@@ -1,7 +1,7 @@
 import {UserService} from "./user-service";
 import {BizError, ServiceError} from "../errors";
 import { DAO } from "../libs/storage";
-import {KVService} from "../kv";
+import {KVService} from "../libs/kv";
 
 type TaskOrderCreate = {
   taskId: string,

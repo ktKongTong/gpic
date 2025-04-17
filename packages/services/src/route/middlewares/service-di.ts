@@ -9,11 +9,11 @@ import {
   StyleService,
   TaskService
 } from "../../services";
-import {createMQService, MQService} from "../../queue/producer";
+import {createMQService, MQService} from "../../libs/queue/producer";
 import { getDAO } from "../../libs/storage/db";
 import {MQMessage} from "../../shared";
 import { GalleryService } from "../../services/gallery";
-import {createKVService} from "../../kv";
+import {createKVService} from "../../libs/kv";
 
 
 

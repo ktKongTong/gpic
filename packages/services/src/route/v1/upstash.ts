@@ -1,5 +1,5 @@
 import {Hono} from "hono";
-import {upstashAdapter} from "../../queue/consumer/adapter/upstash";
+import {upstashAdapter} from "../../libs/queue/consumer/adapter/upstash";
 import {getCloudflareEnv} from "../../utils";
 import {MQMessage} from "../../shared";
 import {getService} from "../middlewares/service-di";

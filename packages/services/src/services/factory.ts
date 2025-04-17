@@ -1,7 +1,7 @@
 import {getDAO} from "../libs/storage/db";
 import {FileService} from "./file";
 import {UserService} from "./user-service";
-import { createMQService } from "../queue/producer";
+import { createMQService } from "../libs/queue/producer";
 import {TaskService} from "./task";
 import {ExecutionService} from "./history";
 import {StyleService} from "./style";

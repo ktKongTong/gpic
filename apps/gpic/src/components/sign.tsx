@@ -27,16 +27,16 @@ export default function UserProfile() {
   const queryClient = useQueryClient()
 
   const signinMutation = useMutation({
-    mutationFn: async (provider: "github" | "google" | "anonymous") => {
-      if(provider === "anonymous") {
-        const res = await signIn.anonymous();
-        if (res.error) throw res.error;
-        return res.data;
-      }
+    mutationFn: async (provider: "github" | "google") => {
+      // if(provider === "anonymous") {
+      //   const res = await signIn.anonymous();
+      //   if (res.error) throw res.error;
+      //   return res.data;
+      // }
       const res = await signIn.social({
         provider: provider,
-        callbackURL: "/",
-        errorCallbackURL: "/",
+        callbackURL: window.location.origin,
+        errorCallbackURL: window.location.origin+"/error",
       });
       if (res.error) throw res.error;
       return res.data;
@@ -88,29 +88,19 @@ export default function UserProfile() {
                   <DialogTitle className="text-lg md:text-xl">Sign In</DialogTitle>
               </DialogHeader>
               <div className="grid gap-4 items-center justify-center justify-items-center">
-                  <Button
-                      variant="outline"
-                      className={cn("w-fit gap-2 border-none")}
-                      disabled={signinMutation.isPending}
-                      onClick={() => signinMutation.mutate("anonymous")}
-                  >
-                      <VenetianMask />Sign in Anonymous
-                  </Button>
-                  <div className={cn("w-full gap-2 flex items-center", "justify-center")}>
+                  <div className={cn("w-full gap-2 flex flex-col items-center", "justify-center")}>
                       <Button
                           variant="outline"
                           className={cn("aspect-square border-none")}
-                          size={"icon"}
                           disabled={signinMutation.isPending}
                           onClick={() => signinMutation.mutate("google")}
-                      ><GoogleIcon/></Button>
+                      ><GoogleIcon/> Sign in With Google</Button>
                       <Button
                           variant="outline"
-                          size={"icon"}
                           className={cn("aspect-square border-none")}
                           disabled={signinMutation.isPending}
                           onClick={() => signinMutation.mutate("github")}
-                      ><GitHubIcon/></Button>
+                      ><GitHubIcon/>Sign in With GitHub</Button>
                   </div>
               </div>
               <DialogFooter>

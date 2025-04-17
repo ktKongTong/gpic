@@ -1,5 +1,5 @@
 import {DurableObject} from "cloudflare:workers";
-import {KVService} from "../kv";
+import {KVService} from "../libs/kv";
 
 
 export class AtomicKVDO extends DurableObject implements KVService {
