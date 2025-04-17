@@ -58,6 +58,8 @@ export class BalanceDAO {
         id,
         userId,
         amount: res.amount,
+        status: 'completed',
+        voucherId: res.id,
         type: 'credit-add',
         msg: `use redeem code, id: ${res.id}`
       }).returning(),
@@ -75,49 +77,76 @@ export class BalanceDAO {
       .where(eq(table.credit.userId, userId))
     return res
   }
-  // todo transaction
-  async createOrder(userId: string, amount: number, msg?: string) {
-    const id =typeid('order').toString()
+  async createPendingOrder(userId: string, amount: number, msg?: string) {
+    const id =typeid('ord').toString()
     const [res] = await this.db.insert(table.order).values({
       id,
       userId,
       amount,
       type: 'credit-add',
+      status: 'pending',
       msg,
     }).returning()
-    const s = await this.db.update(table.credit)
-      .set({
-        balance: sql`${table.credit.balance} + ${amount}`,
-      })
-      .where(eq(table.credit.userId, userId))
     return res
   }
-  async createTaskOrder(userId: string, taskId: string, cost: number, msg: string) {
-    const id =typeid('cost').toString()
-    const s = this.db.update(table.credit)
-      .set({
-        balance: sql`${table.credit.balance} - ${cost}`,
-      })
-      .where(
-        and(
-          eq(table.credit.userId, userId),
-          gte(sql`${table.credit.balance} - ${cost}`, 0)
-        )
-      )
 
-    const [ok] = await s.returning()
-    if(!ok) {
-      throw new DBError(`failed to decrease balance userId: ${userId}, cost: ${cost}`)
-    }
-    const [res] = await this.db.insert(table.order).values({
+  async completePendingOrder(orderId: string, amount: number,paddleTxId: string, msg?: string) {
+    const [oldOrder] = await this.db.select().from(table.order).where(eq(table.order.id, orderId))
+    await this.db.batch([
+      this.db.update(table.order)
+        .set({
+          amount,
+          msg,
+          paddleTxId,
+          status: 'completed'
+        })
+        .where(eq(table.order.id, orderId)),
+      this.db.update(table.credit)
+        .set({
+          balance: sql`${table.credit.balance} + ${amount}`,
+        })
+        .where(eq(table.credit.userId, oldOrder.userId))
+    ])
+  }
+
+  async createTaskOrder(userId: string, taskId: string, cost: number, msg: string) {
+    const id =typeid('ord').toString()
+    const [pendingOrder] = await this.db.insert(table.order).values({
       id,
       userId,
       taskId,
       type: 'task',
       amount: -cost,
+      status: 'pending',
       msg,
     }).returning()
-    return res
+
+    let retry = 0
+    while (retry < 3) {
+      const [creditRes, [orderRes]] = await this.db.batch([
+        this.db.update(table.credit)
+          .set({
+            balance: sql`${table.credit.balance} - ${cost}`,
+          })
+          .where(
+            and(
+              eq(table.credit.userId, userId),
+              gte(sql`${table.credit.balance} - ${cost}`, 0)
+            )
+          ),
+        this.db.update(table.order)
+          .set({
+            status: 'completed',
+          })
+          .where(eq(table.order.id, id))
+          .limit(1)
+          .returning()
+      ])
+      if(creditRes.success) {
+        return orderRes
+      }
+    }
+    throw new DBError(`failed to decrease balance userId: ${userId}, cost: ${cost}`)
   }
 
   async getOrdersByUserId(userId: string) {

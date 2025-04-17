@@ -23,9 +23,12 @@ export const exchangeCoupon = sqliteTable('exchange_coupon', {
 export const order = sqliteTable("order", {
   id: text("id").primaryKey(),
   userId: text("user_id").notNull(),
-  taskId: text("task_id"),
   type: text("type", {enum: ['task', 'credit-add']}).notNull(),
   amount: integer("amount", {mode: 'number'}).notNull(),
+  status: text('status', {enum: ['pending', 'completed', 'failed']}).notNull(),
+  voucherId: text('voucher_id'),
+  paddleTxId: text('paddle_tx_id'),
+  taskId: text("task_id"),
   msg: text("msg"),
   ...commonTimeFields
 }, (table) => [

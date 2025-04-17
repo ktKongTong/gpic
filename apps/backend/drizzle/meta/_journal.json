@@ -22,6 +22,20 @@
       "when": 1744790309484,
       "tag": "0002_illegal_sleeper",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1744922352343,
+      "tag": "0003_spicy_moonstone",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1744922843954,
+      "tag": "0004_same_alex_power",
+      "breakpoints": true
     }
   ]
 }

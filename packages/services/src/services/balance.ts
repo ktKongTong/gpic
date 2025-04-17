@@ -12,6 +12,15 @@ type TaskOrderCreate = {
 type PaddleOrderCreate = {
   userId: string,
   amount: number,
+  priceId: string
+  msg?: string
+}
+
+type PaddleOrderComplete = {
+  paddleTxId: string,
+  userId: string,
+  orderId: string,
+  amount: number,
   msg?: string
 }
 
@@ -51,31 +60,11 @@ export class UserBalanceService {
     return this.dao.balance.createTaskOrder(uid, order.taskId, order.cost, msg)
   }
 
-  async createOrder(order: PaddleOrderCreate) {
-    return this.dao.balance.createOrder(order.userId, order.amount, order.msg)
+  async createPendingOrder(order: PaddleOrderCreate) {
+    return this.dao.balance.createPendingOrder(order.userId, order.amount, order.msg)
   }
 
-  async tryDecreaseBalance(point:number) {
-    const uid = await this.userService.getCurrentUserId()
-    const quota = await this.dao.balance.decreaseBalanceUserId(point, uid)
-    if(quota) {
-      return quota
-    }
-    const remain = await this.dao.balance.getBalanceByUserId(uid)
-    if(!remain) {
-      throw new BizError(`User Not Found`, 400)
-    }
-    throw new BizError(`balance is not enough, require ${point} point, but only ${remain.balance} left`, 400)
+  async completePendingOrder(order: PaddleOrderComplete) {
+    return this.dao.balance.completePendingOrder(order.orderId, order.amount,order.paddleTxId, order.msg)
   }
-
-  async increaseBalance(point:number) {
-    const uid = await this.userService.getCurrentUserId()
-    const remain = await this.dao.balance.createIfNotExistAndGetBalanceByUserId(uid)
-    if(!remain) {
-      throw new BizError(`User Not Found`, 400)
-    }
-    const quota = await this.dao.balance.increaseBalanceUserId(point, uid)
-    return quota
-  }
-
 }

@@ -13,7 +13,8 @@ const priceCustomDataSchema = z.object({
   credit: z.coerce.number(),
 })
 const txCustomDataSchema = z.object({
-  userId: z.string()
+  userId: z.string(),
+  orderId: z.string()
 })
 
 app.post('/order', async (c) => {
@@ -33,10 +34,13 @@ app.post('/order', async (c) => {
           const priceCustomData = eventData.data.items[0].price?.customData
           const txCustomData = eventData.data.customData
           const {credit} = priceCustomDataSchema.parse(priceCustomData)
-          const { userId } = txCustomDataSchema.parse(txCustomData)
+          const { userId,orderId } = txCustomDataSchema.parse(txCustomData)
+          const txId = eventData.data.id
           const {userBalanceService} = getService(c)
-          await userBalanceService.createOrder({
+          await userBalanceService.completePendingOrder({
             userId,
+            orderId,
+            paddleTxId: txId,
             amount: credit,
             msg: `create by paddle webhook, txId: ${eventData.data.id}`
           })
