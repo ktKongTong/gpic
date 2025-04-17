@@ -1,6 +1,6 @@
 import { MQService } from ".";
 import { Client } from "@upstash/qstash";
-import {BaseError} from "../../errors/base";
+import {BaseError} from "../../../errors/base";
 
 export class UpstashMqImpl<T> implements MQService<T> {
   client: Client;

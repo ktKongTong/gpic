@@ -1,5 +1,5 @@
 import { Receiver } from "@upstash/qstash";
-import {UnauthorizedError} from "../../../errors";
+import {UnauthorizedError} from "../../../../errors";
 export const upstashAdapter = async <T = any>(
   req: Request,
   env: CloudflareEnv

@@ -1,7 +1,7 @@
-import {getCloudflareEnv} from "../../utils";
+import {getCloudflareEnv} from "../../../utils";
 import {CFMQServiceImpl} from "./cf";
 import { UpstashMqImpl } from "./upstash";
-import {ServiceError} from "../../errors";
+import {ServiceError} from "../../../errors";
 
 export interface MQService<T> {
   enqueue(message: T): Promise<void>,
