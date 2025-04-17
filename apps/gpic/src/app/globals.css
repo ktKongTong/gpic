@@ -1,6 +1,37 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@layer utilities {
+
+  .overflow-inherit{
+    overflow: inherit
+  }
+  .overflow-initial{
+    overflow: initial
+  }
+  .overflow-unset {
+    overflow: unset;
+  }
+  .overflow-x-inherit{
+    overflow: inherit
+  }
+  .overflow-x-initial{
+    overflow: initial
+  }
+  .overflow-x-unset {
+    overflow: unset;
+  }
+  .overflow-y-inherit{
+    overflow: inherit
+  }
+  .overflow-y-initial{
+    overflow: initial
+  }
+  .overflow-y-unset {
+    overflow: unset;
+  }
+}
+
 @custom-variant dark (&:is(.dark *));
 @custom-variant hover {
   /* If the browser supports the hover event, apply the specified classes on the :hover event */
@@ -165,6 +196,7 @@
 .glass-container {
   @apply backdrop-blur-md  border-white/20 bg-white/5 border;
 }
+
 
 .bg-ghibli-background {
   background-image: url('/bg.png');

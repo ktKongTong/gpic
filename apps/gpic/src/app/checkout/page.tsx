@@ -1,13 +1,23 @@
 'use client'
 import { usePaddleCheckout } from "@/hooks/use-paddle-checkout";
+import { useSession } from "@/lib/auth";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
+import { toast } from "sonner";
 
-export function Page() {
+export default function Page() {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const {data: session} = useSession();
     const {paddle, handleCheckout} = usePaddleCheckout()
     useEffect(() => {
+      if(!session) {
+        return
+      }
+      if(!session.user.emailVerified) {
+        toast.error("please verify email first")
+        return
+      }
         let transactionId = searchParams.get('_ptxn');
         if (transactionId) {
           paddle?.Checkout.open({
@@ -24,6 +34,6 @@ export function Page() {
           return;
         }
         router.push('/');
-      }, [paddle?.Checkout, searchParams]);
+      }, [paddle?.Checkout, searchParams,session]);
     return <p>Preparing checkout...</p>
 }

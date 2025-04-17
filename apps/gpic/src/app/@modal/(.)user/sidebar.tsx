@@ -52,7 +52,7 @@ export function SidebarContents () {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <Link href={item.url}>
+                    <Link href={item.url} replace={true}>
                       <item.icon />
                       <span>{item.title}</span>
                     </Link>

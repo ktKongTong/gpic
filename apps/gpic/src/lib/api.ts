@@ -108,6 +108,23 @@ class API {
     })
   }
 
+
+  createRechargeOrder(priceId: string) {
+    return fetchIns<{
+      id: string,
+      msg?: string,
+      taskId?: string,
+      amount: number,
+      createdAt: string,
+      status: string,
+      paddlePriceId?: string
+      updatedAt: string,
+    }>(`/api/order`, {
+      method: 'POST',
+      body: {priceId}
+    })
+  }
+
   getOrders() {
     return fetchIns<{
       id: string,
@@ -115,8 +132,10 @@ class API {
       taskId?: string,
       amount: number,
       createdAt: string,
+      status: string,
+      paddlePriceId?: string
       updatedAt: string,
-    }[]>('/api/orders', {
+    }[]>('/api/order', {
       method: 'GET',
     })
   }
@@ -124,6 +143,13 @@ class API {
     return fetchIns<{id: string|number, url: string}[]>('/api/gallery', {
       method: 'GET',
     })
+  }
+
+  getPrices() {
+    const price = fetchIns<{id: string, paddleId: string, credits: number, price: string, description: string}[]>('/api/price', {
+      method: 'GET'
+    })
+    return price
   }
 
   redeemCode(code: string) {

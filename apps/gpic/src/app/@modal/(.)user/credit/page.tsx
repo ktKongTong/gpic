@@ -27,10 +27,9 @@ type Order = {
   createdAt: string
   updatedAt: string
   taskId?: string
-  message?: string
+  msg?: string
 }
 
-// Helper function to format date (optional, can keep inline)
 const formatDate = (date: string) => {
   return new Date(date).toLocaleDateString('en-US', {
     year: 'numeric',
@@ -49,14 +48,11 @@ export default function Page() {
     const { data: orders, isPending: isOrdersPending } = useQuery({
       queryKey: queryKeys.orders,
       queryFn: async () => {
-        const res = await api.getOrders() // Use the actual API call
-        
+        const res = await api.getOrders()
         return res as Order[]
       },
-      // staleTime: 60 * 1000, // Optional: Cache orders for 1 minute
     })
 
-    // Mutation for redeeming code
     const redeemMutation = useMutation({
       mutationFn: async (code: string) => {
         const res = api.redeemCode(code)
@@ -115,7 +111,9 @@ export default function Page() {
             <h3 className="text-lg font-semibold mb-3">Recharge Credits</h3>
             <Recharge/>
         </div>
-        <Table className="h-fit overflow-y-auto ">
+        <Table
+          containerClassName="overflow-x-unset"
+          className="h-fit overflow-y-auto">
           <TableHeader>
             <TableRow>
               <TableHead className="w-[80px]">Amount</TableHead>
@@ -136,7 +134,6 @@ export default function Page() {
               ))
             ) : orders && orders.length > 0 ? (
               orders.map((order) => (
-                // Use the new OrderRow component
                 <OrderRow key={order.id} order={order} />
               ))
             ) : (
@@ -173,7 +170,10 @@ function OrderRow({ order }: OrderRowProps) {
                 <span className="text-muted-foreground">-</span>
                 )}
             </TableCell>
-            <TableCell className="text-sm">{order.message ?? <span className="text-muted-foreground">-</span>}</TableCell>
+            <TableCell className="text-sm text-ellipsis line-clamp-1 max-w-30">
+            {order.msg ?? <span className="text-muted-foreground">-</span>}
+
+            </TableCell>
         </TableRow>
     );
 }

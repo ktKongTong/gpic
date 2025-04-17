@@ -1,5 +1,7 @@
+import { api } from '@/lib/api';
 import { useSession } from '@/lib/auth';
 import { initializePaddle, Paddle } from '@paddle/paddle-js';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -11,6 +13,19 @@ interface PaddleCheckoutData {
 
 const PADDLE_CLIENT_TOKEN = process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN as string
 const PADDLE_ENV: 'production' | 'sandbox' = process.env.NEXT_PUBLIC_PADDLE_ENVIRONMENT as any
+
+const PADDLE_PRICE_ID_LEVEL_1 = process.env.NEXT_PUBLIC_PADDLE_PRICE_ID_LEVEL_1 as string
+const PADDLE_PRICE_ID_LEVEL_2 = process.env.NEXT_PUBLIC_PADDLE_PRICE_ID_LEVEL_2 as string
+const PADDLE_PRICE_ID_LEVEL_3 = process.env.NEXT_PUBLIC_PADDLE_PRICE_ID_LEVEL_3 as string
+
+const priceItems = [
+  { priceId: PADDLE_PRICE_ID_LEVEL_1, quantity: 1 },
+  { priceId: PADDLE_PRICE_ID_LEVEL_2, quantity: 1 },
+  { priceId: PADDLE_PRICE_ID_LEVEL_3, quantity: 1 },
+]
+
+console.log("priceItems", priceItems)
+
 export function usePaddleCheckout() {
   const router = useRouter();
   const [paddle, setPaddle] = useState<Paddle>();
@@ -44,7 +59,30 @@ export function usePaddleCheckout() {
 
   const {data: session} = useSession();
 
-  const handleCheckout = (priceId: string) => {
+  const { data: prices } = useQuery({
+    queryKey: ['paddle', 'price'],
+    queryFn: async () => {
+      const res= await paddle!.PricePreview({items: priceItems})
+      const prices = res.data.details.lineItems
+      return prices.map(it=> ({
+        id: it.price.id,
+        paddleId: it.price.id,
+        credits: it.price.customData!['credit'] as any,
+        price: `${it.formattedTotals.total}`,
+        description: it.price.description
+      }))
+    },
+    enabled: !!paddle
+  })
+
+  const mutation = useMutation({
+    mutationKey: ['order', 'recharge'],
+    mutationFn: async (priceId: string) => {
+      return api.createRechargeOrder(priceId)
+    }
+  })
+
+  const handleCheckout = async (priceId: string) => {
     if(!(session?.user.emailVerified && session.user.email)){
         toast.error('please verify your email first')
         return
@@ -53,6 +91,8 @@ export function usePaddleCheckout() {
       console.error('Paddle is not initialized yet.');
       return;
     }
+    const res = await mutation.mutateAsync(priceId)
+
     paddle.Checkout.open({
       settings: {
         theme: 'light',
@@ -64,13 +104,22 @@ export function usePaddleCheckout() {
       },
       customData: {
         userId: session.user.id,
+        orderId: res.id,
         ipAddress: session.session.ipAddress
       },
     });
   };
+  
+  const handleWrapper = async (priceId: string) => {
+    handleCheckout(priceId).catch(e => {
+      toast.error(e)
+    })
+  }
+
   return {
-    handleCheckout,
+    handleCheckout: handleWrapper,
     isLoading,
+    prices,
     paddle,
   };
 }

@@ -11,13 +11,18 @@ import { ChevronDownIcon } from "lucide-react";
 
 const UserDetailModalLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
-
+  const [open, setOpen] = useState(true)
+  const change = (open: boolean) => {
+    if (!open) {
+      router.back()
+    }
+    setOpen(open)
+  }
   return (
     <Dialog
       defaultOpen={true}
-      onOpenChange={(open) => { if (!open) {
-        router.back()
-      }}}
+      open={open}
+      onOpenChange={change}
     >
       <DialogContent
         data-cy="user-modal"
@@ -54,11 +59,13 @@ const SidebarContent = ({ children }: { children: React.ReactNode }) => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="border-none">
                 {
-                  items.map((item) => <DropdownMenuItem key={item.url} onClick={() => {
-                    setItem(item)
-                    setOpen(false)
-                  }}>
-                    <Link href={item.url} className="w-full inline-flex items-center justify-start gap-2">
+                  items.map((item) => <DropdownMenuItem className="p-0" key={item.url} >
+                    <Link href={item.url} 
+                    onClick={() => {
+                      setItem(item)
+                      setOpen(false)
+                    }}
+                    replace={true} className="w-full max-w-32 px-2 py-1.5 flex items-center justify-start gap-2">
                       <item.icon />
                       <span>{item.title}</span>
                     </Link>
