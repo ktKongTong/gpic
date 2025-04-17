@@ -13,9 +13,11 @@
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
+    "@daveyplate/better-auth-ui": "1.4.1",
     "@hookform/resolvers": "^4.1.3",
     "@ktfun/sts-i18n-react": "^0.2.2",
     "@microsoft/fetch-event-source": "^2.0.1",
+    "@paddle/paddle-js": "^1.4.0",
     "@radix-ui/react-accordion": "^1.2.3",
     "@radix-ui/react-alert-dialog": "^1.1.6",
     "@radix-ui/react-aspect-ratio": "^1.1.2",
@@ -53,6 +55,7 @@
     "dayjs": "^1.11.13",
     "embla-carousel-react": "^8.5.2",
     "friendlier-words": "^1.1.3",
+    "hono": "catalog:",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.484.0",
     "motion": "^12.6.2",
@@ -71,8 +74,8 @@
     "tailwind-merge": "^3.0.2",
     "tw-animate-css": "^1.2.5",
     "typeid-js": "^1.2.0",
+    "ua-parser-js": "^2.0.3",
     "vaul": "^1.1.2",
-    "hono": "catalog:",
     "zod": "catalog:",
     "zustand": "^5.0.3"
   },

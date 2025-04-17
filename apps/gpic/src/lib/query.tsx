@@ -30,7 +30,8 @@ export const mutationKeys = {
 
 
 export const queryKeys = {
-  balance: ['balance'],
+  balance: ['user', 'balance'],
+  orders: ['user', 'orders'],
   gallery: ['gallery'],
   tasks: ['tasks']
 }

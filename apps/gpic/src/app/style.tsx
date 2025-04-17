@@ -11,7 +11,7 @@ import {friendlyWords} from "friendlier-words";
 import {FileCtxProvider, useFiles} from "@/hooks/use-file-upload";
 import {useRef, useState} from "react";
 import {ImagePreview, useFileUploader} from "./upload";
-import {useStyles} from "@/hooks/use-styles";
+import {useStyleAction} from "@/hooks/use-styles";
 import { Textarea } from "@/components/ui/textarea";
 import {zodResolver} from "@hookform/resolvers/zod";
 
@@ -54,7 +54,7 @@ type StyleProps = {
   React.ComponentProps<'div'>
 
 export default function Style({styleInfo,className, ...rest}: StyleProps) {
-  const {removeLocalStyle} = useStyles()
+  const {removeLocalStyle} = useStyleAction()
   return <div className={cn(
     'data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground',
     'bg-secondary text-secondary-foreground backdrop-blur-2xl',
@@ -85,7 +85,7 @@ export function StyleForm() {
 }
 
 function StyleFormInternal() {
-  const {addLocalStyle} = useStyles()
+  const {addLocalStyle} = useStyleAction()
   const { files, removeAll } = useFiles()
 
   const form = useForm<z.infer<typeof localStyleFormSchema>>({

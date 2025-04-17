@@ -139,11 +139,11 @@ export default function Form() {
   <div className={'flex w-full justify-between'}>
     <span className={' font-semibold text-2xl'}>{t('pages.home.label.upload')}</span>
     <div className={'inline-flex items-center gap-2 bg-black/30 rounded-full px-2'}>
-      <Coins /> {balance.balance}
+      <Coins /> {balance}
     </div>
   </div>
   <div className={cn(
-    'text-sm self-end', (balance.balance >= creditNeed) && 'invisible'
+    'text-sm self-end', (balance >= creditNeed) && 'invisible'
   )}>
     😵‍💫no enough credit, need {creditNeed}
   </div>

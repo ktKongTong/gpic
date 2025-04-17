@@ -1,9 +1,7 @@
 'use client'
 import { QueryClientProvider } from "@tanstack/react-query";
-import {FileCtxProvider} from "@/hooks/use-file-upload";
 import {LocaleProvider} from "@/i18n";
 import {queryClient} from "@/lib/query";
-
 
 export default function Providers({children}: {children: React.ReactNode}) {
   return <>

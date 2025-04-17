@@ -1,10 +1,10 @@
 import {useQuery} from "@tanstack/react-query";
 import {api} from "@/lib/api";
 import {create} from "zustand";
-import {createJSONStorage, persist} from "zustand/middleware";
 import { typeid } from 'typeid-js';
 import {StyleInfo} from "@repo/service/shared";
 import {friendlyWords} from "friendlier-words";
+import {useEffect} from "react";
 const createLocalId = () => typeid('style_local').toString();
 
 
@@ -44,71 +44,80 @@ type StyleAction = {
   toggleStyle:(id: string) => void
 }
 
-const useStyleStore = create<StyleStore & StyleAction>()(
-  persist((set, get) => ({
-  styles: {},
-  selectedStyles: [],
-  addLocalStyle: (name, reference:string[], prompt: string) => {
-    const id = createLocalId()
-    set({
-      styles: {
-        ...get().styles,
-        [id]: {
-          type: 'local',
-          style: { name, reference, prompt, id }
+const useStyleStore = create<StyleStore & StyleAction>((set, get) => ({
+    styles: {},
+    selectedStyles: [],
+    addLocalStyle: (name, reference:string[], prompt: string) => {
+      const id = createLocalId()
+      set({
+        styles: {
+          ...get().styles,
+          [id]: {
+            type: 'local',
+            style: { name, reference, prompt, id }
+          }
         }
+      })
+      return id
+    },
+    syncRemoteStyle: (presetStyles: PresetStyle[]) => {
+      const presetRecords = {} as Record<string, Style>
+      presetStyles.forEach(preset => {
+        presetRecords[preset.styleId] = {
+          type: 'preset',
+          style: preset,
+        }
+      })
+      set({ styles: { ...get().styles, ...presetRecords } })
+    },
+    removeLocalStyle: (id: string) => {
+      const styles = get().styles
+      delete styles[id]
+      set({ styles: styles, selectedStyles: get().selectedStyles.filter(it => it !== id) })
+    },
+    toggleStyle: (id: string) => {
+      const selected = get().selectedStyles
+      if (selected.includes(id)) {
+        set({ selectedStyles: selected.filter(it => it !== id) })
+      }else {
+        set({ selectedStyles: [...selected, id] })
       }
-    })
-    return id
-  },
-  syncRemoteStyle: (presetStyles: PresetStyle[]) => {
-    const presetRecords = {} as Record<string, Style>
-    presetStyles.forEach(preset => {
-      presetRecords[preset.styleId] = {
-        type: 'preset',
-        style: preset,
-      }
-    })
-    set({ styles: { ...get().styles, ...presetRecords } })
-  },
-  removeLocalStyle: (id: string) => {
-    const styles = get().styles
-    delete styles[id]
-    set({ styles: styles, selectedStyles: get().selectedStyles.filter(it => it !== id) })
-  },
-  toggleStyle: (id: string) => {
-    const selected = get().selectedStyles
-    if (selected.includes(id)) {
-      set({ selectedStyles: selected.filter(it => it !== id) })
-    }else {
-      set({ selectedStyles: [...selected, id] })
     }
-  }
-}),
-  {
-    name: 'style-storage',
-    version: 1,
-    partialize: (state) => ({ styles: state.styles }),
-  },
-))
+  }),
+)
 
+// )(
+  // persist(
+//   {
+//     name: 'style-storage',
+//     version: 1,
+//     partialize: (state) => ({ styles: state.styles }),
+//   },)
+const staticArr = [] as any[]
+const s = {}
 export const useStyles = () => {
   const syncRemoteStyle = useStyleStore(state => state.syncRemoteStyle)
   const addLocalStyle =  useStyleStore(state => state.addLocalStyle)
   const removeLocalStyle = useStyleStore(state => state.removeLocalStyle)
   const toggleStyle = useStyleStore(state => state.toggleStyle)
-  const selectedStyleIds = useStyleStore(state => state.selectedStyles)
+  const selectedStyleIds = [] as string[]
+  useStyleStore(state => state.selectedStyles)
   const stylesMap = useStyleStore(state => state.styles)
   const styles = Object.values(stylesMap)
-  const {data, isLoading} = useQuery({
+  const {data, isLoading, isSuccess} = useQuery({
     queryKey: ['styles'],
     retry: false,
     queryFn: async () => {
       const res = await api.getStyles()
-      syncRemoteStyle(res)
+
       return res
-    },
+    }
   })
+  useEffect(() => {
+    if(isSuccess) {
+      syncRemoteStyle(data ?? [])
+    }
+  },[isSuccess])
   return {
     styles: styles,
     toggleStyle,
@@ -116,6 +125,18 @@ export const useStyles = () => {
     addLocalStyle,
     selectedStyleIds,
     isLoading: isLoading,
+  }
+}
+
+
+export const useStyleAction = () => {
+  const addLocalStyle =  useStyleStore(state => state.addLocalStyle)
+  const removeLocalStyle = useStyleStore(state => state.removeLocalStyle)
+  const toggleStyle = useStyleStore(state => state.toggleStyle)
+  return {
+    addLocalStyle,
+    removeLocalStyle,
+    toggleStyle
   }
 }
 

@@ -3,15 +3,16 @@ import {useQuery} from "@tanstack/react-query";
 import {api} from "@/lib/api";
 
 export const useBalance = () => {
-  const {data, isLoading} = useQuery({
+  const {data, isLoading, ...rest} = useQuery({
     queryKey: queryKeys.balance,
     queryFn: async () => {
       const res = await api.getBalance()
-      return res
-    },
+      return res?.balance
+    }
   })
   return {
-    balance: data ?? { balance: 0 },
+    balance: data ?? 0,
     isLoading: isLoading,
+    ...rest
   }
 }

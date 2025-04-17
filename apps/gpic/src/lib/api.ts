@@ -108,9 +108,30 @@ class API {
     })
   }
 
+  getOrders() {
+    return fetchIns<{
+      id: string,
+      msg?: string,
+      taskId?: string,
+      amount: number,
+      createdAt: string,
+      updatedAt: string,
+    }[]>('/api/orders', {
+      method: 'GET',
+    })
+  }
   getGallery() {
     return fetchIns<{id: string|number, url: string}[]>('/api/gallery', {
       method: 'GET',
+    })
+  }
+
+  redeemCode(code: string) {
+    return fetchIns<{id: string|number, url: string}[]>('/api/redeem', {
+      method: 'POST',
+      body: {
+        code
+      }
     })
   }
 
@@ -124,8 +145,6 @@ class API {
       body: formData
     })
   }
-
-
 }
 
 

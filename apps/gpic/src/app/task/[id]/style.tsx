@@ -1,5 +1,5 @@
 import {StyleInfo} from "@repo/service/shared";
-import {useStyle, useStyles} from "@/hooks/use-styles";
+import {useStyle } from "@/hooks/use-styles";
 import React from "react";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import Image from "next/image";
