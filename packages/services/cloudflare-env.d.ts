@@ -3,6 +3,9 @@
 
 declare namespace Cloudflare {
 	interface Env {
+    PADDLE_ENVIRONMENT: string,
+    PADDLE_API_KEY: string,
+    PADDLE_WEBHOOK_SECRET_KEY: string
 		KV: KVNamespace;
 		NEXTJS_ENV: string;
     MQ_PROVIDER: 'cf' | 'upstash'
@@ -29,6 +32,9 @@ declare namespace Cloudflare {
 	}
 }
 interface CloudflareEnv extends Cloudflare.Env {
+    PADDLE_ENVIRONMENT: string,
+    PADDLE_API_KEY: string,
+    PADDLE_WEBHOOK_SECRET_KEY: string
     MQ_PROVIDER: 'cf' | 'upstash'
     BACKEND_HOST: string,
     KV: KVNamespace;

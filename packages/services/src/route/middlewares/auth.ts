@@ -2,7 +2,7 @@ import {getAuth} from "../../libs/auth";
 import { createMiddleware } from 'hono/factory'
 import {Session, User} from "better-auth";
 import {Context} from "hono";
-import {UnauthorizedError} from "../../errors";
+import {AccessDeniedError, UnauthorizedError} from "../../errors";
 
 
 declare module 'hono' {
@@ -29,7 +29,8 @@ export const authn = createMiddleware(async (c, next) => {
 type Options = {
   permission?: {
     [key: string]: string[];
-  }
+  },
+  role?: 'admin' | 'user'
 }
 
 export const authRequire = (options?: Options) => createMiddleware(async (c, next) => {
@@ -37,14 +38,9 @@ export const authRequire = (options?: Options) => createMiddleware(async (c, nex
   if(!user) {
     throw new UnauthorizedError()
   }
-  // if(options?.permission) {
-  //   const res = await getAuth().api.userHasPermission({
-  //     body: options.permission,
-  //   })
-  //   if(!res.success) {
-  //     throw new AccessDeniedError('No permission to access this resource')
-  //   }
-  // }
-
+  // @ts-ignore
+  if(options?.role === 'admin' && user.role == 'admin') {
+    throw new AccessDeniedError('only admin can access these resource')
+  }
   return next();
 })

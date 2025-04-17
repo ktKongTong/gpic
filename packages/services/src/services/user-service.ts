@@ -25,7 +25,8 @@ export class UserService {
     async getCurrentUser(req?: Request) {
         const cached = this.cache?.get(userSymbol)
         if(cached) {
-            return cached
+            // @ts-ignore
+            return cached.user as User
         }
         let _req = req ?? this.reqGetter?.()
         if (!_req) {
@@ -33,8 +34,23 @@ export class UserService {
         }
         const session = await getAuth().api
           .getSession({headers:_req.headers})
-        this.cache?.set(userSymbol, session?.user)
+        // @ts-ignore
+        this.cache?.set(userSymbol, session)
         return session?.user
+    }
+
+    async checkIfAdmin() {
+        const user = await this.getCurrentUser()
+        // @ts-ignore
+        return user?.role === 'admin'
+    }
+
+    async getCurrentUserId(req?: Request) {
+        const user = await this.getCurrentUser(req)
+        if (!user?.id) {
+            throw new ServiceError("User should not be null")
+        }
+        return user.id
     }
 
     async isAnonymousUser() {

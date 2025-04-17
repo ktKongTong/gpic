@@ -299,6 +299,9 @@ importers:
       '@hono/zod-validator':
         specifier: ^0.4.3
         version: 0.4.3(hono@4.7.6)(zod@3.24.2)
+      '@paddle/paddle-node-sdk':
+        specifier: ^2.7.0
+        version: 2.7.0
       '@upstash/qstash':
         specifier: ^2.7.23
         version: 2.7.23
@@ -1880,6 +1883,10 @@ packages:
 
   '@paddle/paddle-js@1.4.0':
     resolution: {integrity: sha512-pX6Yx+RswB1rHMuYl8RKcAAVZhVJ6nd5f8w8l4kVM63pM3HNeQ5/Xuk4sK/X9P5fUE2dmN0mTti7+gZ8cZtqvg==}
+
+  '@paddle/paddle-node-sdk@2.7.0':
+    resolution: {integrity: sha512-gYndP1ev+iZRgY6bA+tZOaKbH1vcyjAmgZphFzE5p/lLTqutrEahHyJmeqC+4Ti2cNFoB0wJXLVSndet5dnbuw==}
+    engines: {node: '>=18'}
 
   '@peculiar/asn1-android@2.3.16':
     resolution: {integrity: sha512-a1viIv3bIahXNssrOIkXZIlI2ePpZaNmR30d4aBL99mu2rO+mT9D6zBsp7H6eROWGtmwv0Ionp5olJurIo09dw==}
@@ -7136,6 +7143,8 @@ snapshots:
   '@opentelemetry/api@1.9.0': {}
 
   '@paddle/paddle-js@1.4.0': {}
+
+  '@paddle/paddle-node-sdk@2.7.0': {}
 
   '@peculiar/asn1-android@2.3.16':
     dependencies:

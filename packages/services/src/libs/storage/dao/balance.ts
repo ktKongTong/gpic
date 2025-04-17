@@ -1,9 +1,10 @@
 
 import * as table from '../schema'
-import {and, eq, getTableColumns, gte, sql} from "drizzle-orm";
+import {and, eq, getTableColumns, gte, isNull, sql} from "drizzle-orm";
 import {typeid} from "typeid-js";
 import {DBError} from "../../../errors";
 import {DB} from "../index";
+
 export class BalanceDAO {
 
   constructor(private readonly db: DB) {
@@ -17,14 +18,80 @@ export class BalanceDAO {
       }).returning()
     return res
   }
+
+  async createCoupon(count: number, amount: number, msg?: string) {
+    this.db.select().from(table.exchangeCoupon)
+    const createId = () => typeid('cp').toString()
+    // const
+    const exchangeCode = () => typeid().toString()
+    const values = Array.from({length: count}).map(() => {
+      return {
+        id: createId(),
+        code: exchangeCode(),
+        amount: amount,
+        msg,
+      }
+    })
+    const res = await this.db.insert(table.exchangeCoupon)
+      .values(values)
+      .returning()
+    return res
+  }
+
+  async redeemCoupon(code: string, userId: string) {
+    this.db.select().from(table.exchangeCoupon)
+    const [res] = await this.db.update(table.exchangeCoupon)
+      .set({
+        userId: userId,
+      })
+      .where(and(
+        isNull(table.exchangeCoupon.userId),
+        eq(table.exchangeCoupon.code, code)
+      ))
+      .returning()
+      if(!res) {
+        throw new DBError("code not found or has been used")
+      }
+    const id = typeid('order_').toString()
+    const [[order]] = await this.db.batch([
+      this.db.insert(table.order).values({
+        id,
+        userId,
+        amount: res.amount,
+        type: 'credit-add',
+        msg: `use redeem code, id: ${res.id}`
+      }).returning(),
+      // may fail
+      this.db.update(table.credit).set({
+        balance: sql`${table.credit.balance} + ${res.amount}`
+      }).where(eq(table.user.id, userId))
+    ])
+    return order
+  }
+
   async getBalanceByUserId(userId: string) {
     const [res] = await this.db.select()
       .from(table.credit)
       .where(eq(table.credit.userId, userId))
     return res
   }
-
   // todo transaction
+  async createOrder(userId: string, amount: number, msg?: string) {
+    const id =typeid('order').toString()
+    const [res] = await this.db.insert(table.order).values({
+      id,
+      userId,
+      amount,
+      type: 'credit-add',
+      msg,
+    }).returning()
+    const s = await this.db.update(table.credit)
+      .set({
+        balance: sql`${table.credit.balance} + ${amount}`,
+      })
+      .where(eq(table.credit.userId, userId))
+    return res
+  }
   async createTaskOrder(userId: string, taskId: string, cost: number, msg: string) {
     const id =typeid('cost').toString()
     const s = this.db.update(table.credit)
@@ -37,15 +104,17 @@ export class BalanceDAO {
           gte(sql`${table.credit.balance} - ${cost}`, 0)
         )
       )
+
     const [ok] = await s.returning()
     if(!ok) {
-      throw new DBError(`failed to descrease balance userId: ${userId}, cost: ${cost}`)
+      throw new DBError(`failed to decrease balance userId: ${userId}, cost: ${cost}`)
     }
     const [res] = await this.db.insert(table.order).values({
       id,
       userId,
       taskId,
-      count: cost,
+      type: 'task',
+      amount: -cost,
       msg,
     }).returning()
     return res

@@ -8,12 +8,24 @@ export const credit = sqliteTable("credit", {
 }, (table) => [
 ]);
 
+export const exchangeCoupon = sqliteTable('exchange_coupon', {
+  id: text("id").primaryKey(),
+  userId: text("user_id"),
+  code: text('code').notNull(),
+  amount: integer("amount", {mode: 'number'}).notNull(),
+  msg: text("msg"),
+  ...commonTimeFields
+}, (table) => [
+  index('exchange_user_id_idx').on(table.userId),
+  index('exchange_code_idx').on(table.code),
+])
+
 export const order = sqliteTable("order", {
   id: text("id").primaryKey(),
   userId: text("user_id").notNull(),
   taskId: text("task_id"),
-  type: text("type", {enum: ['task', 'credit-add']}),
-  count: integer("count", {mode: 'number'}).notNull(),
+  type: text("type", {enum: ['task', 'credit-add']}).notNull(),
+  amount: integer("amount", {mode: 'number'}).notNull(),
   msg: text("msg"),
   ...commonTimeFields
 }, (table) => [

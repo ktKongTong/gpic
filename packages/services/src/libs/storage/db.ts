@@ -1,6 +1,6 @@
 import { drizzle, DrizzleD1Database } from 'drizzle-orm/d1';
 import * as schema from "./schema";
-import {BalanceDAO} from "./dao/quota";
+import {BalanceDAO} from "./dao/balance";
 import {HistoryDAO} from "./dao/execution";
 import {TaskDAO} from "./dao/task";
 import {GalleryDAO} from "./dao/gallery";

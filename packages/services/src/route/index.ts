@@ -15,7 +15,9 @@ import {setCloudflareEnv} from "../utils";
 import {commonRoute} from "./v1/common";
 import {userRoute} from "./v1/user";
 import {upstashRoute} from "./v1/upstash";
-import {authn, authRequire} from "./middlewares/auth";
+import { authn } from "./middlewares/auth";
+import {paddleWebhookRoute} from "./v1/webhook/paddle";
+import {adminRoute} from "./v1/admin/common";
 
 const app = new Hono().basePath('/api')
 app.use('*', async (c, next) => {
@@ -24,7 +26,6 @@ app.use('*', async (c, next) => {
 })
 app.use(contextStorage())
 app.use(ServiceDIMiddleware())
-
 
 app.use(rateLimitFactory({max: 60, windowMs: 300 * 1000, strategy: 'ip'}))
 
@@ -54,9 +55,11 @@ app.onError((err, c) => {
 
 app.on(["POST", "GET"], "/auth/*", (c) => {
 	return getAuth().handler(c.req.raw);
-});
-app.route('/', commonRoute)
 
+});
+app.route('/v1', adminRoute)
+app.route('/v1', paddleWebhookRoute)
+app.route('/', commonRoute)
 app.route('/', fileRoute)
 app.route('/', taskRoute)
 app.route('/', balanceRoute)

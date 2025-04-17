@@ -8,21 +8,32 @@ type TaskOrderCreate = {
   cost: number
 }
 
+
+type PaddleOrderCreate = {
+  userId: string,
+  amount: number,
+  msg?: string
+}
+
 export class UserBalanceService {
+
   constructor(private readonly userService: UserService, private dao: DAO, private kv: KVService) {
 
   }
+  async createRedeemCode(count: number, amount: number,msg?: string) {
+    const isAdmin = await this.userService.checkIfAdmin()
+    if(!isAdmin) {
+      throw new ServiceError('Only admin can create coupon')
+    }
+    return await this.dao.balance.createCoupon(count, amount, msg)
+  }
+  async redeemCode(code: string) {
+    const uid = await this.userService.getCurrentUserId()
+    return await this.dao.balance.redeemCoupon(code, uid)
+  }
 
   async getBalance() {
-    const anonymous = await this.userService.isAnonymousUser()
-    if(anonymous) {
-      const res = await this.kv.get<number>('user:balance:anonymous')
-      return {
-        balance: res ? Number(res) : 0,
-        userId: 'anonymous',
-      }
-    }
-    const uid = await this.getConsumeUserid()
+    const uid = await this.userService.getCurrentUserId()
     const quota = this.dao.balance.createIfNotExistAndGetBalanceByUserId(uid)
     return quota
   }
@@ -35,31 +46,17 @@ export class UserBalanceService {
   }
 
   async createTaskOrder(order: TaskOrderCreate) {
-    const anonymous = await this.userService.isAnonymousUser()
-    const uid = await this.getConsumeUserid()
+    const uid = await this.userService.getCurrentUserId()
     let msg = ''
-    if(anonymous) {
-      if(order.cost > 5) {
-        throw new ServiceError("Anonymous User can create only single task which cost 5 credit at once")
-      }
-      await this.kv.increaseBy('user:balance:anonymous', -order.cost, {
-          min: {
-            num: 0,
-            message: 'no enough credit in anonymous wallet today'
-          }
-        })
-      msg = `use anonymous shared wallet, cost ${order.cost} credit`
-    }
     return this.dao.balance.createTaskOrder(uid, order.taskId, order.cost, msg)
   }
 
-  async getConsumeUserid() {
-    const user = await this.userService.getCurrentUser()
-    return user!.id
+  async createOrder(order: PaddleOrderCreate) {
+    return this.dao.balance.createOrder(order.userId, order.amount, order.msg)
   }
 
   async tryDecreaseBalance(point:number) {
-    const uid = await this.getConsumeUserid()
+    const uid = await this.userService.getCurrentUserId()
     const quota = await this.dao.balance.decreaseBalanceUserId(point, uid)
     if(quota) {
       return quota
@@ -72,7 +69,7 @@ export class UserBalanceService {
   }
 
   async increaseBalance(point:number) {
-    const uid = await this.getConsumeUserid()
+    const uid = await this.userService.getCurrentUserId()
     const remain = await this.dao.balance.createIfNotExistAndGetBalanceByUserId(uid)
     if(!remain) {
       throw new BizError(`User Not Found`, 400)
