@@ -32,6 +32,7 @@ export const rateLimitFactory = (options?: RateLimitOptions) => {
         limit: options?.max?? 100,
         standardHeaders: "draft-6",
         keyGenerator: options?.strategy == 'user'? userRateLimit: ipRateLimit,
+        // store: new WorkersKVStore({namespace: getCloudflareEnv().KV, prefix: options?.prefix?? ""})
         // @ts-ignore
         store: new CloudflareKVStore({ namespace: getCloudflareEnv().KV , prefix: options?.prefix?? ""}),
       })(c, next)

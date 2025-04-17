@@ -15,6 +15,13 @@
       "when": 1744649395493,
       "tag": "0001_dusty_leech",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1744790309484,
+      "tag": "0002_illegal_sleeper",
+      "breakpoints": true
     }
   ]
 }

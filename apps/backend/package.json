@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "devDependencies": {
     "@cloudflare/workers-types": "catalog:",
+    "drizzle-kit": "catalog:",
     "typescript": "^5.8",
-    "wrangler": "catalog:",
-    "drizzle-kit": "catalog:"
+    "wrangler": "catalog:"
   },
   "private": true,
   "type": "module",
@@ -16,7 +16,7 @@
     "d1:mi:apply": "wrangler d1 migrations apply gpic",
     "d1:mi:apply:remote": "wrangler d1 migrations apply gpic --remote --preview",
     "d1:mi:apply:remote:prod": "wrangler d1 migrations apply gpic --remote",
-    "start": "wrangler dev",
+    "dev": "wrangler dev",
     "deploy:preview": "wrangler deploy -e preview",
     "deploy": "wrangler deploy"
   },

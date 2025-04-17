@@ -56,3 +56,4 @@ dist
 node_modules
 .next
 /.idea/sqldialects.xml
+.dev.vars
