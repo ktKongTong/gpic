@@ -7,7 +7,7 @@ import {authRequire} from "../middlewares/auth";
 
 const app = new Hono().basePath('/task')
 
-app.use(authRequire())
+app.use("api/task/*",authRequire())
 
 app.get('/', async (c) => {
   const  { taskService, userService } = getService(c)

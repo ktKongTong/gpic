@@ -55,8 +55,8 @@ app.onError((err, c) => {
 
 app.on(["POST", "GET"], "/auth/*", (c) => {
 	return getAuth().handler(c.req.raw);
-
 });
+
 app.route('/v1', adminRoute)
 app.route('/v1', paddleWebhookRoute)
 app.route('/', commonRoute)

@@ -6,15 +6,14 @@ import { z } from "zod";
 
 const app = new Hono().basePath('/')
 
-app.use(authRequire())
 
-app.get('/balance', async (c) => {
+app.get('/balance', authRequire(), async (c) => {
   const  { userBalanceService } = getService(c)
   const balance = await userBalanceService.getBalance()
   return c.json(balance)
 })
 
-app.get('/order', async (c) => {
+app.get('/order', authRequire(), async (c) => {
   const  { userBalanceService } = getService(c)
   const orders = await userBalanceService.getOrders()
   return c.json(orders)

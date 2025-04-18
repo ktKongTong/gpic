@@ -34,7 +34,10 @@ const loadCFEnv = async () => {
         console.log("Cloudflare loaded");
     })
 }
-
-loadCFEnv().catch(e => {
+try {
+    loadCFEnv().catch(e => {
+        console.log(e)
+    })
+}catch (e) {
     console.log(e)
-})
+}

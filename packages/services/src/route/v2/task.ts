@@ -7,9 +7,7 @@ import {authRequire} from "../middlewares/auth";
 
 const app = new Hono().basePath('/task')
 
-app.use(authRequire())
-
-app.post('/image/flavor-image', async (c) => {
+app.post('/image/flavor-image', authRequire(), async (c) => {
   const body = await c.req.json()
   const data = batchTaskInputSchema.parse(body)
   const  {mqService, taskService,userService, userBalanceService} = getService(c)

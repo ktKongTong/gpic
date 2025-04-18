@@ -1,24 +1,26 @@
 import {Hono} from "hono";
 import { getService } from "../middlewares/service-di";
 import { bodyLimit } from 'hono/body-limit'
-
+import {every} from 'hono/combine'
 import { startTime, endTime } from 'hono/timing'
 import {getCloudflareEnv} from "../../utils";
 import {authRequire} from "../middlewares/auth";
 
 const app = new Hono().basePath('/file')
 
-app.use(authRequire())
 
 const getKey = (buf: ArrayBuffer) => [...new Uint8Array(buf)].map(x => x.toString(16).padStart(2, '0')).join('')
 
 app.put('/upload',
+every(
+  authRequire(),
   bodyLimit({
     maxSize: 10 * 1024 * 1024,
     onError: (c) => {
       return c.json({message: 'overflow :(, maximum file size is 10MB'}, 413)
     },
-  }),
+  })
+),
   async (c) => {
     const fileService = getService(c).fileService
     const form = await c.req.formData()

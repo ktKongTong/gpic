@@ -5,7 +5,7 @@ import {authRequire} from "../../middlewares/auth";
 
 const app = new Hono().basePath('/admin')
 
-app.use(authRequire({
+app.use("/api/v1/admin/*",authRequire({
   role: "admin"
 }))
 
