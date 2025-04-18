@@ -143,7 +143,7 @@ const LinkAccountItem = ({account, provider, label,icon}:LinkAccountItemProps) =
   const linkAccount = () => {
     authClient.linkSocial({
       provider: provider as any,
-      callbackURL: window.location.origin,
+      callbackURL: '/',
     })
   }
 

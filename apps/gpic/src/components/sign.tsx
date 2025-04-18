@@ -35,8 +35,8 @@ export default function UserProfile() {
       // }
       const res = await signIn.social({
         provider: provider,
-        callbackURL: window.location.origin,
-        errorCallbackURL: window.location.origin+"/error",
+        callbackURL: '/',
+        errorCallbackURL: "/error",
       });
       if (res.error) throw res.error;
       return res.data;

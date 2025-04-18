@@ -1,0 +1,79 @@
+diff --git a/dist/shared/better-auth.C-R0J0n1.cjs b/dist/shared/better-auth.C-R0J0n1.cjs
+index 89890de2d80d5af8bb5ae6a4b2071886c3941346..c1677feefbbafa18bec9a7c5abe4a68df2d5287a 100644
+--- a/dist/shared/better-auth.C-R0J0n1.cjs
++++ b/dist/shared/better-auth.C-R0J0n1.cjs
+@@ -34,6 +34,23 @@ function getBaseURL(url, path, request) {
+   if (fromRequest && fromRequestProto) {
+     return withPath(`${fromRequestProto}://${fromRequest}`, path);
+   }
++
++  const fromOrigin = request?.headers.get("origin");
++
++  if(fromOrigin) {
++    const url = getOrigin(fromOrigin);
++    if(url) {
++      return withPath(url, path);
++    }
++  }
++  const fromReferer = request?.headers.get("referer");
++  if(fromReferer) {
++    const url = getOrigin(fromReferer);
++    if(url) {
++      return withPath(url, path);
++    }
++  }
++
+   if (request) {
+     const url2 = getOrigin(request.url);
+     if (!url2) {
+diff --git a/dist/shared/better-auth.CWwVo_61.mjs b/dist/shared/better-auth.CWwVo_61.mjs
+index 1771841645d4fdeeb24ee0cd4d3300b8b10bb689..f7568b67a218bf95dde4443f7182007f380f53fa 100644
+--- a/dist/shared/better-auth.CWwVo_61.mjs
++++ b/dist/shared/better-auth.CWwVo_61.mjs
+@@ -1970,6 +1970,7 @@ const callbackOAuth = createAuthEndpoint(
+     } catch {
+       toRedirectTo = result.isRegister ? newUserURL || callbackURL : callbackURL;
+     }
++    console.log("OAuth Redirect", toRedirectTo)
+     throw c.redirect(toRedirectTo);
+   }
+ );
+diff --git a/dist/shared/better-auth.Dg0siV5C.cjs b/dist/shared/better-auth.Dg0siV5C.cjs
+index 429b9e67fd2f141fc634e8578779d461ca4677a6..d465128ab21b8dfe46b874e5abfc71d9642722a7 100644
+--- a/dist/shared/better-auth.Dg0siV5C.cjs
++++ b/dist/shared/better-auth.Dg0siV5C.cjs
+@@ -1972,6 +1972,7 @@ const callbackOAuth = createAuthEndpoint(
+     } catch {
+       toRedirectTo = result.isRegister ? newUserURL || callbackURL : callbackURL;
+     }
++    console.log("OAuth redirectTo", toRedirectTo)
+     throw c.redirect(toRedirectTo);
+   }
+ );
+diff --git a/dist/shared/better-auth.VTXNLFMT.mjs b/dist/shared/better-auth.VTXNLFMT.mjs
+index be78b5cd57df8151d3bfed47f16145fada592bb0..2a385abff0f470d9ed0dde312b34f8bb96ddde89 100644
+--- a/dist/shared/better-auth.VTXNLFMT.mjs
++++ b/dist/shared/better-auth.VTXNLFMT.mjs
+@@ -32,6 +32,22 @@ function getBaseURL(url, path, request) {
+   if (fromRequest && fromRequestProto) {
+     return withPath(`${fromRequestProto}://${fromRequest}`, path);
+   }
++
++  const fromOrigin = request?.headers.get("origin");
++  if(fromOrigin) {
++    const url = getOrigin(fromOrigin);
++    if(url) {
++      return withPath(url, path);
++    }
++  }
++
++  const fromReferer = request?.headers.get("referer");
++  if(fromReferer) {
++    const url = getOrigin(fromReferer);
++    if(url) {
++      return withPath(url, path);
++    }
++  }
+   if (request) {
+     const url2 = getOrigin(request.url);
+     if (!url2) {

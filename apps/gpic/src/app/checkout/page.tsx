@@ -2,10 +2,11 @@
 import { usePaddleCheckout } from "@/hooks/use-paddle-checkout";
 import { useSession } from "@/lib/auth";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import {Suspense, useEffect } from "react";
 import { toast } from "sonner";
 
-export default function Page() {
+
+function Page() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const {data: session} = useSession();
@@ -36,4 +37,10 @@ export default function Page() {
         router.push('/');
       }, [paddle?.Checkout, searchParams,session]);
     return <p>Preparing checkout...</p>
+}
+
+export default function P() {
+  return <Suspense fallback={<div>Loading...</div>}>
+    <Page/>
+  </Suspense>
 }

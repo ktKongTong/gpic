@@ -1,8 +1,4 @@
-import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 
-initOpenNextCloudflareForDev().then(() => {
-    console.log("Cloudflare loaded");
-})
 
 const nextConfig = {
     images: {
@@ -30,3 +26,15 @@ const nextConfig = {
 
 
 export default nextConfig;
+
+
+const loadCFEnv = async () => {
+  const {initOpenNextCloudflareForDev } = await import("@opennextjs/cloudflare")
+    initOpenNextCloudflareForDev().then(() => {
+        console.log("Cloudflare loaded");
+    })
+}
+
+loadCFEnv().catch(e => {
+    console.log(e)
+})
