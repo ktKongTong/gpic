@@ -19,10 +19,10 @@ export default function Page() {
 
   return <>
     <div className={'flex justify-between items-center mb-2 w-full'}>
-      <Label>APIKey</Label>
+      <Label className={'text-3xl'}>APIKey</Label>
       <APIKeyForm/>
     </div>
-    <Table className="p-2 rounded-lg bg-black/30">
+    <Table className="p-2 rounded-lg ">
   <TableHeader className="sticky backdrop-blur-md top-0 rounded-t-lg overflow-hidden">
     <TableRow>
       <TableHead className="w-[100px] text-ellipsis">Name</TableHead>

@@ -18,7 +18,7 @@ import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {queryKeys} from "@/lib/query";
 import { GitHubIcon } from "./icons/github";
 import { GoogleIcon } from "./icons/google";
-
+import {useSearchParams} from 'next/navigation'
 const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL
 
 export default function UserProfile() {
@@ -26,6 +26,8 @@ export default function UserProfile() {
   const loggedIn = !!session
   const queryClient = useQueryClient()
 
+  const searchParams = useSearchParams()
+  const open = !loggedIn && !!searchParams.get('sign-in')
   const signinMutation = useMutation({
     mutationFn: async (provider: "github" | "google") => {
       // if(provider === "anonymous") {
@@ -58,9 +60,6 @@ export default function UserProfile() {
           </DropdownMenuTrigger>
           <DropdownMenuContent className={'items-center border-none'}>
               <DropdownMenuItem asChild>
-                  <Link href={'/user/me'}>Profile</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
                   <Link href={`mailto:${ADMIN_EMAIL}`} className={'w-full'}>Contact</Link>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={async () => {
@@ -74,7 +73,7 @@ export default function UserProfile() {
       }
       {
         !loggedIn &&
-        <Dialog>
+        <Dialog defaultOpen={open}>
           <DialogTrigger>
             <>
               <div className={'inline-flex justify-center items-center gap-2 w-8 h-8 bg-gray-400/40 rounded-full'}>

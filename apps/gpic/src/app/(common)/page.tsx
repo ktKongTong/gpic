@@ -1,4 +1,4 @@
-import Form from "./form";
+import Form from "../form";
 import Gallery from "@/components/gallery";
 import FAQ from "@/components/FAQ";
 import React from "react";
@@ -8,12 +8,12 @@ import { Sparkles } from "lucide-react";
 import {FileCtxProvider} from "@/hooks/use-file-upload";
 
 const beauty = localFont({
-  src: './fonts/Pacifico-Regular.ttf',
+  src: '../fonts/Pacifico-Regular.ttf',
   display: 'swap',
 })
 
 const handwrite = localFont({
-  src: './fonts/FirstTimeWriting.woff2',
+  src: '../fonts/FirstTimeWriting.woff2',
   display: 'swap',
 })
 

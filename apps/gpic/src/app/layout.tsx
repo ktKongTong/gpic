@@ -5,7 +5,6 @@ import "./globals.css";
 import {Toaster} from "sonner";
 import Providers from "@/components/providers";
 import React from "react";
-import Header from "./header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,10 +38,7 @@ export default function RootLayout(
       <div className={'mx-auto h-full min-h-screen flex flex-col w-full items-center backdrop-blur-xl relative'}>
         <div className={'w-full h-full absolute blur-sm -z-10'}>
         </div>
-        <Header/>
-        <div className=" grow w-full h-full mx-auto  max-w-4xl z-10">
-          {children}
-        </div>
+        {children}
       </div>
       {modal}
       <Toaster />

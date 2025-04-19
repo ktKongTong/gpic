@@ -62,12 +62,15 @@ const TaskComponent = ({task}:{task: Task}) => {
 export default function Page() {
   const {tasks} = useTasks();
   return <>
-    <div className={'p-2 pb-4 sm:px-4 md:px-10 w-full grow relative'}>
-      <div className={'text-2xl font-bold my-4'}>Tasks</div>
-      <div className={'grid gap-2 w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 items-center justify-items-center grow p-2'}>
-        {tasks.map((task) => <TaskComponent key={task.id} task={task}/>)}
-      </div>
+    <div className={'text-2xl font-bold'}>Tasks</div>
+    <div
+      className={'grid gap-2 w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 items-center justify-items-center grow p-2'}
+    >
+      {tasks.map((task) => <TaskComponent key={task.id} task={task}/>)}
     </div>
+    {/*<div className={'p-2 pb-4 sm:px-4 md:px-10 w-full grow relative'}>*/}
+
+    {/*</div>*/}
 
   </>
 }

@@ -27,13 +27,13 @@ function useSticky() {
 const Header: React.FC = () => {
 
   const {ref:stickyRef, isSticky} = useSticky()
-
+  // const =
   return (
     <header
       ref={stickyRef}
       className={cn(
-      'flex mx-auto w-full transition mt-1 sticky top-0 z-20',
-      isSticky && "bg-white/20 glass-container backdrop-blur-3xl"
+      'flex mx-auto w-full transition mt-1 sticky top-0 border-b border-white/30 z-20',
+      isSticky && "bg-white/5 border-b border-white/30 backdrop-blur-3xl"
     )}>
     <div
             className={
@@ -45,12 +45,15 @@ const Header: React.FC = () => {
         GPIC
       </div>
       <div className={'flex items-center gap-4'}>
-        <nav className="flex gap-8 items-center">
+        <nav className="flex gap-4 items-center">
           <Link href={'/'} className={"transition-colors"}>
             Home
           </Link>
-          <Link href={'/task'} className={"transition-colors"}>
-            Task
+          <Link href={'/dashboard/task'} className={"transition-colors"}>
+            Dashboard
+          </Link>
+          <Link href={'/pricing'} className={"transition-colors"}>
+            Pricing
           </Link>
         </nav>
         <UserProfile/>

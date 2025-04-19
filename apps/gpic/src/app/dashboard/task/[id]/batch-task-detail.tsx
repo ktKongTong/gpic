@@ -6,11 +6,11 @@ import {taskStatus} from "@repo/service/shared";
 import {Calendar, Clock7, Ellipsis} from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import TaskItem from "@/app/task/task-item";
+import TaskItem from "@/app/dashboard/task/task-item";
 import {useMutation} from "@tanstack/react-query";
 import {mutationKeys} from "@/lib/query";
-import {useDuration} from "@/app/task/[id]/duration";
-import {ProgressBar} from "@/app/task/[id]/progressbar";
+import {useDuration} from "@/app/dashboard/task/[id]/duration";
+import {ProgressBar} from "@/app/dashboard/task/[id]/progressbar";
 
 
 type BatchImageTaskDetailProps = {

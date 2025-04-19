@@ -5,7 +5,7 @@ import {Button} from "@/components/ui/button";
 import {Coins, Ellipsis, Layers, Menu, Minus, Pencil, Plus} from "lucide-react";
 import {cn} from "@/lib/utils";
 import {Label} from "@/components/ui/label";
-import React, {use, useState} from "react";
+import React, {use, useEffect, useState} from "react";
 import {useStyles} from "@/hooks/use-styles";
 import Style, {StyleForm} from "./style";
 import {useFiles} from "@/hooks/use-file-upload";
@@ -17,6 +17,7 @@ import {useMutation} from "@tanstack/react-query";
 import {mutationKeys, queryClient, queryKeys, TaskCreateV2} from "@/lib/query";
 import {useBalance} from "@/hooks/use-balance";
 import {toast} from "sonner";
+import { PendableButton } from "@/components/pendable-button";
 
 type Size = 'auto' | '1x1' | '3x2' | '2x3'
 // local style id
@@ -38,6 +39,7 @@ const useTaskForm = () => {
   })
   const {styles, isLoading: isStyleLoading, selectedStyleIds, toggleStyle} = useStyles()
   const checkStyleSelected = (id: string) => {
+    console.log("selectedStyleIds", selectedStyleIds)
     return selectedStyleIds.includes(id)
   }
   const {mutate: generateTask } = useMutation<unknown, unknown,TaskCreateV2>({
@@ -56,8 +58,20 @@ const useTaskForm = () => {
     form.setValue('size', size)
   }
   const toggleBatch = () => {
-    form.setValue('batch', !batch)
+    if(selectedStyleIds.length > 1 && batch) {
+      toast.error('multi-style must be batch mode')
+    }else {
+
+      form.setValue('batch', !batch)
+    }
   }
+
+  useEffect(() => {
+    if(selectedStyleIds.length > 1 && !batch) {
+      form.setValue('batch', true)
+    }
+  }, [selectedStyleIds])
+
   const addCount = () => {
     if(count < 10) {
       form.setValue('count', count+1)
@@ -189,17 +203,18 @@ export default function Form() {
           variant={'secondary'}
           className={cn(
             'inline-flex items-center justify-center gap-1 rounded-full p-2 px-3 border border-white/30',
-            'data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground'
+            'data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground',
+            'bg-white/5 backdrop-blur-md border border-white/20',
             )}
-
+            
           data-selected={value.batch}
           onClick={() => toggleBatch()}
         >
           <Layers className={'w-4 h-4'}/>
           <Label htmlFor={'batch'} className={'hidden md:inline'}>{t('pages.home.button.batch')}</Label>
         </Button>
-        <Button
-          disabled={submitting}
+        <PendableButton
+          pending={submitting}
           variant='default'
           className=" inline-flex border border-white/30 backdrop-blur-xl items-center justify-center gap-1 rounded-full p-2"
           onClick={() => onSubmit()}
@@ -211,7 +226,7 @@ export default function Form() {
               </>: <Ellipsis className="h-4 w-4"/>
 
           }
-        </Button>
+        </PendableButton>
       </div>
     </div>
   </div>)
@@ -219,7 +234,7 @@ export default function Form() {
 
 }
 function StyleSkeleton() {
-  return <Skeleton className={'w-20 h-8 rounded-full backdrop-blur-xs bg-lime-50/40'}/>
+  return <Skeleton className={'w-14 h-6 rounded-full backdrop-blur-xs bg-lime-50/40'}/>
 }
 
 
@@ -237,7 +252,7 @@ function RatioOption({onChange, size}: RatioOptionProps) {
       ' data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground bg-secondary text-secondary-foreground',
     )
 
-  return <div className={'flex items-center gap-2 *:px-2 *:border *:border-white/30  *:backdrop-blur-sm'}>
+  return <div className={'flex items-center text-sm gap-2 *:px-2 *:py-0.5 *:border *:border-white/30  *:backdrop-blur-md  *:bg-white/5'}>
     <div
       onClick={() => {onChange('auto')}}
       data-selected={size === 'auto'}

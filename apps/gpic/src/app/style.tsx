@@ -9,7 +9,7 @@ import {Button} from "@/components/ui/button";
 import * as React from "react";
 import {friendlyWords} from "friendlier-words";
 import {FileCtxProvider, useFiles} from "@/hooks/use-file-upload";
-import {useRef, useState} from "react";
+import { useState } from "react";
 import {ImagePreview, useFileUploader} from "./upload";
 import {useStyleAction} from "@/hooks/use-styles";
 import { Textarea } from "@/components/ui/textarea";
@@ -57,9 +57,10 @@ export default function Style({styleInfo,className, ...rest}: StyleProps) {
   const {removeLocalStyle} = useStyleAction()
   return <div className={cn(
     'data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground',
-    'bg-secondary text-secondary-foreground backdrop-blur-2xl',
+    'bg-secondary text-secondary-foreground',
     'border border-white/30',
-    'inline-flex gap-1 select-none  cursor-default items-center px-2 py-0.5 rounded-full',
+    'backdrop-blur-md  border-white/20 bg-white/5 border',
+    'inline-flex text-sm gap-1 select-none  cursor-default items-center px-2 py-0.5 rounded-full',
     className
   )} {...rest}>
     <span>{styleInfo.style.name}</span>
@@ -109,7 +110,7 @@ function StyleFormInternal() {
   const [open, setOpen] = useState(false)
   return <Popover open={open} onOpenChange={setOpen}>
     <PopoverTrigger><Plus/></PopoverTrigger>
-    <PopoverContent className={'backdrop-blur-sm border-none'}>
+    <PopoverContent className={'backdrop-blur-sm border-none glass-container'}>
       <form onSubmit={form.handleSubmit(onSubmit)} className={'flex flex-col gap-4 items-start justify-end *:w-full'}>
         <Form  {...form}>
           <FormField
@@ -144,7 +145,7 @@ function StyleFormInternal() {
           <FormField
             control={form.control}
             name={'reference'}
-            render={({ field}) => <>
+            render={({ field }) => <>
               <FormItem>
                 <FormLabel>参考图片</FormLabel>
                 <FormControl>

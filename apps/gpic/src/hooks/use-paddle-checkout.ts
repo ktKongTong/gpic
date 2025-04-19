@@ -25,6 +25,20 @@ const priceItems = [
 ]
 
 console.log("priceItems", priceItems)
+// {
+//   id: it.price.id,
+//     paddleId: it.price.id,
+//   credits: it.price.customData!['credit'] as any,
+//   price: `${it.formattedTotals.total}`,
+//   description: it.price.description
+// }
+type Price = {
+  id: string,
+  paddleId: string,
+  credits: any,
+  price: string,
+  description: string
+}
 
 export function usePaddleCheckout() {
   const router = useRouter();
@@ -57,20 +71,21 @@ export function usePaddleCheckout() {
     });    
   }, []);
 
-  const {data: session} = useSession();
+  const { data: session } = useSession();
 
   const { data: prices } = useQuery({
     queryKey: ['paddle', 'price'],
     queryFn: async () => {
       const res= await paddle!.PricePreview({items: priceItems})
       const prices = res.data.details.lineItems
-      return prices.map(it=> ({
-        id: it.price.id,
-        paddleId: it.price.id,
-        credits: it.price.customData!['credit'] as any,
-        price: `${it.formattedTotals.total}`,
-        description: it.price.description
-      }))
+      return [] as Price[]
+      // return prices.map(it=> ({
+      //   id: it.price.id,
+      //   paddleId: it.price.id,
+      //   credits: it.price.customData!['credit'] as any,
+      //   price: `${it.formattedTotals.total}`,
+      //   description: it.price.description
+      // }))
     },
     enabled: !!paddle
   })

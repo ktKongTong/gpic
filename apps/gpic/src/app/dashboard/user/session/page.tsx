@@ -7,6 +7,7 @@ import { Ellipsis, Laptop } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { Label } from "@/components/ui/label";
 export default function Page() {
 
   const {data: sessions} = useQuery({
@@ -17,10 +18,8 @@ export default function Page() {
     }
   })
   return <>
-      <DialogHeader className="items-start">
-      <DialogTitle>Sessions</DialogTitle>
-      <DialogDescription>Manage your active sessions and revoke access.</DialogDescription>
-      </DialogHeader>
+      <Label className={'text-3xl'}>Sessions</Label>
+      <Label className="text-sm text-secondary p-2">Manage your active sessions and revoke access.</Label>
     <div className="flex flex-col gap-2 w-full">
       {
         sessions?.map(session => <SessionItem session={session} key={session.id} />)

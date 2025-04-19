@@ -76,7 +76,11 @@ const useStyleStore = create<StyleStore & StyleAction>((set, get) => ({
       set({ styles: styles, selectedStyles: get().selectedStyles.filter(it => it !== id) })
     },
     toggleStyle: (id: string) => {
+      console.log('toggleStyle', id)
+
       const selected = get().selectedStyles
+      console.log('selected', selected)
+      
       if (selected.includes(id)) {
         set({ selectedStyles: selected.filter(it => it !== id) })
       }else {
@@ -100,8 +104,7 @@ export const useStyles = () => {
   const addLocalStyle =  useStyleStore(state => state.addLocalStyle)
   const removeLocalStyle = useStyleStore(state => state.removeLocalStyle)
   const toggleStyle = useStyleStore(state => state.toggleStyle)
-  const selectedStyleIds = [] as string[]
-  useStyleStore(state => state.selectedStyles)
+  const selectedStyleIds = useStyleStore(state => state.selectedStyles)
   const stylesMap = useStyleStore(state => state.styles)
   const styles = Object.values(stylesMap)
   const {data, isLoading, isSuccess} = useQuery({
@@ -109,7 +112,6 @@ export const useStyles = () => {
     retry: false,
     queryFn: async () => {
       const res = await api.getStyles()
-
       return res
     }
   })

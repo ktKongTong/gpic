@@ -20,6 +20,8 @@ import { useState } from "react"
 import { toast } from "sonner"
 import { useBalance } from "@/hooks/use-balance"
 import { Recharge } from "./recharge"
+import { Label } from "@/components/ui/label"
+import {Coins} from "lucide-react";
 
 type Order = {
   id: string
@@ -77,21 +79,29 @@ export default function Page() {
 
 
     return <>
-      <DialogHeader>
-        <DialogTitle>Credit</DialogTitle>
-      <DialogDescription>Add credit and check orders</DialogDescription>
-      </DialogHeader>
+
+      <div className={'flex justify-between items-center'}>
+        <div>
+          <Label className={'text-3xl font-bold'}>Credit</Label>
+          <Label className={'text-sm'}>Add credit and check orders</Label>
+        </div>
+        <span className={'inline-flex gap-2 text-xl '}>
+          <Coins/>
+            {isBalancePending ? (
+              <Skeleton className="h-7 w-2" />
+            ) : (
+              <span className="text-xl font-bold">{balance ?? 0}</span>
+            )}
+          Credits
+        </span>
+      </div>
+
 
       <div className="flex flex-col gap-4 mt-2 w-full h-fit overflow-y-scroll relative">
-        {isBalancePending ? (
-            <Skeleton className="h-7 w-20" />
-          ) : (
-            <span className="text-xl font-bold">{balance ?? 0} Credits</span>
-          )}
 
-        {/* Redeem Code Section */}
         <div className="w-full">
             <h3 className="text-xl font-semibold mb-2">Redeem Code</h3>
+          <div className={'text-secondary-foreground text-xs mb-2'}>concat to get a redeem code before payment method prepared</div>
             <form onSubmit={handleRedeemSubmit} className="flex gap-2">
                 <Input
                     type="text"
@@ -99,7 +109,7 @@ export default function Page() {
                     value={redeemCode}
                     onChange={(e) => setRedeemCode(e.target.value)}
                     disabled={redeemMutation.isPending}
-                    className="flex-grow"
+                    className="flex-grow  placeholder:text-secondary-foreground"
                 />
                 <Button type="submit" disabled={redeemMutation.isPending}>
                     {redeemMutation.isPending ? 'Redeeming...' : 'Redeem'}
@@ -138,7 +148,7 @@ export default function Page() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={4} className="text-center h-24 text-muted-foreground">
+                <TableCell colSpan={4} className="text-center h-24 text-secondary-foreground">
                   No transactions found.
                 </TableCell>
               </TableRow>
@@ -160,18 +170,18 @@ function OrderRow({ order }: OrderRowProps) {
             <TableCell className={`font-medium ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
                 {isPositive ? `+${order.amount}` : order.amount}
             </TableCell>
-            <TableCell className="text-sm text-muted-foreground">{formatDate(order.createdAt)}</TableCell>
+            <TableCell className="text-sm text-secondary-foreground">{formatDate(order.createdAt)}</TableCell>
             <TableCell>
                 {order.taskId ? (
                 <Link href={`/task/${order.taskId}`} className="text-blue-600 hover:underline text-xs font-mono" target="_blank" rel="noopener noreferrer">
                     {order.taskId.substring(0, 8)}...
                 </Link>
                 ) : (
-                <span className="text-muted-foreground">-</span>
+                <span className="text-secondary-foreground">-</span>
                 )}
             </TableCell>
             <TableCell className="text-sm text-ellipsis line-clamp-1 max-w-30">
-            {order.msg ?? <span className="text-muted-foreground">-</span>}
+            {order.msg ?? <span className="text-secondary-foreground">-</span>}
 
             </TableCell>
         </TableRow>

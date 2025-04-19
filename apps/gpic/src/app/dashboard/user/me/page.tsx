@@ -77,7 +77,7 @@ export default function Page() {
 
   return <div className="flex flex-col overflow-y-scroll w-full gap-2">
     <div className="flex w-full justify-between">
-      <Label className="text-2xl">👋 Hi, {session?.user?.name}</Label>      
+      <Label className="text-3xl">👋 Hi, {session?.user?.name}</Label>
       <Avatar className="size-12">
         <AvatarImage src={session?.user?.image!} className=""/>
         <AvatarFallback>{session?.user?.name?.[0]}</AvatarFallback>

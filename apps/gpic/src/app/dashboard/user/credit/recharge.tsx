@@ -6,12 +6,13 @@ import { useRouter } from 'next/navigation';
 export const Recharge = () => {
   const router = useRouter()
   const { paddle, isLoading, handleCheckout, prices } = usePaddleCheckout();
-
-
+  // const prices = [] as any
+  // const isLoading = true
+  const paddleOk = false
 
   return (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {prices?.map((option) => (
+        { paddleOk && prices?.map((option) => (
           <div key={option.id} className='border rounded-xl p-2 space-y-2'>
             <Label className='text-xl'>{option.credits} Credits</Label>
             <div className='flex w-full items-center justify-between'>
@@ -19,8 +20,6 @@ export const Recharge = () => {
             <PendableButton
                 pending={isLoading}
                 onClick={() => {
-                  // close user panal dialog which may affect paddle overlay component.
-                  router.back()
                   handleCheckout(option.paddleId)
                 }}
                 disabled={isLoading}
@@ -31,6 +30,11 @@ export const Recharge = () => {
 
           </div>
         ))}
+        {
+          !paddleOk && <div className={'text-xl flex justify-center items-center w-full min-h-32'}>
+                Coming Soon
+            </div>
+        }
       </div>
   );
 };

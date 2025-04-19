@@ -12,7 +12,7 @@ import {Carousel, CarouselContent, CarouselItem} from "@/components/ui/carousel"
 import {useMutation} from "@tanstack/react-query";
 import { mutationKeys } from "@/lib/query";
 import {useDuration} from "./duration";
-import Style from "@/app/task/[id]/style";
+import Style from "@/app/dashboard/task/[id]/style";
 
 type ImageGenTaskDetailProps = {
   task: ImageTask;
