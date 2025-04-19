@@ -1,9 +1,10 @@
 'use client'
-import React, {useEffect, useRef, useState} from 'react';
+import React, {Suspense, useEffect, useRef, useState} from 'react';
 import Link from "next/link";
 import UserProfile from "@/components/sign";
 import {cn} from "@/lib/utils";
 import {SidebarTrigger} from "@/components/ui/sidebar";
+import {User} from "lucide-react";
 function useSticky() {
   const ref = useRef<HTMLDivElement>(null)
 
@@ -53,7 +54,13 @@ const Header: React.FC = () => {
               Pricing
             </Link>
           </nav>
-          <UserProfile/>
+          <Suspense fallback={<>
+            <div className={'inline-flex justify-center items-center gap-2 w-8 h-8 bg-gray-400/40 rounded-full'}>
+              <User className={'size-6'}/>
+            </div>
+          </>}>
+            <UserProfile/>
+          </Suspense>
           <div>
           </div>
         </div>

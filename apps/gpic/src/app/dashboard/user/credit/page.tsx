@@ -1,5 +1,4 @@
 'use client'
-import { DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { api } from "@/lib/api"
 import { queryKeys } from "@/lib/query"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
@@ -13,15 +12,16 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Skeleton } from "@/components/ui/skeleton"
-import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useState } from "react"
+import {Suspense, useState} from "react"
 import { toast } from "sonner"
 import { useBalance } from "@/hooks/use-balance"
 import { Recharge } from "./recharge"
 import { Label } from "@/components/ui/label"
 import {Coins} from "lucide-react";
+import {OrderRow} from "./order-row";
+
 
 type Order = {
   id: string
@@ -30,16 +30,6 @@ type Order = {
   updatedAt: string
   taskId?: string
   msg?: string
-}
-
-const formatDate = (date: string) => {
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
 }
 
 export default function Page() {
@@ -158,33 +148,3 @@ export default function Page() {
       </div>
     </>
   }
-
-interface OrderRowProps {
-    order: Order;
-}
-
-function OrderRow({ order }: OrderRowProps) {
-    const isPositive = order.amount > 0;
-    return (
-        <TableRow>
-            <TableCell className={`font-medium ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
-                {isPositive ? `+${order.amount}` : order.amount}
-            </TableCell>
-            <TableCell className="text-sm text-secondary-foreground">{formatDate(order.createdAt)}</TableCell>
-            <TableCell>
-                {order.taskId ? (
-                <Link href={`/task/${order.taskId}`} className="text-blue-600 hover:underline text-xs font-mono" target="_blank" rel="noopener noreferrer">
-                    {order.taskId.substring(0, 8)}...
-                </Link>
-                ) : (
-                <span className="text-secondary-foreground">-</span>
-                )}
-            </TableCell>
-            <TableCell className="text-sm text-ellipsis line-clamp-1 max-w-30">
-            {order.msg ?? <span className="text-secondary-foreground">-</span>}
-
-            </TableCell>
-        </TableRow>
-    );
-}
-  

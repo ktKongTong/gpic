@@ -9,6 +9,9 @@ interface PricingTier {
   isPopular?: boolean;
   href: string;
 }
+const PADDLE_PRICE_ID_LEVEL_1 = process.env.NEXT_PUBLIC_PADDLE_PRICE_ID_LEVEL_1 as string
+const PADDLE_PRICE_ID_LEVEL_2 = process.env.NEXT_PUBLIC_PADDLE_PRICE_ID_LEVEL_2 as string
+const PADDLE_PRICE_ID_LEVEL_3 = process.env.NEXT_PUBLIC_PADDLE_PRICE_ID_LEVEL_3 as string
 
 const tiers: PricingTier[] = [
   {
@@ -17,7 +20,7 @@ const tiers: PricingTier[] = [
     credits: '10 credits',
     features: ['10 积分', '有限质量', '无水印', '积分永不过期'],
     buttonText: '免费试用',
-    href: '/signup',
+    href: '/',
   },
   {
     name: 'Pay as you go',
@@ -34,7 +37,7 @@ const tiers: PricingTier[] = [
     ],
     buttonText: '立即购买',
     isPopular: true,
-    href: '/buy?plan=10',
+    href: `/buy?priceId=${PADDLE_PRICE_ID_LEVEL_1}`,
   },
   {
     name: 'Pay as you go',
@@ -50,7 +53,7 @@ const tiers: PricingTier[] = [
       '24/7客户支持',
     ],
     buttonText: '立即购买',
-    href: '/buy?plan=20',
+    href: `/buy?priceId=${PADDLE_PRICE_ID_LEVEL_2}`,
   },
 ];
 

@@ -25,9 +25,9 @@ export default function UserProfile() {
   const { data: session, isPending } = useSession()
   const loggedIn = !!session
   const queryClient = useQueryClient()
-
   const searchParams = useSearchParams()
   const open = !loggedIn && !!searchParams.get('sign-in')
+  // const open = false
   const signinMutation = useMutation({
     mutationFn: async (provider: "github" | "google") => {
       // if(provider === "anonymous") {

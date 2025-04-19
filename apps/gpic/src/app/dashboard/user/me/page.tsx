@@ -5,7 +5,7 @@ import {Label} from "@/components/ui/label";
 import { AvatarFallback, AvatarImage,Avatar } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import React, { useEffect } from "react";
+import React, {Suspense, useEffect} from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";

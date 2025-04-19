@@ -5,6 +5,7 @@ import {Label} from "@/components/ui/label";
 import { APIKeyForm } from "./form";
 import { APIKeyItem } from "./item";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {Suspense} from "react";
 
 export default function Page() {
 

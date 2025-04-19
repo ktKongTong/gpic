@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
+import {Suspense} from "react";
+
 export default function Page() {
 
   const {data: sessions} = useQuery({

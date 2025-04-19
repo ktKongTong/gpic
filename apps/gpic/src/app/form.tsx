@@ -39,7 +39,6 @@ const useTaskForm = () => {
   })
   const {styles, isLoading: isStyleLoading, selectedStyleIds, toggleStyle} = useStyles()
   const checkStyleSelected = (id: string) => {
-    console.log("selectedStyleIds", selectedStyleIds)
     return selectedStyleIds.includes(id)
   }
   const {mutate: generateTask } = useMutation<unknown, unknown,TaskCreateV2>({
@@ -61,7 +60,6 @@ const useTaskForm = () => {
     if(selectedStyleIds.length > 1 && batch) {
       toast.error('multi-style must be batch mode')
     }else {
-
       form.setValue('batch', !batch)
     }
   }

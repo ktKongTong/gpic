@@ -1,7 +1,8 @@
 'use client'
-import React from 'react';
+import React, {Suspense} from 'react';
 import Link from "next/link";
 import UserProfile from "@/components/sign";
+import {User} from "lucide-react";
 
 const Header: React.FC = () => {
   const scrollToSection = (id: string) => {
@@ -33,7 +34,13 @@ const Header: React.FC = () => {
           FAQ
         </button>
       </nav>
-      <UserProfile/>
+      <Suspense fallback={<>
+        <div className={'inline-flex justify-center items-center gap-2 w-8 h-8 bg-gray-400/40 rounded-full'}>
+          <User className={'size-6'}/>
+        </div>
+      </>}>
+        <UserProfile/>
+      </Suspense>
     </header>
   );
 };
