@@ -60,7 +60,7 @@ class API {
   constructor() {}
 
   getStyles() {
-    return fetchIns<PresetStyle[]>('/api/style')
+    return fetchIns<PresetStyle[]>('/api/v1/style')
   }
 
   getTasks() {
