@@ -52,7 +52,7 @@ export class BalanceDAO {
       if(!res) {
         throw new DBError("code not found or has been used")
       }
-    const id = typeid('order_').toString()
+    const id = typeid('ord').toString()
     const [[order]] = await this.db.batch([
       this.db.insert(table.order).values({
         id,
