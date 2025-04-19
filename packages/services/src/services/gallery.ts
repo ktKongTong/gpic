@@ -39,7 +39,7 @@ export class GalleryService {
     return gallery;
   }
 
-  async getLatestGalleries(count: number = 10) {
+  async getLatestGalleries(count: number = 20) {
     return await this.dao.gallery.listGalleries(count, 0);
   }
 }

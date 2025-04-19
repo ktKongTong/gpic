@@ -66,7 +66,7 @@ export class BalanceDAO {
       // may fail
       this.db.update(table.credit).set({
         balance: sql`${table.credit.balance} + ${res.amount}`
-      }).where(eq(table.user.id, userId))
+      }).where(eq(table.credit.userId, userId))
     ])
     return order
   }
