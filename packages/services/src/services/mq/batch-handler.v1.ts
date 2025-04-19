@@ -46,7 +46,7 @@ export class BatchHandlerV1 {
     await taskDO.onTaskEvent({ taskId: task.id, event: eventType.BATCH_RETRY_FAILED, payload: res})
     const tasks = await this.services.taskService.getChildrenByTaskId(task.parentId!)
     const failedTasks = tasks.filter(it =>
-      it.status === taskStatus.FAILED || (failOnly && it.status === taskStatus.SUCCESS)
+      it.status === taskStatus.FAILED || (!failOnly && it.status === taskStatus.SUCCESS)
     )
     const taskIds = failedTasks.map(it => it.id)
     if(taskIds.length > 0) {

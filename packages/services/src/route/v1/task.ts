@@ -18,13 +18,10 @@ app.get('/', async (c) => {
 
 app.patch('/:taskid/retry', async (c) => {
   const taskId = c.req.param('taskid')
-  const failOnly = Boolean(c.req.query('failOnly'))
+  const failOnly = !Boolean(c.req.query('all'))
   const  {mqService, taskService, userService } = getService(c)
   const user = await userService.getCurrentUser()
-  const uid = user?.id
-  if(!uid) {
-    throw new UnauthorizedError()
-  }
+  const uid = user!.id
   let task = await taskService.getTaskByIdAndUserId(taskId, uid, false)
   if(!task) {
     throw new NotFoundError()
@@ -56,10 +53,7 @@ app.get('/:taskid/ws', async (c) => {
   }
   const  { taskService, userService} = getService(c)
   const user = await userService.getCurrentUser()
-  const uid = user?.id
-  if(!uid) {
-    throw new UnauthorizedError()
-  }
+  const uid = user!.id
   let task = await taskService.getTaskByIdAndUserId(taskId, uid, false)
 
   if(!task) {
