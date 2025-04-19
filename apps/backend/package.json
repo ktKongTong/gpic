@@ -18,7 +18,7 @@
     "d1:mi:apply:remote:prod": "wrangler d1 migrations apply gpic --remote",
     "dev": "wrangler dev",
     "deploy:preview": "wrangler deploy -e preview",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy -e production"
   },
   "dependencies": {
     "@repo/service": "workspace:*"
