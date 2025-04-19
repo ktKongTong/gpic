@@ -33,7 +33,7 @@ export function OrderRow({ order }: OrderRowProps) {
       <TableCell className="text-sm text-secondary-foreground">{formatDate(order.createdAt)}</TableCell>
       <TableCell>
         {order.taskId ? (
-          <Link href={`/task/${order.taskId}`} className="text-blue-600 hover:underline text-xs font-mono" target="_blank" rel="noopener noreferrer">
+          <Link href={`/dashboard/task/${order.taskId}`} className="text-blue-600 hover:underline text-xs font-mono" target="_blank" rel="noopener noreferrer">
             {order.taskId.substring(0, 8)}...
           </Link>
         ) : (

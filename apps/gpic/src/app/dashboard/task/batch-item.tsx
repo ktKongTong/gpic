@@ -107,7 +107,7 @@ const TaskItem: React.FC<BatchTaskItemProps> = ({ task, onClick, result, classNa
           <span>{relativeDate(task.createdAt)}</span>
           <div className={'w-fit flex items-center'}>
             <Button variant={'link'} size={'sm'} className={'text-white'}>
-              <Link href={`/task/${task.id}`}>查看详情</Link>
+              <Link href={`/dashboard/task/${task.id}`}>查看详情</Link>
             </Button>
           </div>
         </div>

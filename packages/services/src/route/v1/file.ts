@@ -31,8 +31,8 @@ every(
     endTime(c, 'receive');
     startTime(c, 'digest');
     // https://developers.cloudflare.com/workers/runtime-apis/web-crypto/#footnote-3
-    // const digest = await crypto.subtle.digest({name: 'MD5',}, bytes);
-    const digest = await crypto.subtle.digest({name: 'SHA-1',}, bytes);
+    const digest = await crypto.subtle.digest({name: 'MD5',}, bytes);
+    // const digest = await crypto.subtle.digest({name: 'SHA-1',}, bytes);
 
     const key = getKey(digest)
     endTime(c, 'digest');

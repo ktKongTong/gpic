@@ -36,7 +36,7 @@ export const useTask = (taskId: string) => {
     console.log("refCurrent", wsRef.current)
     const isChild = !!task.parentTaskId
     const id = task?.parentTaskId ?? task.id
-    const ws = new WebSocket(`${WS_URL}/api/task/${id}/ws`)
+    const ws = new WebSocket(`${WS_URL}/api/v1/task/${id}/ws`)
     wsRef.current = ws
     ws.onmessage = (e) => {
       const data = JSON.parse(e.data)
