@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-
+@plugin "@tailwindcss/typography";
 @layer utilities {
 
   .overflow-inherit{
@@ -34,26 +34,19 @@
 
 @custom-variant dark (&:is(.dark *));
 @custom-variant hover {
-  /* If the browser supports the hover event, apply the specified classes on the :hover event */
   @media (hover: hover) {
     &:hover {
       @slot;
     }
   }
 
-  /* If hover is not supported, apply the styling immediately */
-  /*
-    NOTE: This can be omitted if you don't want the hover to apply on mobile.
-          If you add this, the hover design will be displayed by default on mobile.
-          If use this, considering the example, the text will be underlined by default on a touchscreen.
-  */
   @media not all and (hover: hover) {
     & {
       @slot;
     }
   }
 }
-/*picAI.style*/
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -200,7 +193,6 @@
 
 .bg-ghibli-background {
   background-image: url('/bg.png');
-  /*background-image: url("https://media-public.canva.cn/MAC92qLGWMo/1/screen.png");*/
   /*background-size: cover;*/
   background-position: center;
   background-attachment: fixed;

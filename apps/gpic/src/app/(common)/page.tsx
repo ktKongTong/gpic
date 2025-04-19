@@ -1,4 +1,4 @@
-import Form from "../form";
+import Form from "./form";
 import Gallery from "@/components/gallery";
 import FAQ from "@/components/FAQ";
 import React from "react";

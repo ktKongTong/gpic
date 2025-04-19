@@ -12,6 +12,7 @@
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
+    "@tailwindcss/typography": "^0.5.16",
     "@daveyplate/better-auth-ui": "1.4.1",
     "@hookform/resolvers": "^4.1.3",
     "@ktfun/sts-i18n-react": "^0.2.2",

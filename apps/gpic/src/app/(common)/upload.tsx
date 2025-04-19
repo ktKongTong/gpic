@@ -17,13 +17,14 @@ export const ImagePreview = ({
   const { uploadFile, removeFile } = useFiles()
   return <div className={'h-20 w-20 rounded-lg relative'} onClick={(e) => {e.stopPropagation()}}>
     {
-      (file.preview || file.url) ? <img
-        src={file.preview || file.url}
-        alt="Preview"
-        className="h-20 w-20 object-contain rounded-lg  bg-card/40"
-      /> : (
-        <div className={'max-h-full max-w-full object-contain rounded-lg bg-card/40'}></div>
-      )
+      (file.preview || file.url) ?
+        <img
+          src={file.preview || file.url}
+          alt="Preview"
+          className="h-20 w-20 object-contain rounded-lg  bg-card/40"
+        /> : (
+          <div className={'max-h-full max-w-full object-contain rounded-lg bg-card/40'}></div>
+        )
     }
     {
       file.state === 'UPLOADING' && <div className={'absolute inset-0 bg-black/30 rounded-lg flex items-center justify-center'}>

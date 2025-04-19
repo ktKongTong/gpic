@@ -7,7 +7,7 @@ import {taskStatus, taskType} from "@repo/service/shared";
 import {Calendar, Clock7, Ellipsis, LucideMenu} from "lucide-react";
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
 import {Button} from "@/components/ui/button";
-import Markdown from "react-markdown";
+import Markdown from "@/components/markdown";
 import {Carousel, CarouselContent, CarouselItem} from "@/components/ui/carousel";
 import {useMutation} from "@tanstack/react-query";
 import { mutationKeys } from "@/lib/query";
@@ -109,12 +109,12 @@ export const ImageGenTaskDetail = ({task}: ImageGenTaskDetailProps) => {
           </div>
           { status === taskStatus.PENDING && <>queueing</> }
           { status === taskStatus.PROCESSING && <>
-            <Markdown>{message}</Markdown>
+              <Markdown content={message}/>
           </> }
           { status === taskStatus.FAILED && <div className={'relative overflow-y-auto bg-red-500/30 rounded-lg p-3'}>
               <div className={'text-red-400'}>Error</div>
               <div className={'overflow-auto whitespace-pre-wrap'}>
-                  <Markdown>{current?.state?.message}</Markdown>
+                  <Markdown content={current?.state?.message}/>
               </div>
           </div> }
           {

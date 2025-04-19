@@ -5,7 +5,6 @@ import {every} from 'hono/combine'
 import { startTime, endTime } from 'hono/timing'
 import {getCloudflareEnv} from "../../utils";
 import {authRequire} from "../middlewares/auth";
-import {backendEnv} from "../../libs/env";
 
 const app = new Hono().basePath('/file')
 

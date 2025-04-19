@@ -43,7 +43,6 @@ export default function RootLayout(
       {modal}
       <Toaster />
     </Providers>
-
     </body>
     </html>
   );

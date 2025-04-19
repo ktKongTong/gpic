@@ -15,14 +15,15 @@ export class FileService {
         const R2_URL = env().S3_ENDPOINT
         const bucketName = env().S3_BUCKET
         const env_prefix = env().ENV ?? 'dev'
+        const fileKey = `${env_prefix}/${getDatePrefix()}/${key}`
         const url = (
             await getClient().sign(
-              new Request(`${R2_URL}/${bucketName}/${env_prefix}/${key}?X-Amz-Expires=${1800}`, { method: "PUT" }),
+              new Request(`${R2_URL}/${bucketName}/${fileKey}?X-Amz-Expires=${1800}`, { method: "PUT" }),
               { aws: { signQuery: true,  } },
             )
           ).url.toString()
         return {
-            fileKey: `${env_prefix}/${key}`,
+            fileKey,
             uploadURL: url,
         }
     }
@@ -36,4 +37,10 @@ export class FileService {
         return `${env().S3_UC_ENDPOINT}/${fileKey}`
     }
 
+}
+
+
+const getDatePrefix = () => {
+    const now = new Date()
+    return `${now.getUTCFullYear()}-${now.getUTCMonth()}-${now.getUTCDate()}/${now.getUTCHours()}`
 }

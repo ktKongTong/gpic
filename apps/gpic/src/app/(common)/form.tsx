@@ -19,6 +19,113 @@ import {useBalance} from "@/hooks/use-balance";
 import {toast} from "sonner";
 import { PendableButton } from "@/components/pendable-button";
 
+
+export default function Form() {
+
+  const {balance, isLoading} = useBalance()
+  const {
+    submitting,
+    creditNeed,
+    value,
+    toggleBatch,
+    addCount,
+    minusCount,
+    checkStyleSelected,
+    styles,
+    isStyleLoading,
+    toggleStyle,
+    onSubmit,
+    setSize
+  } = useTaskForm()
+  const {t} = useTrans()
+
+  return (<div className={'h-full flex flex-col gap-4'}>
+<div className={'flex w-full flex-col'}>
+  <div className={'flex w-full justify-between'}>
+    <span className={' font-semibold text-2xl'}>{t('pages.home.label.upload')}</span>
+    <div className={'inline-flex items-center gap-2 bg-black/30 rounded-full px-2'}>
+      <Coins /> {balance}
+    </div>
+  </div>
+  <div className={cn(
+    'text-sm self-end', (balance >= creditNeed) && 'invisible'
+  )}>
+    😵‍💫no enough credit, need {creditNeed}
+  </div>
+</div>
+
+    <FileUploader/>
+    <div className={'font-semibold text-2xl'}>
+      {t('pages.home.label.style')}
+    </div>
+    <ul className={'flex flex-wrap justify-start items-center gap-3'}>
+      {
+        isStyleLoading && Array.from({length: 3}).map((item, i) => <StyleSkeleton key={i}/>)
+      }
+      {
+        !isStyleLoading && styles.map(style => <Style
+          styleInfo={style}
+          data-selected={checkStyleSelected(style.style.id)}
+          onClick={() => {toggleStyle(style.style.id)}}
+          key={style.style.id}
+        />)
+      }
+      <StyleForm/>
+    </ul>
+    <div className={'font-semibold text-2xl'}>
+      {t('pages.home.label.size')}
+    </div>
+    <div className={'flex gap-2 items-center '}>
+      <RatioOption size={value.size} onChange={setSize}/>
+    </div>
+    <div className={'mt-auto w-full flex justify-end'}>
+
+      <div className="flex items-center justify-end w-full gap-2">
+        {
+          value.batch && <div className="flex items-center gap-2">
+                <Button
+                    variant={'secondary'} size={'icon'} disabled={value.count < 2} onClick={() => minusCount()}><Minus/></Button>
+                <span>{value.count}</span>
+                <Button
+                    variant={'secondary'} size={'icon'} disabled={value.count > 9} onClick={() => addCount()}><Plus/></Button>
+            </div>
+        }
+        <Button
+          variant={'secondary'}
+          className={cn(
+            'inline-flex items-center justify-center gap-1 rounded-full p-2 px-3 border border-white/30',
+            'data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground',
+            'bg-white/5 backdrop-blur-md border border-white/20',
+            )}
+            
+          data-selected={value.batch}
+          onClick={() => toggleBatch()}
+        >
+          <Layers className={'w-4 h-4'}/>
+          <Label htmlFor={'batch'} className={'hidden md:inline'}>{t('pages.home.button.batch')}</Label>
+        </Button>
+        <PendableButton
+          pending={submitting}
+          variant='default'
+          className=" inline-flex border border-white/30 backdrop-blur-xl items-center justify-center gap-1 rounded-full p-2"
+          onClick={() => onSubmit()}
+        >
+          {
+            !submitting ?
+              <>
+                  <Pencil className="h-4 w-4" /><span className={'hidden md:inline'}>{t('pages.home.button.draw')}</span>
+              </>: <Ellipsis className="h-4 w-4"/>
+
+          }
+        </PendableButton>
+      </div>
+    </div>
+  </div>)
+
+
+}
+
+
 type Size = 'auto' | '1x1' | '3x2' | '2x3'
 // local style id
 const formSchema = z.object({
@@ -127,110 +234,7 @@ const useTaskForm = () => {
   }
 }
 
-export default function Form() {
 
-  const {balance, isLoading} = useBalance()
-  const {
-    submitting,
-    creditNeed,
-    value,
-    toggleBatch,
-    addCount,
-    minusCount,
-    checkStyleSelected,
-    styles,
-    isStyleLoading,
-    toggleStyle,
-    onSubmit,
-    setSize
-  } = useTaskForm()
-  const {t} = useTrans()
-
-  return (<div className={'h-full flex flex-col gap-4'}>
-<div className={'flex w-full flex-col'}>
-  <div className={'flex w-full justify-between'}>
-    <span className={' font-semibold text-2xl'}>{t('pages.home.label.upload')}</span>
-    <div className={'inline-flex items-center gap-2 bg-black/30 rounded-full px-2'}>
-      <Coins /> {balance}
-    </div>
-  </div>
-  <div className={cn(
-    'text-sm self-end', (balance >= creditNeed) && 'invisible'
-  )}>
-    😵‍💫no enough credit, need {creditNeed}
-  </div>
-</div>
-
-    <FileUploader/>
-    <div className={'font-semibold text-2xl'}>
-      {t('pages.home.label.style')}
-    </div>
-    <ul className={'flex flex-wrap justify-start items-center gap-3'}>
-      {
-        isStyleLoading && Array.from({length: 3}).map((item, i) => <StyleSkeleton key={i}/>)
-      }
-      {
-        !isStyleLoading && styles.map(style => <Style
-          styleInfo={style}
-          data-selected={checkStyleSelected(style.style.id)}
-          onClick={() => {toggleStyle(style.style.id)}}
-          key={style.style.id}
-        />)
-      }
-      <StyleForm/>
-    </ul>
-    <div className={'font-semibold text-2xl'}>
-      {t('pages.home.label.size')}
-    </div>
-    <div className={'flex gap-2 items-center '}>
-      <RatioOption size={value.size} onChange={setSize}/>
-    </div>
-    <div className={'mt-auto w-full flex justify-end'}>
-
-      <div className="flex items-center justify-end w-full gap-2">
-        {
-          value.batch && <div className="flex items-center gap-2">
-                <Button
-                    variant={'secondary'} size={'icon'} disabled={value.count < 2} onClick={() => minusCount()}><Minus/></Button>
-                <span>{value.count}</span>
-                <Button
-                    variant={'secondary'} size={'icon'} disabled={value.count > 9} onClick={() => addCount()}><Plus/></Button>
-            </div>
-        }
-        <Button
-          variant={'secondary'}
-          className={cn(
-            'inline-flex items-center justify-center gap-1 rounded-full p-2 px-3 border border-white/30',
-            'data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground',
-            'bg-white/5 backdrop-blur-md border border-white/20',
-            )}
-            
-          data-selected={value.batch}
-          onClick={() => toggleBatch()}
-        >
-          <Layers className={'w-4 h-4'}/>
-          <Label htmlFor={'batch'} className={'hidden md:inline'}>{t('pages.home.button.batch')}</Label>
-        </Button>
-        <PendableButton
-          pending={submitting}
-          variant='default'
-          className=" inline-flex border border-white/30 backdrop-blur-xl items-center justify-center gap-1 rounded-full p-2"
-          onClick={() => onSubmit()}
-        >
-          {
-            !submitting ?
-              <>
-                  <Pencil className="h-4 w-4" /><span className={'hidden md:inline'}>{t('pages.home.button.draw')}</span>
-              </>: <Ellipsis className="h-4 w-4"/>
-
-          }
-        </PendableButton>
-      </div>
-    </div>
-  </div>)
-
-
-}
 function StyleSkeleton() {
   return <Skeleton className={'w-14 h-6 rounded-full backdrop-blur-xs bg-lime-50/40'}/>
 }
