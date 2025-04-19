@@ -7,6 +7,7 @@ export const backedEnvSchema = z.object({
   S3_ENDPOINT: z.string(),
   S3_UC_ENDPOINT: z.string(),
   S3_BUCKET: z.string(),
+  ENV: z.enum(['prod', 'dev', 'prev']).optional(),
   AI_BASE_URL: z.string(),
   AI_API_KEY: z.string(),
   AI_MODEL_NAME: z.string(),

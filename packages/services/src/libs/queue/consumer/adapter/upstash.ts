@@ -13,7 +13,7 @@ export const upstashAdapter = async <T = any>(
   const isValid = await receiver.verify({
     body: JSON.stringify(body),
     signature,
-    url: `${env.BACKEND_HOST}/api/queue/upstash`,
+    url: `${env.BACKEND_HOST}/api/v1/upstash`,
   })
   if (!isValid) {
     throw new UnauthorizedError("Upstash verify failed.");

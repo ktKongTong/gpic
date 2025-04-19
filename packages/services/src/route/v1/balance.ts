@@ -22,6 +22,7 @@ app.get('/order', authRequire(), async (c) => {
 const pendingOrderSchema = z.object({
   priceId: z.string()
 })
+
 app.post('/order', authRequire(), async (c) => {
   const body = await c.req.json()
   const {priceId} = pendingOrderSchema.parse(body)

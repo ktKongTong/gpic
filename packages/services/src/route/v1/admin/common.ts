@@ -1,13 +1,8 @@
 import {Hono} from "hono";
 import {getService} from "../../middlewares/service-di";
 import {z} from "zod";
-import {authRequire} from "../../middlewares/auth";
 
 const app = new Hono().basePath('/admin')
-
-app.use("/api/v1/admin/*",authRequire({
-  role: "admin"
-}))
 
 const redeemSchema = z.object({
   count: z.coerce.number(),
