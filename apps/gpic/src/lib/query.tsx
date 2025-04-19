@@ -64,7 +64,7 @@ queryClient.setMutationDefaults(mutationKeys.task.generate,{
   onSuccess: async (data) => {
     toast.success('任务已创建', {
       description: (data as any)?.id,
-      action: <Button size={'sm'} variant={'link'} ><Link href={`/task/${data.id}`}>查看详情</Link></Button>
+      action: <Button size={'sm'} variant={'link'} ><Link href={`/dashboard/task/${data.id}`}>查看详情</Link></Button>
     })
     queryClient.invalidateQueries({queryKey:queryKeys.balance})
   },

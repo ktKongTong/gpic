@@ -30,11 +30,6 @@ export default function UserProfile() {
   // const open = false
   const signinMutation = useMutation({
     mutationFn: async (provider: "github" | "google") => {
-      // if(provider === "anonymous") {
-      //   const res = await signIn.anonymous();
-      //   if (res.error) throw res.error;
-      //   return res.data;
-      // }
       const res = await signIn.social({
         provider: provider,
         callbackURL: '/',

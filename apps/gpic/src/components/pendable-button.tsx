@@ -14,6 +14,6 @@ export  const PendableButton = ({pending, children, className, ...rest}: Pendabl
     {...rest}    
     >
       {!pending && children}
-      { pending && <Ellipsis className="ml-2" /> }
+      { pending && <Ellipsis /> }
     </Button>
   }

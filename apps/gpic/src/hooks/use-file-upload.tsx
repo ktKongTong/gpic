@@ -1,19 +1,6 @@
 'use client'
 import React, {useState} from "react";
 
-const upload = async (f: File) => {
-  const formData = new FormData()
-  formData.append('file', f)
-  const res = await fetch('/api/file/upload', { method: 'PUT', body: formData })
-  const data = await res.json()
-  if(!res.ok) {
-    throw new Error('Failed to upload file')
-  }
-  // @ts-ignore
-  const fileKey = data.url
-  return fileKey as string
-}
-
 export type UploadFile = {
   state: 'UPLOADED' | 'LOCAL' | 'UPLOADING',
   id: string,

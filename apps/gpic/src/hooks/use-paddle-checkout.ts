@@ -76,9 +76,8 @@ export function usePaddleCheckout() {
   const { data: prices } = useQuery({
     queryKey: ['paddle', 'price'],
     queryFn: async () => {
-      const res= await paddle!.PricePreview({items: priceItems})
-      const prices = res.data.details.lineItems
-      return [] as Price[]
+      // const res= await paddle!.PricePreview({items: priceItems})
+      // const prices = res.data.details.lineItems
       // return prices.map(it=> ({
       //   id: it.price.id,
       //   paddleId: it.price.id,
@@ -86,6 +85,7 @@ export function usePaddleCheckout() {
       //   price: `${it.formattedTotals.total}`,
       //   description: it.price.description
       // }))
+      return [] as Price[]
     },
     enabled: !!paddle
   })

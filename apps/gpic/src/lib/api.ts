@@ -64,15 +64,15 @@ class API {
   }
 
   getTasks() {
-    return fetchIns<Task[]>('/api/task')
+    return fetchIns<Task[]>('/api/v1/task')
   }
 
   getTaskById(id: string) {
-    return fetchIns<Task>(`/api/task/${id}`)
+    return fetchIns<Task>(`/api/v1/task/${id}`)
   }
 
   createTask(input: TaskCreate) {
-    return fetchIns<Task>(`/api/task/image/flavor-image`, {
+    return fetchIns<Task>(`/api/v1/task/image/flavor-image`, {
       method: 'POST',
       body: input
     })
@@ -88,7 +88,7 @@ class API {
   }
 
   retryTask(id: string) {
-    return fetchIns<Task>(`/api/task/${id}/retry`, {
+    return fetchIns<Task>(`/api/v1/task/${id}/retry`, {
       method: 'PATCH',
     })
   }
@@ -96,14 +96,14 @@ class API {
   uploadFile(file: File) {
     const formData = new FormData()
     formData.append('file', file)
-    return fetchIns<{url: string}>('/api/file/upload', {
+    return fetchIns<{url: string}>('/api/v1/file/upload', {
       method: 'PUT',
       body: formData
     })
   }
 
   getBalance() {
-    return fetchIns<{balance: number}>('/api/balance', {
+    return fetchIns<{balance: number}>('/api/v1/balance', {
       method: 'GET',
     })
   }
@@ -119,7 +119,7 @@ class API {
       status: string,
       paddlePriceId?: string
       updatedAt: string,
-    }>(`/api/order`, {
+    }>(`/api/v1/order`, {
       method: 'POST',
       body: {priceId}
     })
@@ -135,25 +135,25 @@ class API {
       status: string,
       paddlePriceId?: string
       updatedAt: string,
-    }[]>('/api/order', {
+    }[]>('/api/v1/order', {
       method: 'GET',
     })
   }
   getGallery() {
-    return fetchIns<{id: string|number, url: string}[]>('/api/gallery', {
+    return fetchIns<{id: string|number, url: string}[]>('/api/v1/gallery', {
       method: 'GET',
     })
   }
 
   getPrices() {
-    const price = fetchIns<{id: string, paddleId: string, credits: number, price: string, description: string}[]>('/api/price', {
+    const price = fetchIns<{id: string, paddleId: string, credits: number, price: string, description: string}[]>('/api/v1/price', {
       method: 'GET'
     })
     return price
   }
 
   redeemCode(code: string) {
-    return fetchIns<{id: string|number, url: string}[]>('/api/redeem', {
+    return fetchIns<{id: string|number, url: string}[]>('/api/v1/redeem', {
       method: 'POST',
       body: {
         code
@@ -166,7 +166,7 @@ class API {
     files.forEach((file) => {
       formData.append('file', file)
     })
-    return fetchIns('/api/file/upload', {
+    return fetchIns('/api/v1/file/upload', {
       method: 'PUT',
       body: formData
     })

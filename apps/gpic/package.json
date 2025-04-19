@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "deploy:preview": "opennextjs-cloudflare build && wrangler deploy -e preview",
-    "deploy": "opennextjs-cloudflare build && wrangler deploy -e production",
+    "deploy:prod": "opennextjs-cloudflare build && wrangler deploy -e production",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
