@@ -9,10 +9,7 @@ const app = new Hono().basePath('/task')
 app.get('/', async (c) => {
   const  { taskService, userService } = getService(c)
   const user = await userService.getCurrentUser()
-  if(!user) {
-    throw new UnauthorizedError()
-  }
-  const tasks = await taskService.getTaskByUserId(user.id)
+  const tasks = await taskService.getTaskByUserId(user!.id)
   return c.json(tasks)
 })
 
