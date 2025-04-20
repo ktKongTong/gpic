@@ -1,36 +1,120 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# gpic
 
-## Getting Started
+## 简介
 
-First, run the development server:
+[gpic.ink](https://gpic.ink)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+GPIC 利用 cloudflare worker 对 openAI 4o 模型 API 进行封装。
+
+将 openAI 4o 的图片生成服务从 chat 模式转为 API 支持的异步任务、批量处理。
+
+## 项目结构
+
+项目分为两个部分。
+
+- frontend [apps/gpic](apps/gpic)，一个 Next.js App
+
+- backend[packages/services](packages/services)，包含主要的后端逻辑。
+
+## Task API
+
+#### 任务创建
+```ts
+
+// POST /api/v2/task/image/flavor-image
+
+type Style = {
+    styleId: string
+} | {
+    prompt: string
+    // reference file urls
+    reference: string[]
+}
+
+type TaskCreate = {
+    version: '1'
+    // file url
+    files: string[]
+    styles: Style[]
+    count: number
+    size: 'auto' | '1x1' | '2x3' | '3x2'
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### 获取任务详情
+```ts
+// GET api/v1/task/${task_id}
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+type TaskExecutionStatus = 'pending' | 'running' | 'completed' | 'failed'
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+type TaskExecutionState = {
+    version: '1',
+    // ai message
+    message: string
+    progress: number
+    success: boolean
+}
 
-## Learn More
+type Execution = {
+    id: string
+    taskId: string
+    input: { version: '1', files: string[] }
+    output: { url: string } | null
+    state: TaskExecutionState
+    status: 'running' | 'completed' | 'failed'
+    startedAt: Date
+    endedAt: Date | null
+    // ...common fields
+}
 
-To learn more about Next.js, take a look at the following resources:
+type Task = {
+    id: string
+    name: string
+    parentId: string
+    userId: string
+    retry: number
+    input: TaskCreate
+    metadata: any
+    status: TaskStatus
+    type: 'image-gen' | 'batch'
+    startedAt: Date | null
+    endedAt: Date | null
+    // ...common fields
+    executions: Execution[]
+    children: Task[]
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+}
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+#### 获取任务列表
+```ts
+// GET /api/v1/task
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+type TaskList = Task[]
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+#### 任务重试
+`GET /api/v1/task/${taskId}/retry`
+
+对于失败的任务，可以进行重试。如果是批量任务，会批量重试失败子任务。
+
+#### 获取任务实时状态 websocket
+`Websocket /api/v1/task/${taskId}/ws`
+仅当任务状态为 pending/processing 时，才会成功建立 websocket 连接。当状态更新时，会发送当前任务详情。
+
+
+
+## 如何生效
+
+1. 通过 API进行任务创建
+
+2. 将任务推送至队列
+
+3. 任务消费者消费任务
+- 批量任务
+  - 创建子任务，将子任务入队，同步状态至数据库和 Durable Object
+- 单任务
+  - 调用 API，同步状态至数据库和 Durable Object
+- 按照执行情况，更新任务状态
