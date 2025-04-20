@@ -6,15 +6,14 @@
 
 GPIC 利用 cloudflare worker 对 openAI 4o 模型 API 进行封装。
 
+
 将 openAI 4o 的图片生成服务从 chat 模式转为 API 支持的异步任务、批量处理。
 
-## 项目结构
+利用 Cloudflare Worker 提供的完整生态，可以非常轻松的自行部署。
 
-项目分为两个部分。
 
-- frontend [apps/gpic](apps/gpic)，一个 Next.js App
-
-- backend[packages/services](packages/services)，包含主要的后端逻辑。
+## API 的使用
+在 `dashboard -> APIKey`  中，创建APIKey，调用时添加 `X-API-Key` 请求头即可。
 
 ## Task API
 

@@ -113,7 +113,7 @@ export const ImageGenTaskDetail = ({task}: ImageGenTaskDetailProps) => {
           </> }
           { status === taskStatus.FAILED && <div className={'relative overflow-y-auto bg-red-500/30 rounded-lg p-3'}>
               <div className={'text-red-400'}>Error</div>
-              <div className={'overflow-auto whitespace-pre-wrap'}>
+              <div className={'overflow-auto'}>
                   <Markdown content={current?.state?.message}/>
               </div>
           </div> }
