@@ -1,3 +1,4 @@
+import {PendableButton} from "@/components/pendable-button";
 
 type APIKey = {
     name: string | null;
@@ -20,8 +21,8 @@ type APIKey = {
     id: string,
   }
   
-  import {Button} from "@/components/ui/button";
-  import {Dialog, DialogContent, DialogTrigger, DialogTitle, DialogHeader} from "@/components/ui/dialog";
+import {Button} from "@/components/ui/button";
+import {Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
 import { DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
 import { TableCell, TableRow } from "@/components/ui/table";
@@ -33,16 +34,16 @@ import { Ellipsis } from "lucide-react";
   
  export const APIKeyItem = ({apikey}:{apikey: APIKey}) => {
     const queryClient = useQueryClient();
-    const deleteMutation = useMutation({
-      mutationFn: async (id: string) => {
-        const res = await authClient.apiKey.delete({ keyId: id });
-        if (res.error) throw res.error;
-        return res.data;
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['user', 'apikey'] });
-      }
-    });
+    const enableToggleMutation = useMutation({
+     mutationFn: async (apiKey: APIKey) => {
+       const res = await authClient.apiKey.update({ keyId: apiKey.id, enabled: !apiKey.enabled });
+       if (res.error) throw res.error;
+       return res.data;
+     },
+     onSuccess: () => {
+       queryClient.invalidateQueries({ queryKey: ['user', 'apikey'] });
+     }
+   })
   
     return (
       <TableRow>
@@ -60,7 +61,6 @@ import { Ellipsis } from "lucide-react";
           </span>
       </TableCell>
       <TableCell className="text-right">
-        
       <Dialog>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild> 
@@ -70,10 +70,11 @@ import { Ellipsis } from "lucide-react";
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-black/50 shadow-sm rounded-md p-2">
                 <DeleteConfirmation apikey={apikey}/>
-                  <DropdownMenuItem onClick={() => {
-                    }}>
-                        {apikey.enabled ? 'Disable' : 'Enable'}
-                  </DropdownMenuItem>
+                <DropdownMenuItem disabled={enableToggleMutation.isPending} onClick={() => {
+                  enableToggleMutation.mutate(apikey)
+                  }}>
+                      {apikey.enabled ? 'Disable' : 'Enable'}
+                </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
           </Dialog>
@@ -101,7 +102,7 @@ import { Ellipsis } from "lucide-react";
         <DialogTitle>Confirm Deletion</DialogTitle>
         <p>Are you sure you want to delete this API Key?</p>
         <div className="mt-4">
-          <Button variant="outline" className="mr-2" onClick={() => deleteMutation.mutate(apikey.id)}>Delete</Button>
+          <PendableButton pending={deleteMutation.isPending} variant="outline" className="mr-2" onClick={() => deleteMutation.mutate(apikey.id)}>Delete</PendableButton>
           <Button variant="outline" onClick={() => deleteMutation.reset()}>Cancel</Button>
         </div>
       </DialogContent>

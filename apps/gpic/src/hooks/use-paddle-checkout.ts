@@ -24,7 +24,7 @@ const priceItems = [
   { priceId: PADDLE_PRICE_ID_LEVEL_3, quantity: 1 },
 ]
 
-console.log("priceItems", priceItems)
+// console.log("priceItems", priceItems)
 // {
 //   id: it.price.id,
 //     paddleId: it.price.id,

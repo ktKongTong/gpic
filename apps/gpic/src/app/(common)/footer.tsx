@@ -16,7 +16,17 @@ const Footer: React.FC = () => {
         <Link href={'/'} className={"text-3xl font-black"}>
           GPIC
         </Link>
-
+      </div>
+      <div className={'flex items-center gap-2 flex-col'}>
+        <Link href={'/about/tos'} className={""}>
+          Term of Service
+        </Link>
+        <Link href={'/about/privacy'} className={""}>
+          Privacy Policy
+        </Link>
+        <Link href={'/about/refund'} className={""}>
+          Refund Policy
+        </Link>
       </div>
       <div className={'flex items-center gap-2 flex-col'}>
         <Link href={'/pricing'} className={""}>
@@ -24,14 +34,6 @@ const Footer: React.FC = () => {
         </Link>
         <Link href={'/#faq'} className={""}>
           FAQ
-        </Link>
-      </div>
-      <div className={'flex items-center gap-2 flex-col'}>
-        <Link href={'/tos'} className={""}>
-          Term of Service
-        </Link>
-        <Link href={'/privacy'} className={""}>
-          Privacy Policy
         </Link>
       </div>
 

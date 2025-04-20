@@ -13,46 +13,53 @@ const PADDLE_PRICE_ID_LEVEL_1 = process.env.NEXT_PUBLIC_PADDLE_PRICE_ID_LEVEL_1 
 const PADDLE_PRICE_ID_LEVEL_2 = process.env.NEXT_PUBLIC_PADDLE_PRICE_ID_LEVEL_2 as string
 const PADDLE_PRICE_ID_LEVEL_3 = process.env.NEXT_PUBLIC_PADDLE_PRICE_ID_LEVEL_3 as string
 
+
+
 const tiers: PricingTier[] = [
   {
     name: 'Free',
     price: '$0',
     credits: '10 credits',
-    features: ['10 积分', '有限质量', '无水印', '积分永不过期'],
-    buttonText: '免费试用',
+    features: [
+      '10 credits',
+      'Limited quality',
+      'No watermark',
+      'Points never expire'
+    ],
+    buttonText: 'Free',
     href: '/',
   },
   {
     name: 'Pay as you go',
-    price: '$10',
-    credits: '300 credits',
+    price: '$3',
+    credits: '200 credits',
     features: [
-      '300 积分 ≈ 60 张图片',
-      '高清质量',
-      '批量处理',
-      '任务重试',
-      '实时任务状态',
-      '积分永不过期',
-      '24/7客户支持',
+      '200 credits ≈ 40 images',
+      'HD quality',
+      'Batch processing',
+      'Task retry',
+      'Real-time task status',
+      'Credits never expire',
+      '24/7 customer support',
     ],
-    buttonText: '立即购买',
+    buttonText: 'Buy Now',
     isPopular: true,
     href: `/buy?priceId=${PADDLE_PRICE_ID_LEVEL_1}`,
   },
   {
     name: 'Pay as you go',
     price: '$10',
-    credits: '1000 credits',
+    credits: '600 credits',
     features: [
-      '1000 积分 ≈ 200 张图片',
-      '高清质量',
-      '批量处理',
-      '任务重试',
-      '实时任务状态',
-      '积分永不过期',
-      '24/7客户支持',
+      '600 credits ≈ 120 images',
+      'HD quality',
+      'Batch processing',
+      'Task retry',
+      'Real-time task status',
+      'Credits never expire',
+      '24/7 customer support',
     ],
-    buttonText: '立即购买',
+    buttonText: 'Buy Now',
     href: `/buy?priceId=${PADDLE_PRICE_ID_LEVEL_2}`,
   },
 ];

@@ -21,6 +21,7 @@ import { Recharge } from "./recharge"
 import { Label } from "@/components/ui/label"
 import {Coins} from "lucide-react";
 import {OrderRow} from "./order-row";
+import {PendableButton} from "@/components/pendable-button";
 
 
 type Order = {
@@ -101,9 +102,9 @@ export default function Page() {
                     disabled={redeemMutation.isPending}
                     className="flex-grow  placeholder:text-secondary-foreground"
                 />
-                <Button type="submit" disabled={redeemMutation.isPending}>
-                    {redeemMutation.isPending ? 'Redeeming...' : 'Redeem'}
-                </Button>
+                <PendableButton pending={redeemMutation.isPending} type="submit">
+                  Redeem
+                </PendableButton>
             </form>
         </div>
         {/* Recharge Section */}
@@ -117,7 +118,7 @@ export default function Page() {
           <TableHeader>
             <TableRow>
               <TableHead className="w-[80px]">Amount</TableHead>
-              <TableHead>Date</TableHead>
+              <TableHead className={'w-[100px]'}>Date</TableHead>
               <TableHead className="w-[100px]">Task ID</TableHead>
               <TableHead>msg</TableHead>
             </TableRow>

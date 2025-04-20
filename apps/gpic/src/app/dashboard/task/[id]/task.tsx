@@ -76,7 +76,7 @@ export default function TaskDetail({id}:{id: string}) {
   }
   if (!task) {
     return <div className={'flex items-center justify-center h-full'}>
-      <div className={'text-white/50'}>404 Not Found</div>
+      <div className={'text-white/50'}></div>
     </div>
   }
   if (task.type === taskType.IMAGE_GEN) {

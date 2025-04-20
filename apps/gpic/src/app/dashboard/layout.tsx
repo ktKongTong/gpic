@@ -26,7 +26,7 @@ const UserDetailModalLayout = ({ children }: { children: React.ReactNode }) => {
         <AppSidebar/>
         <div className={'flex-col w-full overflow-scroll'}>
           <Header/>
-          <div className=" grow w-full mx-auto p-10 max-w-4xl z-10">
+          <div className=" grow w-full mx-auto p-10 max-w-4xl z-10 h-full overflow-y-scroll">
             {children}
           </div>
         </div>
