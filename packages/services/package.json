@@ -46,7 +46,7 @@
     "@hono/zod-validator": "^0.4.3",
     "@paddle/paddle-node-sdk": "^2.7.0",
     "@upstash/qstash": "^2.7.23",
-    "ai": "^4.2.6",
+    "ai": "^5.0.52",
     "aws4fetch": "^1.0.20",
     "better-auth": "catalog:",
     "drizzle-orm": "catalog:",
