@@ -2,7 +2,7 @@ packages:
   - 'apps/**/*'
   - 'packages/**/*'
 catalog:
-  wrangler: ^4.10.0
+  wrangler: ^4.59.1
   "drizzle-orm": ^0.41.0
   "drizzle-kit": ^0.30.6
   "hono": ^4.7.6
